@@ -61,7 +61,7 @@ public class MyBot : IChessBot
         return score;
     }
 
-    private int Search(Board board, Timer timer, int totalTime, int ply, int depth, int alpha, int beta, long[,] quietHistory, out Move bestMove)
+    private int Search(Board board, Timer timer, int totalTime, int ply, int depth, int alpha, int beta, long[,] quietHistory, bool nullAllowed, out Move bestMove)
     {
         ulong key = board.ZobristKey;
         bestMove = Move.NullMove;
@@ -102,9 +102,22 @@ public class MyBot : IChessBot
             bestScore = staticScore;
         }
 
-        // Reverse futility pruning
-        else if (ply > 0 && depth < 5 && staticScore - depth * 150 > beta && !board.IsInCheck())
-            return beta;
+        else if (ply > 0 && !board.IsInCheck())
+        {
+            // Reverse futility pruning
+            if (depth < 5 && staticScore - depth * 150 > beta)
+                return beta;
+
+            // Null move pruning
+            if (nullAllowed && staticScore >= beta && depth > 2)
+            {
+                board.ForceSkipTurn();
+                var score = -Search(board, timer, totalTime, ply + 1, depth - 4, -beta, -beta + 1, quietHistory, false, out _);
+                board.UndoSkipTurn();
+                if (score >= beta)
+                    return beta;
+            }
+        }
 
         // Move generation, best-known move then MVV-LVA ordering then quiet move history
         var moves = board.GetLegalMoves(inQsearch).OrderByDescending(move => move == ttMove ? 9000000000000000000 : move.IsCapture ? 8000000000000000000 + (long)move.CapturePieceType * 1000 - (long)move.MovePieceType : quietHistory[move.StartSquare.Index, move.TargetSquare.Index]);
@@ -116,7 +129,7 @@ public class MyBot : IChessBot
         foreach (var move in moves)
         {
             board.MakeMove(move);
-            var score = -Search(board, timer, totalTime, ply + 1, depth - 1, -beta, -alpha, quietHistory, out _);
+            var score = -Search(board, timer, totalTime, ply + 1, depth - 1, -beta, -alpha, quietHistory, true, out _);
             board.UndoMove(move);
 
             // If we are out of time, stop searching
@@ -170,7 +183,7 @@ public class MyBot : IChessBot
         // Iterative deepening
         for (var depth = 1; depth < 128; depth++)
         {
-            var score = Search(board, timer, totalTime, 0, depth, -inf, inf, quietHistory, out var move);
+            var score = Search(board, timer, totalTime, 0, depth, -inf, inf, quietHistory, false, out var move);
 
             // If we are out of time, we cannot trust the move that was found during this iteration
             if (timer.MillisecondsElapsedThisTurn * 30 > totalTime)

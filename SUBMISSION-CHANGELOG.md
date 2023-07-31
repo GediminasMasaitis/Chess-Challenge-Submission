@@ -397,3 +397,30 @@ Elo difference: 65.0 +/- 13.5, LOS: 100.0 %, DrawRatio: 23.1 %
 Reduce token count
 
 699 tokens
+
+### 1.18
+Null-move pruning
+
+757 tokens
+
+```
+info depth 1 cp 56 time 30 Move: 'g1f3'
+info depth 2 cp 0 time 31 Move: 'g1f3'
+info depth 3 cp 50 time 32 Move: 'g1f3'
+info depth 4 cp 0 time 33 Move: 'g1f3'
+info depth 5 cp 12 time 35 Move: 'g1f3'
+info depth 6 cp 0 time 40 Move: 'g1f3'
+info depth 7 cp 30 time 45 Move: 'g1f3'
+info depth 8 cp 0 time 144 Move: 'g1f3'
+info depth 9 cp 18 time 230 Move: 'g1f3'
+info depth 10 cp 2 time 742 Move: 'g1f3'
+bestmove g1f3
+```
+
+```
+Score of ChessChallenge vs ChessChallengeDev: 973 - 554 - 473  [0.605] 2000
+...      ChessChallenge playing White: 550 - 228 - 223  [0.661] 1001
+...      ChessChallenge playing Black: 423 - 326 - 250  [0.549] 999
+...      White vs Black: 876 - 651 - 473  [0.556] 2000
+Elo difference: 73.9 +/- 13.5, LOS: 100.0 %, DrawRatio: 23.6 %
+```
