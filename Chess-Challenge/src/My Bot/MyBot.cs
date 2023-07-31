@@ -132,12 +132,17 @@ public class MyBot : IChessBot
 
             // Principal variation search
             var childAlpha = -beta;
+            var reduction = 1;
             if(inQsearch || movesEvaluated == 0)
                 goto doSearch;
             childAlpha = -alpha - 1;
 
+            // Late move reductions
+            if(depth > 2 && movesEvaluated > 4 && !move.IsCapture)
+                reduction = 2;
+
             doSearch:
-            var score = -Search(board, timer, totalTime, ply + 1, depth - 1, childAlpha, -alpha, quietHistory, true, out _);
+            var score = -Search(board, timer, totalTime, ply + 1, depth - reduction, childAlpha, -alpha, quietHistory, true, out _);
 
             // If the result score is within the current bounds, we must research with a full window
             if (childAlpha != -beta && score > alpha && score < beta)
