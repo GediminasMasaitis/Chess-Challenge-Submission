@@ -129,7 +129,23 @@ public class MyBot : IChessBot
         foreach (var move in moves)
         {
             board.MakeMove(move);
-            var score = -Search(board, timer, totalTime, ply + 1, depth - 1, -beta, -alpha, quietHistory, true, out _);
+
+            // Principal variation search
+            var childAlpha = -beta;
+            if(inQsearch || movesEvaluated == 0)
+                goto doSearch;
+            childAlpha = -alpha - 1;
+
+            doSearch:
+            var score = -Search(board, timer, totalTime, ply + 1, depth - 1, childAlpha, -alpha, quietHistory, true, out _);
+
+            // If the result score is within the current bounds, we must research with a full window
+            if (childAlpha != -beta && score > alpha && score < beta)
+            {
+                childAlpha = -beta;
+                goto doSearch;
+            }
+
             board.UndoMove(move);
 
             // If we are out of time, stop searching
