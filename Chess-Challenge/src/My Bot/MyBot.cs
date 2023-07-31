@@ -1,27 +1,25 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Numerics;
 using ChessChallenge.API;
-using Timer = ChessChallenge.API.Timer;
 
 public class MyBot : IChessBot
 {
-    private const int Inf = 2000000;
-    private const int Mate = 1000000;
+    int inf = 2000000;
+    int mate = 1000000;
 
     const int TTSize = 1048576;
 
     // Key, move, depth, score, flag
     (ulong, Move, int, int, byte)[] TT = new (ulong, Move, int, int, byte)[TTSize];
 
-    int[] pieceValues = { 0, 151, 419, 458, 731, 1412, 0 };
+    int[] material = { 0, 151, 419, 458, 731, 1412, 0 };
 
     // PSTs are encoded with the following format:
     // Every rank or file is encoded as a byte, with the first rank/file being the LSB and the last rank/file being the MSB.
     // For every value to fit inside a byte, the values are divided by 2, and multiplication inside evaluation is needed.
-    ulong[] pstRanks = {0, 32973249741911296, 16357091511995071475, 17581496622553367027, 724241724997039354, 432919517870226424, 17729000522595302646 };
-    ulong[] pstFiles = {0, 17944594909985834239, 17438231369917791979, 17799354947352068342, 17580088143863153148, 217585671819360496, 17944030877684269297 };
+    ulong[] pstRanks = { 0, 32973249741911296, 16357091511995071475, 17581496622553367027, 724241724997039354, 432919517870226424, 17729000522595302646 };
+    ulong[] pstFiles = { 0, 17944594909985834239, 17438231369917791979, 17799354947352068342, 17580088143863153148, 217585671819360496, 17944030877684269297 };
+
     private int Evaluate(Board board)
     {
         int score = 0;
@@ -35,19 +33,14 @@ public class MyBot : IChessBot
 
                 while (bitboard != 0)
                 {
-                    var sq = BitOperations.TrailingZeroCount(bitboard);
-                    bitboard &= bitboard - 1;
-
-                    if (color == 1)
-                    {
-                        sq ^= 56;
-                    }
+                    var sq = BitboardHelper.ClearAndGetIndexOfLSB(ref bitboard);
+                    sq ^= 56 * color;
 
                     var rank = sq >> 3;
                     var file = sq & 7;
 
                     // Material
-                    score += pieceValues[pieceIndex];
+                    score += material[pieceIndex];
 
                     // Rank PST
                     var rankScore = (sbyte)((pstRanks[pieceIndex] >> (rank * 8)) & 0xFF) * 2;
@@ -63,9 +56,7 @@ public class MyBot : IChessBot
         }
 
         if (!board.IsWhiteToMove)
-        {
             score = -score;
-        }
 
         return score;
     }
@@ -77,9 +68,7 @@ public class MyBot : IChessBot
 
         // Repetition detection
         if (ply > 0 && board.IsRepeatedPosition())
-        {
             return 0;
-        }
 
         // If we are in check, we should search deeper
         if (board.IsInCheck())
@@ -98,10 +87,10 @@ public class MyBot : IChessBot
         else
             ttMove = Move.NullMove;
 
-        var inQsearch = (depth <= 0);
-        
+        var inQsearch = depth <= 0;
+
         var staticScore = Evaluate(board);
-        var bestScore = -Inf;
+        var bestScore = -inf;
         if (inQsearch)
         {
             if (staticScore >= beta)
@@ -132,9 +121,7 @@ public class MyBot : IChessBot
 
             // If we are out of time, stop searching
             if (depth > 2 && timer.MillisecondsElapsedThisTurn * 30 > totalTime)
-            {
                 return bestScore;
-            }
 
             // Count the number of moves we have evaluated for detecting mates and stalemates
             movesEvaluated++;
@@ -167,21 +154,7 @@ public class MyBot : IChessBot
         }
 
         if (movesEvaluated == 0)
-        {
-            if(inQsearch)
-                return alpha;
-
-            if (board.IsInCheck())
-            {
-                // Checkmate
-                return ply - Mate;
-            }
-            else
-            {
-                // Stalemate
-                return 0;
-            }
-        }
+            return inQsearch ? bestScore : board.IsInCheck() ? ply - mate : 0;
 
         // Store the current position in the transposition table
         TT[key % TTSize] = (key, bestMove, depth, bestScore, flag);
@@ -197,13 +170,11 @@ public class MyBot : IChessBot
         // Iterative deepening
         for (var depth = 1; depth < 128; depth++)
         {
-            var score = Search(board, timer, totalTime, 0, depth, -Inf, Inf, quietHistory, out var move);
+            var score = Search(board, timer, totalTime, 0, depth, -inf, inf, quietHistory, out var move);
 
             // If we are out of time, we cannot trust the move that was found during this iteration
             if (timer.MillisecondsElapsedThisTurn * 30 > totalTime)
-            {
                 break;
-            }
 
             bestMove = move;
 
