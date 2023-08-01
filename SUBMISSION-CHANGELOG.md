@@ -5,7 +5,7 @@ Engines tested against:
 | Vice | 1.1 | 2060 |
 
 ### 1.0
-Initial release - randoom legal mover
+Initial release - random legal mover
 
 53 tokens
 
@@ -485,7 +485,7 @@ Elo difference: 34.2 +/- 13.0, LOS: 100.0 %, DrawRatio: 27.6 %
 ### 1.21
 No RFP and NMP in PV nodes
 
-848 tokens
+826 tokens
 
 ```
 info depth 1 cp 56 time 30 Move: 'g1f3'
