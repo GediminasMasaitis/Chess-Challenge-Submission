@@ -83,9 +83,15 @@ public class MyBot : IChessBot
             if (ply > 0 && ttDepth >= depth && (ttFlag == 0 && ttScore <= alpha || ttFlag == 1 && ttScore >= beta || ttFlag == 2))
                 return ttScore;
         }
-        // If the table entry is not for this position, we can't trust the move to be the best known move
         else
+        {
+            // If the table entry is not for this position, we can't trust the move to be the best known move
             ttMove = Move.NullMove;
+
+            // Internal iterative reduction
+            if(depth > 3)
+                depth--;
+        }
 
         var inQsearch = depth <= 0;
 

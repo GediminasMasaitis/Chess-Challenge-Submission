@@ -509,7 +509,7 @@ Score of ChessChallenge vs ChessChallengeDev: 3817 - 3601 - 2582  [0.511] 10000
 Elo difference: 7.5 +/- 5.9, LOS: 99.4 %, DrawRatio: 25.8 %
 ```
 
-### 1.21
+### 1.22
 Retune evaluation using https://github.com/GediminasMasaitis/texel-tuner
 
 826 tokens
@@ -535,4 +535,34 @@ Score of ChessChallenge vs ChessChallengeDev: 2005 - 1818 - 1177  [0.519] 5000
 ...      ChessChallenge playing Black: 880 - 1047 - 572  [0.467] 2499
 ...      White vs Black: 2172 - 1651 - 1177  [0.552] 5000
 Elo difference: 13.0 +/- 8.4, LOS: 99.9 %, DrawRatio: 23.5 %
+```
+
+### 1.23
+Internal iterative deepening
+
+834 tokens
+
+```
+info depth 1 cp 58 time 32 Move: 'b1c3'
+info depth 2 cp 0 time 33 Move: 'b1c3'
+info depth 3 cp 52 time 34 Move: 'b1c3'
+info depth 4 cp 2 time 35 Move: 'a2a4'
+info depth 5 cp 22 time 38 Move: 'g1f3'
+info depth 6 cp 2 time 42 Move: 'g1f3'
+info depth 7 cp 18 time 50 Move: 'g1f3'
+info depth 8 cp 32 time 67 Move: 'g1f3'
+info depth 9 cp 12 time 99 Move: 'g1f3'
+info depth 10 cp 18 time 173 Move: 'b1c3'
+info depth 11 cp 14 time 309 Move: 'b1c3'
+info depth 12 cp 22 time 618 Move: 'e2e4'
+info depth 13 cp 18 time 1696 Move: 'e2e4'
+bestmove e2e4
+```
+
+```
+Score of ChessChallenge vs ChessChallengeDev: 1559 - 1363 - 1078  [0.524] 4000
+...      ChessChallenge playing White: 925 - 557 - 518  [0.592] 2000
+...      ChessChallenge playing Black: 634 - 806 - 560  [0.457] 2000
+...      White vs Black: 1731 - 1191 - 1078  [0.568] 4000
+Elo difference: 17.0 +/- 9.2, LOS: 100.0 %, DrawRatio: 27.0 %
 ```
