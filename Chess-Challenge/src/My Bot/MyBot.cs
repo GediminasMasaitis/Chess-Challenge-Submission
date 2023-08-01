@@ -12,13 +12,13 @@ public class MyBot : IChessBot
     // Key, move, depth, score, flag
     (ulong, Move, int, int, byte)[] TT = new (ulong, Move, int, int, byte)[TTSize];
 
-    int[] material = { 0, 151, 419, 458, 731, 1412, 0 };
+    int[] material = { 0, 154, 441, 484, 755, 1453, 0 };
 
     // PSTs are encoded with the following format:
     // Every rank or file is encoded as a byte, with the first rank/file being the LSB and the last rank/file being the MSB.
     // For every value to fit inside a byte, the values are divided by 2, and multiplication inside evaluation is needed.
-    ulong[] pstRanks = { 0, 32973249741911296, 16357091511995071475, 17581496622553367027, 724241724997039354, 432919517870226424, 17729000522595302646 };
-    ulong[] pstFiles = { 0, 17944594909985834239, 17438231369917791979, 17799354947352068342, 17580088143863153148, 217585671819360496, 17944030877684269297 };
+    ulong[] pstRanks = { 0, 31281101363606784, 16646170715401353197, 17726460642178891248, 1157719803347201779, 937325991850276595, 17729283105706932467 };
+    ulong[] pstFiles = { 0, 18088991581628334845, 17870855106292153324, 18159639610400047608, 17653550905154667004, 506377885477632753, 17944029761009485044 };
 
     private int Evaluate(Board board)
     {
