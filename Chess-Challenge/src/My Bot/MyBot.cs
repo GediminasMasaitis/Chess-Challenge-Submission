@@ -102,7 +102,7 @@ public class MyBot : IChessBot
             bestScore = staticScore;
         }
 
-        else if (ply > 0 && !board.IsInCheck())
+        else if (ply > 0 && alpha == beta - 1 && !board.IsInCheck())
         {
             // Reverse futility pruning
             if (depth < 5 && staticScore - depth * 150 > beta)
