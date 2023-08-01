@@ -43,22 +43,17 @@ public class MyBot : IChessBot
                     score += material[pieceIndex];
 
                     // Rank PST
-                    var rankScore = (sbyte)((pstRanks[pieceIndex] >> (rank * 8)) & 0xFF) * 2;
-                    score += rankScore;
+                    score += (sbyte)((pstRanks[pieceIndex] >> (rank * 8)) & 0xFF) * 2;
 
                     // File PST
-                    var fileScore = (sbyte)((pstFiles[pieceIndex] >> (file * 8)) & 0xFF) * 2;
-                    score += fileScore;
+                    score += (sbyte)((pstFiles[pieceIndex] >> (file * 8)) & 0xFF) * 2;
                 }
             }
 
             score = -score;
         }
 
-        if (!board.IsWhiteToMove)
-            score = -score;
-
-        return score;
+        return board.IsWhiteToMove ? score : -score;
     }
 
     private int Search(Board board, Timer timer, int totalTime, int ply, int depth, int alpha, int beta, long[,] quietHistory, bool nullAllowed, out Move bestMove)
@@ -71,7 +66,8 @@ public class MyBot : IChessBot
             return 0;
 
         // If we are in check, we should search deeper
-        if (board.IsInCheck())
+        var inCheck = board.IsInCheck();
+        if (inCheck)
             depth++;
 
         // Look up best move known so far if it is available
@@ -108,7 +104,7 @@ public class MyBot : IChessBot
             bestScore = staticScore;
         }
 
-        else if (ply > 0 && alpha == beta - 1 && !board.IsInCheck())
+        else if (ply > 0 && alpha == beta - 1 && !inCheck)
         {
             // Reverse futility pruning
             if (depth < 5 && staticScore - depth * 150 > beta)
@@ -194,7 +190,7 @@ public class MyBot : IChessBot
         }
 
         if (movesEvaluated == 0)
-            return inQsearch ? bestScore : board.IsInCheck() ? ply - mate : 0;
+            return inQsearch ? bestScore : inCheck ? ply - mate : 0;
 
         // Store the current position in the transposition table
         TT[key % TTSize] = (key, bestMove, depth, bestScore, flag);

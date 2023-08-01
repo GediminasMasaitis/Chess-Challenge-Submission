@@ -538,7 +538,7 @@ Elo difference: 13.0 +/- 8.4, LOS: 99.9 %, DrawRatio: 23.5 %
 ```
 
 ### 1.23
-Internal iterative deepening
+Internal iterative reduction
 
 834 tokens
 
@@ -565,4 +565,27 @@ Score of ChessChallenge vs ChessChallengeDev: 1559 - 1363 - 1078  [0.524] 4000
 ...      ChessChallenge playing Black: 634 - 806 - 560  [0.457] 2000
 ...      White vs Black: 1731 - 1191 - 1078  [0.568] 4000
 Elo difference: 17.0 +/- 9.2, LOS: 100.0 %, DrawRatio: 27.0 %
+
+Score of ChessChallenge vs vice1.1: 1293 - 446 - 261  [0.712] 2000
+...      ChessChallenge playing White: 722 - 169 - 110  [0.776] 1001
+...      ChessChallenge playing Black: 571 - 277 - 151  [0.647] 999
+...      White vs Black: 999 - 740 - 261  [0.565] 2000
+Elo difference: 157.0 +/- 15.4, LOS: 100.0 %, DrawRatio: 13.1 %
+
+Score of ChessChallengeDev vs Tier1Example: 500 - 0 - 0  [1.000] 500
+...      ChessChallengeDev playing White: 249 - 0 - 0  [1.000] 249
+...      ChessChallengeDev playing Black: 251 - 0 - 0  [1.000] 251
+...      White vs Black: 249 - 251 - 0  [0.498] 500
+Elo difference: inf +/- nan, LOS: 100.0 %, DrawRatio: 0.0 %
+
+Score of ChessChallengeDev vs Tier2Example: 366 - 69 - 65  [0.797] 500
+...      ChessChallengeDev playing White: 204 - 23 - 22  [0.863] 249
+...      ChessChallengeDev playing Black: 162 - 46 - 43  [0.731] 251
+...      White vs Black: 250 - 185 - 65  [0.565] 500
+Elo difference: 237.6 +/- 34.0, LOS: 100.0 %, DrawRatio: 13.0 %
 ```
+
+### 1.23.1
+Reduce token count
+
+821 tokens
