@@ -160,7 +160,7 @@ public class MyBot : IChessBot
             board.UndoMove(move);
 
             // If we are out of time, stop searching
-            if (depth > 2 && timer.MillisecondsElapsedThisTurn * 30 > totalTime)
+            if (depth > 2 && timer.MillisecondsElapsedThisTurn * 8 > totalTime)
                 return bestScore;
 
             // Count the number of moves we have evaluated for detecting mates and stalemates
@@ -218,9 +218,10 @@ public class MyBot : IChessBot
             // Search with the current window
             var newScore = Search(board, timer, totalTime, 0, depth, score - window, score + window, quietHistory, false, out var move);
 
+            // Hard time limit
             // If we are out of time, we cannot trust the move that was found
             // during this iteration, so we break without setting bestMove
-            if (timer.MillisecondsElapsedThisTurn * 30 > totalTime)
+            if (timer.MillisecondsElapsedThisTurn * 8 > totalTime)
                 break;
 
             // If the score is outside of the current window, we must research with a wider window
@@ -236,6 +237,10 @@ public class MyBot : IChessBot
 
             // Move is not printed in the usual pv format, because the API does not support easy conversion to UCI notation
             Console.WriteLine($"info depth {depth} cp {score} time {timer.MillisecondsElapsedThisTurn} {bestMove}"); // #DEBUG
+
+            // Soft time limit
+            if (timer.MillisecondsElapsedThisTurn * 40 > totalTime)
+                break;
         }
 
         return bestMove;
