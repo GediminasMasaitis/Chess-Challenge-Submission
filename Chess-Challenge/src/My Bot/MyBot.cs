@@ -12,13 +12,13 @@ public class MyBot : IChessBot
     // Key, move, depth, score, flag
     (ulong, Move, int, int, byte)[] TT = new (ulong, Move, int, int, byte)[TTSize];
 
-    int[] material = { 0, 154, 441, 484, 755, 1453, 0 };
+    int[] material = { 0, 155, 444, 470, 755, 1454, 0 };
 
     // PSTs are encoded with the following format:
     // Every rank or file is encoded as a byte, with the first rank/file being the LSB and the last rank/file being the MSB.
     // For every value to fit inside a byte, the values are divided by 2, and multiplication inside evaluation is needed.
-    ulong[] pstRanks = { 0, 31281101363606784, 16646170715401353197, 17726460642178891248, 1157719803347201779, 937325991850276595, 17729283105706932467 };
-    ulong[] pstFiles = { 0, 18088991581628334845, 17870855106292153324, 18159639610400047608, 17653550905154667004, 506377885477632753, 17944029761009485044 };
+    ulong[] pstRanks = { 0, 31281101363607040, 16573830546891929838, 17870858404743019758, 1157719803347201780, 937325991850276595, 17729564580683643123 };
+    ulong[] pstFiles = { 0, 18017215462567117565, 17870855106292153324, 18087582016362119672, 17653550905154667004, 578435479515560689, 17944029756714517748 };
 
     private int Evaluate(Board board)
     {
@@ -26,6 +26,10 @@ public class MyBot : IChessBot
         for (var color = 0; color < 2; color++)
         {
             var isWhite = color == 0;
+
+            if(BitboardHelper.GetNumberOfSetBits(board.GetPieceBitboard(PieceType.Bishop, isWhite)) == 2)
+                score += 44;
+
             for (var piece = PieceType.Pawn; piece <= PieceType.King; piece++)
             {
                 var pieceIndex = (int)piece;

@@ -589,3 +589,33 @@ Elo difference: 237.6 +/- 34.0, LOS: 100.0 %, DrawRatio: 13.0 %
 Reduce token count
 
 821 tokens
+
+### 1.24
+Bishop pair evaluation
+
+840 tokens
+
+```
+info depth 1 cp 58 time 31 Move: 'b1c3'
+info depth 2 cp 0 time 32 Move: 'b1c3'
+info depth 3 cp 52 time 33 Move: 'b1c3'
+info depth 4 cp 0 time 34 Move: 'b1c3'
+info depth 5 cp 20 time 35 Move: 'b1c3'
+info depth 6 cp 6 time 39 Move: 'b1c3'
+info depth 7 cp 14 time 47 Move: 'b1c3'
+info depth 8 cp 38 time 65 Move: 'b1c3'
+info depth 9 cp 0 time 99 Move: 'b1c3'
+info depth 10 cp 18 time 153 Move: 'b1c3'
+info depth 11 cp 12 time 317 Move: 'b1c3'
+info depth 12 cp 28 time 901 Move: 'b1c3'
+info depth 13 cp 18 time 1932 Move: 'b1c3'
+bestmove b1c3
+```
+
+```
+Score of ChessChallenge vs ChessChallengeDev: 11608 - 10878 - 7514  [0.512] 30000
+...      ChessChallenge playing White: 6858 - 4381 - 3761  [0.583] 15000
+...      ChessChallenge playing Black: 4750 - 6497 - 3753  [0.442] 15000
+...      White vs Black: 13355 - 9131 - 7514  [0.570] 30000
+Elo difference: 8.5 +/- 3.4, LOS: 100.0 %, DrawRatio: 25.0 %
+```
