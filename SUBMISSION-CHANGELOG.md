@@ -619,3 +619,33 @@ Score of ChessChallenge vs ChessChallengeDev: 11608 - 10878 - 7514  [0.512] 3000
 ...      White vs Black: 13355 - 9131 - 7514  [0.570] 30000
 Elo difference: 8.5 +/- 3.4, LOS: 100.0 %, DrawRatio: 25.0 %
 ```
+
+### 1.25
+Aspiration windows
+
+878 tokens
+
+```
+info depth 1 cp 58 time 40 Move: 'b1c3'
+info depth 2 cp 0 time 42 Move: 'b1c3'
+info depth 3 cp 52 time 43 Move: 'b1c3'
+info depth 4 cp 0 time 45 Move: 'g1f3'
+info depth 5 cp 20 time 46 Move: 'g1f3'
+info depth 6 cp 6 time 50 Move: 'b1c3'
+info depth 7 cp 26 time 61 Move: 'b1c3'
+info depth 8 cp 36 time 85 Move: 'b1c3'
+info depth 9 cp 0 time 127 Move: 'b1c3'
+info depth 10 cp 22 time 192 Move: 'b1c3'
+info depth 11 cp 22 time 354 Move: 'b1c3'
+info depth 12 cp 10 time 1017 Move: 'b1c3'
+info depth 13 cp 10 time 1905 Move: 'b1c3'
+bestmove b1c3
+```
+
+```
+Score of ChessChallenge vs ChessChallengeDev: 1252 - 935 - 813  [0.553] 3000
+...      ChessChallenge playing White: 750 - 351 - 400  [0.633] 1501
+...      ChessChallenge playing Black: 502 - 584 - 413  [0.473] 1499
+...      White vs Black: 1334 - 853 - 813  [0.580] 3000
+Elo difference: 36.8 +/- 10.6, LOS: 100.0 %, DrawRatio: 27.1 %
+```

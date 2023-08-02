@@ -207,18 +207,33 @@ public class MyBot : IChessBot
         var totalTime = timer.MillisecondsRemaining;
         var quietHistory = new long[64, 64];
         var bestMove = Move.NullMove;
+        var score = 0;
         // Iterative deepening
         for (var depth = 1; depth < 128; depth++)
         {
-            var score = Search(board, timer, totalTime, 0, depth, -inf, inf, quietHistory, false, out var move);
+            // Aspiration windows
+            var window = 40;
+            research:
 
-            // If we are out of time, we cannot trust the move that was found during this iteration
+            // Search with the current window
+            var newScore = Search(board, timer, totalTime, 0, depth, score - window, score + window, quietHistory, false, out var move);
+
+            // If we are out of time, we cannot trust the move that was found
+            // during this iteration, so we break without setting bestMove
             if (timer.MillisecondsElapsedThisTurn * 30 > totalTime)
                 break;
 
+            // If the score is outside of the current window, we must research with a wider window
+            if (newScore >= score + window || newScore <= score - window)
+            {
+                window *= 2;
+                score = newScore;
+                goto research;
+            }
+
+            score = newScore;
             bestMove = move;
 
-            // For debugging purposes, can be removed if lacking tokens
             // Move is not printed in the usual pv format, because the API does not support easy conversion to UCI notation
             Console.WriteLine($"info depth {depth} cp {score} time {timer.MillisecondsElapsedThisTurn} {bestMove}"); // #DEBUG
         }
