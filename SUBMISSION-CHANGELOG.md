@@ -839,4 +839,16 @@ Score of ChessChallenge vs ChessChallengeDev: 2054 - 1853 - 2093  [0.517] 6000
 ...      ChessChallenge playing Black: 783 - 1142 - 1074  [0.440] 2999
 ...      White vs Black: 2413 - 1494 - 2093  [0.577] 6000
 Elo difference: 11.6 +/- 7.1, LOS: 99.9 %, DrawRatio: 34.9 %
+
+Score of ChessChallenge vs ChessChallengeTier2: 1756 - 94 - 150  [0.915] 2000
+...      ChessChallenge playing White: 907 - 33 - 60  [0.937] 1000
+...      ChessChallenge playing Black: 849 - 61 - 90  [0.894] 1000
+...      White vs Black: 968 - 882 - 150  [0.521] 2000
+Elo difference: 413.9 +/- 23.9, LOS: 100.0 %, DrawRatio: 7.5 %
+
+Score of ChessChallenge vs kimbo1.0: 494 - 1112 - 394  [0.345] 2000
+...      ChessChallenge playing White: 327 - 493 - 180  [0.417] 1000
+...      ChessChallenge playing Black: 167 - 619 - 214  [0.274] 1000
+...      White vs Black: 946 - 660 - 394  [0.572] 2000
+Elo difference: -111.0 +/- 14.1, LOS: 0.0 %, DrawRatio: 19.7 %
 ```
