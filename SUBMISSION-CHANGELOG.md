@@ -25,7 +25,7 @@ Basics for a searching engine:
 * Material-only evaluation
 * Mate and stalemate detection
 
-329 tokens
+329 tokens (+276)
 
 ```
 Score of ChessChallenge1.1 vs ChessChallenge1.0: 1783 - 0 - 217  [0.946] 2000
@@ -44,7 +44,7 @@ Elo difference: 416.7 +/- 18.6, LOS: 100.0 %, DrawRatio: 16.7 %
 ### 1.2
 Centrality evaluation
 
-383 tokens
+383 tokens (+54)
 
 ```
 Score of ChessChallenge vs ChessChallengeDev: 338 - 81 - 1581  [0.564] 2000
@@ -57,7 +57,7 @@ Elo difference: 44.9 +/- 6.8, LOS: 100.0 %, DrawRatio: 79.0 %
 ### 1.3
 Poor man's repetition detection
 
-448 tokens
+448 tokens (+65)
 
 ```
 Score of ChessChallenge vs ChessChallengeDev: 272 - 143 - 585  [0.565] 1000
@@ -76,7 +76,7 @@ Elo difference: 640.0 +/- 34.8, LOS: 100.0 %, DrawRatio: 4.9 %
 ### 1.4
 Alpha-beta pruning
 
-506 tokens
+506 tokens (+58)
 
 ```
 Score of ChessChallenge vs ChessChallengeDev: 730 - 39 - 231  [0.846] 1000
@@ -89,7 +89,7 @@ Elo difference: 295.3 +/- 22.3, LOS: 100.0 %, DrawRatio: 23.1 %
 ### 1.5
 Order capture moves first
 
-521 tokens
+521 tokens (+15)
 
 ```
 Score of ChessChallenge vs ChessChallengeDev: 549 - 104 - 347  [0.723] 1000
@@ -102,12 +102,12 @@ Elo difference: 166.2 +/- 18.1, LOS: 100.0 %, DrawRatio: 34.7 %
 ### 1.5.1
 Remove unused usings
 
-503 tokens
+503 tokens (-18)
 
 ### 1.6
 Sort by most valuable victim - least valuable attacker
 
-516 tokens
+516 tokens (+13)
 
 ```
 Score of ChessChallenge vs ChessChallengeDev: 539 - 364 - 97
@@ -119,7 +119,8 @@ Evaluation changes:
 * Evaluation texel tuning using https://github.com/GediminasMasaitis/texel-tuner
 * Remove centrality evaluation
 * Split PSTs by rank and file
-566 tokens
+
+566 tokens (+50)
 
 ```
 Score of ChessChallenge vs ChessChallengeDev: 811 - 424 - 265  [0.629] 1500
@@ -138,7 +139,7 @@ Elo difference: 783.1 +/- 32.9, LOS: 100.0 %, DrawRatio: 2.2 %
 ### 1.7.1
 Format output to be semi UCI compatible, add more info to it
 
-593 tokens
+593 tokens (+27)
 
 ```
 info depth 1 cp 56 time 31 Move: 'g1f3'
@@ -153,7 +154,7 @@ info depth 7 cp 117 time 7861 Move: 'e2e3'
 ### 1.8
 Add qsearch when depth <= 0
 
-614 tokens
+614 tokens (+21)
 
 ```
 info depth 1 cp 56 time 32 Move: 'g1f3'
@@ -181,7 +182,7 @@ Elo difference: 846.3 +/- 39.7, LOS: 100.0 %, DrawRatio: 1.5 %
 ### 1.9
 Faster and smaller MVV-LVA ordering
 
-602 tokens
+602 tokens (-12)
 
 ```
 info depth 1 cp 56 time 0 Move: 'g1f3'
@@ -203,7 +204,7 @@ Elo difference: 44.4 +/- 13.8, LOS: 100.0 %, DrawRatio: 19.3 %
 ### 1.10
 In-check extension
 
-610 tokens
+610 tokens (+8)
 
 ```
 info depth 1 cp 56 time 32 Move: 'g1f3'
@@ -226,7 +227,7 @@ Elo difference: 86.5 +/- 15.9, LOS: 100.0 %, DrawRatio: 21.6 %
 ### 1.11
 Use built-in API for repetition detections
 
-570 tokens
+570 tokens (-40)
 
 ```
 info depth 1 cp 56 time 28 Move: 'g1f3'
@@ -248,7 +249,7 @@ Elo difference: 4.5 +/- 10.6, LOS: 79.8 %, DrawRatio: 27.1 %
 ### 1.12
 Primitive transposition table, only used for move ordering best known move first
 
-631 tokens
+631 tokens (+61)
 
 ```
 info depth 1 cp 56 time 32 Move: 'g1f3'
@@ -271,12 +272,12 @@ Elo difference: 85.8 +/- 15.4, LOS: 100.0 %, DrawRatio: 25.8 %
 ### 1.12.1
 Mark #DEBUG code
 
-593 tokens
+593 tokens (-38)
 
 ### 1.13
 Faster move ordering
 
-593 tokens
+593 tokens (=)
 
 ```
 info depth 1 cp 56 time 29 Move: 'g1f3'
@@ -299,7 +300,7 @@ Elo difference: 47.0 +/- 13.7, LOS: 100.0 %, DrawRatio: 20.5 %
 ### 1.14
 Move generation and ordering after qsearch checks
 
-593 tokens
+593 tokens (=)
 
 ```
 info depth 1 cp 56 time 30 Move: 'g1f3'
@@ -323,7 +324,7 @@ Elo difference: 52.3 +/- 13.6, LOS: 100.0 %, DrawRatio: 21.9 %
 ### 1.15
 Reverse futility pruning
 
-623 tokens
+623 tokens (+30)
 
 ```
 info depth 1 cp 56 time 30 Move: 'g1f3'
@@ -346,7 +347,7 @@ Elo difference: 65.6 +/- 13.5, LOS: 100.0 %, DrawRatio: 23.4 %
 ### 1.16
 Non-capture move score history table
 
-679 tokens
+679 tokens (+56)
 
 ```
 info depth 1 cp 56 time 30 Move: 'g1f3'
@@ -371,7 +372,7 @@ Elo difference: 76.8 +/- 13.6, LOS: 100.0 %, DrawRatio: 22.4 %
 ### 1.17
 Full transposition table and transposition table cutoffs
 
-738 tokens
+738 tokens (+59)
 
 ```
 info depth 1 cp 56 time 30 Move: 'g1f3'
@@ -396,12 +397,12 @@ Elo difference: 65.0 +/- 13.5, LOS: 100.0 %, DrawRatio: 23.1 %
 ### 1.17.1
 Reduce token count
 
-699 tokens
+699 tokens (-39)
 
 ### 1.18
 Null-move pruning
 
-757 tokens
+757 tokens (+58)
 
 ```
 info depth 1 cp 56 time 30 Move: 'g1f3'
@@ -428,7 +429,7 @@ Elo difference: 73.9 +/- 13.5, LOS: 100.0 %, DrawRatio: 23.6 %
 ### 1.19
 Principal variation search
 
-799 tokens
+799 tokens (+42)
 
 ```
 info depth 1 cp 56 time 29 Move: 'g1f3'
@@ -456,7 +457,7 @@ Elo difference: 45.2 +/- 13.1, LOS: 100.0 %, DrawRatio: 26.4 %
 ### 1.20
 Late move reductions
 
-820 tokens
+820 tokens (+21)
 
 ```
 info depth 1 cp 56 time 30 Move: 'g1f3'
@@ -485,7 +486,7 @@ Elo difference: 34.2 +/- 13.0, LOS: 100.0 %, DrawRatio: 27.6 %
 ### 1.21
 No RFP and NMP in PV nodes
 
-826 tokens
+826 tokens (+6)
 
 ```
 info depth 1 cp 56 time 30 Move: 'g1f3'
@@ -512,7 +513,7 @@ Elo difference: 7.5 +/- 5.9, LOS: 99.4 %, DrawRatio: 25.8 %
 ### 1.22
 Retune evaluation using https://github.com/GediminasMasaitis/texel-tuner
 
-826 tokens
+826 tokens (=)
 
 ```
 info depth 1 cp 58 time 30 Move: 'b1c3'
@@ -540,7 +541,7 @@ Elo difference: 13.0 +/- 8.4, LOS: 99.9 %, DrawRatio: 23.5 %
 ### 1.23
 Internal iterative reduction
 
-834 tokens
+834 tokens (+8)
 
 ```
 info depth 1 cp 58 time 32 Move: 'b1c3'
@@ -588,12 +589,12 @@ Elo difference: 237.6 +/- 34.0, LOS: 100.0 %, DrawRatio: 13.0 %
 ### 1.23.1
 Reduce token count
 
-821 tokens
+821 tokens (-13)
 
 ### 1.24
 Bishop pair evaluation
 
-840 tokens
+840 tokens (+19)
 
 ```
 info depth 1 cp 58 time 31 Move: 'b1c3'
@@ -623,7 +624,7 @@ Elo difference: 8.5 +/- 3.4, LOS: 100.0 %, DrawRatio: 25.0 %
 ### 1.25
 Aspiration windows
 
-878 tokens
+878 tokens (+38)
 
 ```
 info depth 1 cp 58 time 40 Move: 'b1c3'
@@ -653,7 +654,7 @@ Elo difference: 36.8 +/- 10.6, LOS: 100.0 %, DrawRatio: 27.1 %
 ### 1.26
 Split time management
 
-888 tokens
+888 tokens (+10)
 
 ```
 info depth 1 cp 58 time 30 Move: 'b1c3'
@@ -688,7 +689,7 @@ Elo difference: 359.7 +/- 30.3, LOS: 100.0 %, DrawRatio: 8.8 %
 ### 1.27
 Triple PVS on LMR
 
-903 tokens
+903 tokens (+15)
 
 ```
 info depth 1 cp 58 time 31 Move: 'b1c3'
@@ -718,7 +719,7 @@ Elo difference: 26.1 +/- 12.8, LOS: 100.0 %, DrawRatio: 29.6 %
 ### 1.28
 Killer move ordering
 
-931 tokens
+931 tokens (+28)
 
 ```
 info depth 1 cp 58 time 31 Move: 'b1c3'
@@ -749,7 +750,7 @@ Elo difference: 20.0 +/- 12.4, LOS: 99.9 %, DrawRatio: 33.3 %
 ### 1.29
 Qsearch TT equality
 
-935 tokens
+935 tokens (+4)
 
 ```
 info depth 1 cp 58 time 31 Move: 'b1c3'
@@ -780,7 +781,7 @@ Elo difference: 9.8 +/- 5.1, LOS: 100.0 %, DrawRatio: 32.7 %
 ### 1.30
 LMR adjustment on move count
 
-939 tokens
+939 tokens (+4)
 
 ```
 info depth 1 cp 58 time 31 Move: 'b1c3'
