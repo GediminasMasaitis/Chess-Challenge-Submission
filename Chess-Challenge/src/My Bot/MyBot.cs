@@ -94,6 +94,7 @@ public class MyBot : IChessBot
         }
 
         var inQsearch = depth <= 0;
+        var inZeroWindow = alpha == beta - 1;
 
         var staticScore = Evaluate(board);
         var bestScore = -inf;
@@ -108,7 +109,7 @@ public class MyBot : IChessBot
             bestScore = staticScore;
         }
 
-        else if (ply > 0 && alpha == beta - 1 && !inCheck)
+        else if (ply > 0 && inZeroWindow && !inCheck)
         {
             // Reverse futility pruning
             if (depth < 5 && staticScore - depth * 150 > beta)
@@ -145,7 +146,7 @@ public class MyBot : IChessBot
 
             // Late move reductions
             if(depth > 2 && movesEvaluated > 4 && !move.IsCapture)
-                reduction = 2 + movesEvaluated / 16;
+                reduction = 2 + movesEvaluated / 16 + (inZeroWindow ? 1 : 0);
 
             doSearch:
             var score = -Search(board, timer, totalTime, ply + 1, depth - reduction, childAlpha, -alpha, quietHistory, killers, true, out _);
