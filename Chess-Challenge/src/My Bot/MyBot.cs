@@ -150,6 +150,12 @@ public class MyBot : IChessBot
             doSearch:
             var score = -Search(board, timer, totalTime, ply + 1, depth - reduction, childAlpha, -alpha, quietHistory, true, out _);
 
+            if (reduction > 1 && score > alpha)
+            {
+                reduction = 1;
+                goto doSearch;
+            }
+
             // If the result score is within the current bounds, we must research with a full window
             if (childAlpha != -beta && score > alpha && score < beta)
             {
