@@ -125,7 +125,7 @@ public class MyBot : IChessBot
             }
         }
 
-        // Move generation, best-known move then MVV-LVA ordering then quiet move history
+        // Move generation, best-known move then MVV-LVA ordering then killers then quiet move history
         var moves = board.GetLegalMoves(inQsearch).OrderByDescending(move => move == ttMove ? 9000000000000000000 : move.IsCapture ? 8000000000000000000 + (long)move.CapturePieceType * 1000 - (long)move.MovePieceType : move == killers[ply] ? 7000000000000000000 : quietHistory[move.StartSquare.Index, move.TargetSquare.Index]);
 
         var movesEvaluated = 0;
@@ -150,6 +150,7 @@ public class MyBot : IChessBot
             doSearch:
             var score = -Search(board, timer, totalTime, ply + 1, depth - reduction, childAlpha, -alpha, quietHistory, killers, true, out _);
 
+            // If we reduced the search previously, we research without a reduction, using the same window as before
             if (reduction > 1 && score > alpha)
             {
                 reduction = 1;
@@ -187,7 +188,7 @@ public class MyBot : IChessBot
                     // If the move is better than our current beta, we can stop searching
                     if (score >= beta)
                     {
-                        // If the move is not a capture, add a bonus to the quiets table
+                        // If the move is not a capture, add a bonus to the quiets table and save it as the current ply's killer move
                         if (!move.IsCapture)
                         {
                             quietHistory[move.StartSquare.Index, move.TargetSquare.Index] += depth * depth;
@@ -202,11 +203,12 @@ public class MyBot : IChessBot
             }
         }
 
+        // Checkmate / stalemate detection
         if (movesEvaluated == 0)
             return inQsearch ? bestScore : inCheck ? ply - mate : 0;
 
         // Store the current position in the transposition table
-        TT[key % TTSize] = (key, bestMove, depth, bestScore, flag);
+        TT[key % TTSize] = (key, bestMove, inQsearch ? 0 : depth, bestScore, flag);
 
         return bestScore;
     }
