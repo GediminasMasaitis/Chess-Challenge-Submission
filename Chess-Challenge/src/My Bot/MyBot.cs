@@ -74,25 +74,6 @@ public class MyBot : IChessBot
         if (inCheck)
             depth++;
 
-        // Look up best move known so far if it is available
-        var (ttKey, ttMove, ttDepth, ttScore, ttFlag) = TT[key % TTSize];
-
-        if (ttKey == key)
-        {
-            // If conditions match, we can trust the table entry and return immediately
-            if (ply > 0 && ttDepth >= depth && (ttFlag == 0 && ttScore <= alpha || ttFlag == 1 && ttScore >= beta || ttFlag == 2))
-                return ttScore;
-        }
-        else
-        {
-            // If the table entry is not for this position, we can't trust the move to be the best known move
-            ttMove = Move.NullMove;
-
-            // Internal iterative reduction
-            if(depth > 3)
-                depth--;
-        }
-
         var inQsearch = depth <= 0;
         var inZeroWindow = alpha == beta - 1;
 
@@ -124,6 +105,25 @@ public class MyBot : IChessBot
                 if (score >= beta)
                     return beta;
             }
+        }
+
+        // Look up best move known so far if it is available
+        var (ttKey, ttMove, ttDepth, ttScore, ttFlag) = TT[key % TTSize];
+
+        if (ttKey == key)
+        {
+            // If conditions match, we can trust the table entry and return immediately
+            if (ply > 0 && ttDepth >= depth && (ttFlag == 0 && ttScore <= alpha || ttFlag == 1 && ttScore >= beta || ttFlag == 2))
+                return ttScore;
+        }
+        else
+        {
+            // If the table entry is not for this position, we can't trust the move to be the best known move
+            ttMove = Move.NullMove;
+
+            // Internal iterative reduction
+            if (depth > 3)
+                depth--;
         }
 
         // Move generation, best-known move then MVV-LVA ordering then killers then quiet move history

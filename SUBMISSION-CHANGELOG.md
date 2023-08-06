@@ -107,6 +107,8 @@ Remove unused usings
 ### 1.6
 Sort by most valuable victim - least valuable attacker
 
+Implemented by Goh CJ (cj5716)
+
 516 tokens (+13)
 
 ```
@@ -153,6 +155,8 @@ info depth 7 cp 117 time 7861 Move: 'e2e3'
 
 ### 1.8
 Add qsearch when depth <= 0
+
+Implemented by Goh CJ (cj5716)
 
 614 tokens (+21)
 
@@ -851,4 +855,35 @@ Score of ChessChallenge vs kimbo1.0: 494 - 1112 - 394  [0.345] 2000
 ...      ChessChallenge playing Black: 167 - 619 - 214  [0.274] 1000
 ...      White vs Black: 946 - 660 - 394  [0.572] 2000
 Elo difference: -111.0 +/- 14.1, LOS: 0.0 %, DrawRatio: 19.7 %
+```
+
+### 1.32
+TT after pruning
+
+950 tokens (=)
+
+```
+info depth 1 cp 58 time 31 Move: 'b1c3'
+info depth 2 cp 0 time 33 Move: 'b1c3'
+info depth 3 cp 52 time 33 Move: 'b1c3'
+info depth 4 cp 0 time 34 Move: 'b1c3'
+info depth 5 cp 20 time 35 Move: 'b1c3'
+info depth 6 cp 0 time 37 Move: 'b1c3'
+info depth 7 cp 20 time 39 Move: 'b1c3'
+info depth 8 cp 0 time 56 Move: 'g1f3'
+info depth 9 cp 22 time 79 Move: 'g1f3'
+info depth 10 cp 12 time 120 Move: 'g1f3'
+info depth 11 cp 12 time 172 Move: 'g1f3'
+info depth 12 cp 0 time 606 Move: 'g1f3'
+info depth 13 cp 12 time 1061 Move: 'g1f3'
+info depth 14 cp 8 time 1659 Move: 'g1f3'
+bestmove g1f3
+```
+
+```
+Score of ChessChallenge vs ChessChallengeDev: 2730 - 2450 - 2821  [0.517] 8001
+...      ChessChallenge playing White: 1712 - 936 - 1353  [0.597] 4001
+...      ChessChallenge playing Black: 1018 - 1514 - 1468  [0.438] 4000
+...      White vs Black: 3226 - 1954 - 2821  [0.579] 8001
+Elo difference: 12.2 +/- 6.1, LOS: 100.0 %, DrawRatio: 35.3 %
 ```
