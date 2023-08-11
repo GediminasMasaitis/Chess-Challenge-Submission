@@ -12,13 +12,15 @@ public class MyBot : IChessBot
     // Key, move, depth, score, flag
     (ulong, Move, int, int, byte)[] TT = new (ulong, Move, int, int, byte)[TTSize];
 
-    int[] material = { 0, 155, 444, 470, 755, 1454, 0 };
+    int[] material = { 0, 159, 450, 434, 716, 1421, 0 };
 
     // PSTs are encoded with the following format:
     // Every rank or file is encoded as a byte, with the first rank/file being the LSB and the last rank/file being the MSB.
     // For every value to fit inside a byte, the values are divided by 2, and multiplication inside evaluation is needed.
-    ulong[] pstRanks = { 0, 31281101363607040, 16573830546891929838, 17870858404743019758, 1157719803347201780, 937325991850276595, 17729564580683643123 };
-    ulong[] pstFiles = { 0, 18017215462567117565, 17870855106292153324, 18087582016362119672, 17653550905154667004, 578435479515560689, 17944029756714517748 };
+    ulong[] pstRanks = { 0, 32125521998837248, 16501772952854001903, 18086463821592985848, 796584101102809849, 864419553310604285, 17729565680195270900 };
+    ulong[] pstFiles = { 0, 18016933991885308669, 17654403052536658922, 18304035169612464635, 17725610693920817404, 794607157805906418, 17943749385544467700 };
+
+    int[] mobilities = { 6, 5, 3, 0 };
 
     private int Evaluate(Board board)
     {
@@ -28,7 +30,7 @@ public class MyBot : IChessBot
             var isWhite = color == 0;
 
             if(BitboardHelper.GetNumberOfSetBits(board.GetPieceBitboard(PieceType.Bishop, isWhite)) == 2)
-                score += 44;
+                score += 48;
 
             for (var piece = PieceType.Pawn; piece <= PieceType.King; piece++)
             {
@@ -38,6 +40,12 @@ public class MyBot : IChessBot
                 while (bitboard != 0)
                 {
                     var sq = BitboardHelper.ClearAndGetIndexOfLSB(ref bitboard);
+
+                    // Mobility
+                    if (pieceIndex > 2)
+                        score += mobilities[pieceIndex - 3] * BitboardHelper.GetNumberOfSetBits(BitboardHelper.GetPieceAttacks(piece, new Square(sq), board, isWhite) & ~(isWhite ? board.WhitePiecesBitboard : board.BlackPiecesBitboard));
+
+                    // Flip square if black
                     sq ^= 56 * color;
 
                     var rank = sq >> 3;
@@ -51,6 +59,8 @@ public class MyBot : IChessBot
 
                     // File PST
                     score += (sbyte)((pstFiles[pieceIndex] >> (file * 8)) & 0xFF) * 2;
+
+                    
                 }
             }
 
