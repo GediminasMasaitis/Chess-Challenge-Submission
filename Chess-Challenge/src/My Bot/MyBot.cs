@@ -7,10 +7,12 @@ public class MyBot : IChessBot
     int inf = 2000000;
     int mate = 1000000;
 
-    const int TTSize = 1048576;
+    long[,] quietHistory = new long[64, 64];
 
+    const int TTSize = 1048576;
     // Key, move, depth, score, flag
     (ulong, Move, int, int, byte)[] TT = new (ulong, Move, int, int, byte)[TTSize];
+    
 
     int[] material = { 0, 159, 450, 434, 716, 1421, 0 };
 
@@ -70,7 +72,7 @@ public class MyBot : IChessBot
         return board.IsWhiteToMove ? score : -score;
     }
 
-    private int Search(Board board, Timer timer, int totalTime, int ply, int depth, int alpha, int beta, long[,] quietHistory, Move[] killers, bool nullAllowed, out Move bestMove)
+    private int Search(Board board, Timer timer, int totalTime, int ply, int depth, int alpha, int beta, Move[] killers, bool nullAllowed, out Move bestMove)
     {
         ulong key = board.ZobristKey;
         bestMove = Move.NullMove;
@@ -110,7 +112,7 @@ public class MyBot : IChessBot
             if (nullAllowed && staticScore >= beta && depth > 2)
             {
                 board.ForceSkipTurn();
-                var score = -Search(board, timer, totalTime, ply + 1, depth - 4, -beta, -beta + 1, quietHistory, killers, false, out _);
+                var score = -Search(board, timer, totalTime, ply + 1, depth - 4, -beta, -beta + 1, killers, false, out _);
                 board.UndoSkipTurn();
                 if (score >= beta)
                     return beta;
@@ -159,7 +161,7 @@ public class MyBot : IChessBot
                 reduction = 2 + movesEvaluated / 16 + (inZeroWindow ? 1 : 0);
 
             doSearch:
-            var score = -Search(board, timer, totalTime, ply + 1, depth - reduction, childAlpha, -alpha, quietHistory, killers, true, out _);
+            var score = -Search(board, timer, totalTime, ply + 1, depth - reduction, childAlpha, -alpha, killers, true, out _);
 
             // If we reduced the search previously, we research without a reduction, using the same window as before
             if (reduction > 1 && score > alpha)
@@ -227,7 +229,10 @@ public class MyBot : IChessBot
     public Move Think(Board board, Timer timer)
     {
         var totalTime = timer.MillisecondsRemaining;
-        var quietHistory = new long[64, 64];
+
+        // Decay quiet history instead of clearing it
+        for (var i = 0; i < 4096; quietHistory[i % 64, i++ / 64] /= 8) ;
+
         var killers = new Move[256];
         var bestMove = Move.NullMove;
         var score = 0;
@@ -239,7 +244,7 @@ public class MyBot : IChessBot
             research:
 
             // Search with the current window
-            var newScore = Search(board, timer, totalTime, 0, depth, score - window, score + window, quietHistory, killers, false, out var move);
+            var newScore = Search(board, timer, totalTime, 0, depth, score - window, score + window, killers, false, out var move);
 
             // Hard time limit
             // If we are out of time, we cannot trust the move that was found

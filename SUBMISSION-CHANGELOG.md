@@ -922,7 +922,43 @@ Score of ChessChallenge vs ChessChallengeDev: 1218 - 849 - 933  [0.561] 3000
 ...      ChessChallenge playing Black: 463 - 536 - 501  [0.476] 1500
 ...      White vs Black: 1291 - 776 - 933  [0.586] 3000
 Elo difference: 43.0 +/- 10.4, LOS: 100.0 %, DrawRatio: 31.1 %
+
+Score of ChessChallenge vs ChessChallengeTier2: 1822 - 50 - 128  [0.943] 2000
+...      ChessChallenge playing White: 940 - 17 - 44  [0.961] 1001
+...      ChessChallenge playing Black: 882 - 33 - 84  [0.925] 999
+...      White vs Black: 973 - 899 - 128  [0.518] 2000
+Elo difference: 487.5 +/- 27.7, LOS: 100.0 %, DrawRatio: 6.4 %
 ```
 
 ### 1.33.1
 Rebase on version 1.20 of base API
+
+### 1.34
+Persistent quiet move history with decay
+
+1015 tokens (+15)
+
+```
+info depth 1 cp 61 time 33 Move: 'b1c3'
+info depth 2 cp 0 time 34 Move: 'b1c3'
+info depth 3 cp 61 time 34 Move: 'b1c3'
+info depth 4 cp 0 time 37 Move: 'b1c3'
+info depth 5 cp 36 time 38 Move: 'b1c3'
+info depth 6 cp 0 time 46 Move: 'b1c3'
+info depth 7 cp 53 time 64 Move: 'b1c3'
+info depth 8 cp 0 time 93 Move: 'b1c3'
+info depth 9 cp 27 time 137 Move: 'g1f3'
+info depth 10 cp 11 time 202 Move: 'g1f3'
+info depth 11 cp 24 time 399 Move: 'd2d4'
+info depth 12 cp 13 time 983 Move: 'b1c3'
+info depth 13 cp 14 time 1574 Move: 'b1c3'
+bestmove b1c3
+```
+
+```
+Score of ChessChallenge vs ChessChallengeDev: 1374 - 1142 - 1474  [0.529] 3990
+...      ChessChallenge playing White: 825 - 446 - 725  [0.595] 1996
+...      ChessChallenge playing Black: 549 - 696 - 749  [0.463] 1994
+...      White vs Black: 1521 - 995 - 1474  [0.566] 3990
+Elo difference: 20.2 +/- 8.6, LOS: 100.0 %, DrawRatio: 36.9 %
+```
