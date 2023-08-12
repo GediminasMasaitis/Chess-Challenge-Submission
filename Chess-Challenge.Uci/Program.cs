@@ -1,4 +1,5 @@
 ﻿using ChessChallenge.Application;
+using System.Reflection;
 
 namespace Chess_Challenge.Cli
 {
@@ -14,6 +15,10 @@ namespace Chess_Challenge.Cli
         static void Main(string[] args)
         {
             Console.WriteLine("Sebastian Lague's Chess Challenge submission by Gediminas Masaitis");
+            var assemblyPath = Assembly.GetEntryAssembly().Location;
+            var assemblyDirectory = Path.GetDirectoryName(assemblyPath);
+            Directory.SetCurrentDirectory(assemblyDirectory);
+
             var (totalTokens, debugTokens) = GetTokenCount();
             var tokensWithoutDebug = totalTokens - debugTokens;
             Console.WriteLine($"Current token count: {tokensWithoutDebug} ({totalTokens} total, {debugTokens} debug)");

@@ -29,8 +29,51 @@ namespace Chess_Challenge.Cli
         {
             Console.WriteLine("id name Chess Challenge");
             Console.WriteLine("id author Gediminas Masaitis, Sebastian Lague");
-            Console.WriteLine();
+            Console.WriteLine("option name Tune1 type spin default 0 min -2147483648 max 2147483647");
+            Console.WriteLine("option name Tune2 type spin default 0 min -2147483648 max 2147483647");
+            Console.WriteLine("option name Tune3 type spin default 0 min -2147483648 max 2147483647");
+            Console.WriteLine("option name Tune4 type spin default 0 min -2147483648 max 2147483647");
+            Console.WriteLine("option name Tune5 type spin default 0 min -2147483648 max 2147483647");
             Console.WriteLine("uciok");
+        }
+
+        private void HandleSetOption(IReadOnlyList<string> words)
+        {
+            if (words.Count < 5)
+            {
+                return;
+            }
+
+            if (words[1] != "name")
+            {
+                return;
+            }
+
+            if (words[3] != "value")
+            {
+                return;
+            }
+
+            var name = words[2];
+            var value = words[4];
+            switch (name)
+            {
+                case "Tune1":
+                    int.TryParse(value, out Options.Tune1);
+                    break;
+                case "Tune2":
+                    int.TryParse(value, out Options.Tune2);
+                    break;
+                case "Tune3":
+                    int.TryParse(value, out Options.Tune3);
+                    break;
+                case "Tune4":
+                    int.TryParse(value, out Options.Tune4);
+                    break;
+                case "Tune5":
+                    int.TryParse(value, out Options.Tune5);
+                    break;
+            }
         }
 
         private void HandlePosition(IReadOnlyList<string> words)
@@ -170,6 +213,9 @@ namespace Chess_Challenge.Cli
             {
                 case "uci":
                     HandleUci();
+                    return;
+                case "setoption":
+                    HandleSetOption(words);
                     return;
                 case "ucinewgame":
                     Reset();
