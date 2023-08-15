@@ -962,3 +962,33 @@ Score of ChessChallenge vs ChessChallengeDev: 1374 - 1142 - 1474  [0.529] 3990
 ...      White vs Black: 1521 - 995 - 1474  [0.566] 3990
 Elo difference: 20.2 +/- 8.6, LOS: 100.0 %, DrawRatio: 36.9 %
 ```
+
+### 1.35
+Keep upperbound TT move
+
+Implemented by Goh CJ (cj5716)
+
+1017 tokens (+2)
+
+```
+info depth 1 cp 61 time 80 Move: 'b1c3'
+info depth 2 cp 0 time 81 Move: 'b1c3'
+info depth 3 cp 61 time 82 Move: 'b1c3'
+info depth 4 cp 0 time 89 Move: 'b1c3'
+info depth 5 cp 36 time 95 Move: 'b1c3'
+info depth 6 cp 0 time 125 Move: 'b1c3'
+info depth 7 cp 53 time 177 Move: 'b1c3'
+info depth 8 cp 0 time 327 Move: 'b1c3'
+info depth 9 cp 27 time 411 Move: 'b1c3'
+info depth 10 cp 11 time 703 Move: 'b1c3'
+info depth 11 cp 11 time 1616 Move: 'b1c3'
+bestmove b1c3
+```
+
+```
+Score of ChessChallenge vs ChessChallengeDev: 3502 - 3328 - 3170
+...      ChessChallenge playing White: 2107 - 1322 - 1571
+...      ChessChallenge playing Black: 1395 - 2006 - 1599
+...      White vs Black: 4113 - 2717 - 3170
+Elo difference: 6.05 +/- 5.62
+```
