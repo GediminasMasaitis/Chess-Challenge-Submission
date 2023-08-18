@@ -996,8 +996,8 @@ Elo difference: 6.3 +/- 3.8, LOS: 99.9 %, DrawRatio: 36.4 %
 ```
 
 ### 1.35.1
-Make LMR smaller
+Small token savings
 
 Implemented by Goh CJ (cj5716)
 
-1017 tokens (-1)
+1011 tokens (-7)
