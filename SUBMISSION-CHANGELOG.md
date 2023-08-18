@@ -968,7 +968,7 @@ Keep upperbound TT move
 
 Implemented by Goh CJ (cj5716)
 
-1017 tokens (+2)
+1018 tokens (+3)
 
 ```
 info depth 1 cp 61 time 80 Move: 'b1c3'
@@ -986,9 +986,9 @@ bestmove b1c3
 ```
 
 ```
-Score of ChessChallenge vs ChessChallengeDev: 3502 - 3328 - 3170
-...      ChessChallenge playing White: 2107 - 1322 - 1571
-...      ChessChallenge playing Black: 1395 - 2006 - 1599
-...      White vs Black: 4113 - 2717 - 3170
-Elo difference: 6.05 +/- 5.62
+Score of ChessChallenge vs ChessChallengeDev: 5418 - 5084 - 6028  [0.510] 16530
+...      ChessChallenge playing White: 3392 - 1866 - 3007  [0.592] 8265
+...      ChessChallenge playing Black: 2026 - 3218 - 3021  [0.428] 8265
+...      White vs Black: 6610 - 3892 - 6028  [0.582] 16530
+Elo difference: 7.0 +/- 4.2, LOS: 99.9 %, DrawRatio: 36.5 %
 ```
