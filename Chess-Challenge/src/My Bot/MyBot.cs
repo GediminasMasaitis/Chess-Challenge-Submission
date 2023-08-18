@@ -159,18 +159,21 @@ public class MyBot : IChessBot
             doSearch:
             var score = -Search(board, timer, totalTime, ply + 1, depth - reduction, childAlpha, -alpha, killers, true, out _);
 
-            // If we reduced the search previously, we research without a reduction, using the same window as before
-            if (reduction > 1 && score > alpha)
+            if (score > alpha) // If score raises alpha, we see if we should do a re-search
             {
-                reduction = 1;
-                goto doSearch;
-            }
+                // If we reduced the search previously, we research without a reduction, using the same window as before
+                if (reduction > 1)
+                {
+                    reduction = 1;
+                    goto doSearch;
+                }
 
-            // If the result score is within the current bounds, we must research with a full window
-            if (childAlpha != -beta && score > alpha && score < beta)
-            {
-                childAlpha = -beta;
-                goto doSearch;
+                // If the result score is within the current bounds, we must research with a full window
+                if (childAlpha != -beta && score < beta)
+                {
+                    childAlpha = -beta;
+                    goto doSearch;
+                }
             }
 
             board.UndoMove(move);
