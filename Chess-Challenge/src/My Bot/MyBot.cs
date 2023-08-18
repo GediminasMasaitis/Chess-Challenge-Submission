@@ -149,11 +149,8 @@ public class MyBot : IChessBot
             board.MakeMove(move);
 
             // Principal variation search
-            var childAlpha = -beta;
             var reduction = 1;
-            if(inQsearch || movesEvaluated == 0)
-                goto doSearch;
-            childAlpha = -alpha - 1;
+            var childAlpha = inQsearch || movesEvaluated == 0 ? -beta : -alpha - 1;
 
             // Late move reductions
             if(depth > 2 && movesEvaluated > 4 && !move.IsCapture)
