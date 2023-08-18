@@ -50,16 +50,14 @@ public class MyBot : IChessBot
                     // Flip square if black
                     sq ^= 56 * color;
 
-                    var file = sq & 7;
-
                     // Material
                     score += material[pieceIndex];
 
                     // Rank PST
-                    score += (sbyte)((pstRanks[pieceIndex] >> (sq - file)) & 0xFF) * 2;
+                    score += (sbyte)((pstRanks[pieceIndex] >> (sq / 8 * 8)) & 0xFF) * 2;
 
                     // File PST
-                    score += (sbyte)((pstFiles[pieceIndex] >> (file * 8)) & 0xFF) * 2;
+                    score += (sbyte)((pstFiles[pieceIndex] >> (sq % 8 * 8)) & 0xFF) * 2;
 
                     
                 }
