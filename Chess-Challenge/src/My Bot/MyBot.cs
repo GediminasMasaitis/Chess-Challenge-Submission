@@ -172,11 +172,8 @@ public class MyBot : IChessBot
                 }
 
                 // If the result score is within the current bounds, we must research with a full window
-                if (childAlpha != beta && score < beta)
-                {
-                    childAlpha = beta;
+                if (childAlpha != beta && score < (childAlpha = beta))
                     goto doSearch;
-                }
             }
 
             board.UndoMove(move);
