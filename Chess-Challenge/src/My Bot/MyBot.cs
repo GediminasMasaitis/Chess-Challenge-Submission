@@ -149,12 +149,12 @@ public class MyBot : IChessBot
             board.MakeMove(move);
 
             // Principal variation search
-            var reduction = 1;
             var childAlpha = inQsearch || movesEvaluated == 0 ? beta : alpha + 1;
 
             // Late move reductions
-            if(depth > 2 && movesEvaluated > 4 && !move.IsCapture)
-                reduction = 2 + movesEvaluated / 16 + Convert.ToInt32(inZeroWindow);
+            var reduction = depth > 2 && movesEvaluated > 4 && !move.IsCapture ? 
+                            2 + movesEvaluated / 16 + Convert.ToInt32(inZeroWindow)
+                          : 1;
 
             doSearch:
             var score = -Search(board, timer, totalTime, ply + 1, depth - reduction, -childAlpha, -alpha, killers, true, out _);
