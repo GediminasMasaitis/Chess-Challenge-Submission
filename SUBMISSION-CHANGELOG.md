@@ -1000,4 +1000,4 @@ Small token savings
 
 Implemented by Goh CJ (cj5716)
 
-1000 tokens (-18)
+997 tokens (-21)

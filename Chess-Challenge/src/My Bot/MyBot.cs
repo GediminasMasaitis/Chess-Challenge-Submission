@@ -31,13 +31,13 @@ public class MyBot : IChessBot
         {
             var isWhite = color == 0;
 
-            if(BitboardHelper.GetNumberOfSetBits(board.GetPieceBitboard(PieceType.Bishop, isWhite)) == 2)
-                score += 48;
-
             for (var piece = PieceType.Pawn; piece <= PieceType.King; piece++)
             {
                 var pieceIndex = (int)piece;
                 var bitboard = board.GetPieceBitboard(piece, isWhite);
+
+                if (pieceIndex == 3 && BitboardHelper.GetNumberOfSetBits(bitboard) == 2) // Bishop pair
+                    score += 48;
 
                 while (bitboard != 0)
                 {
