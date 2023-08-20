@@ -7,7 +7,7 @@ public class MyBot : IChessBot
     int inf = 2000000;
     int mate = 1000000;
 
-    long[,] quietHistory = new long[64, 64];
+    long[] quietHistory = new long[4096];
 
     const int TTSize = 1048576;
     // Key, move, depth, score, flag
@@ -141,7 +141,7 @@ public class MyBot : IChessBot
         var moves = board.GetLegalMoves(inQsearch).OrderByDescending(move => move == ttMove ? 9000000000000000000
                                                                            : move.IsCapture ? 8000000000000000000 + (long)move.CapturePieceType * 1000 - (long)move.MovePieceType
                                                                            : move == killers[ply] ? 7000000000000000000
-                                                                           : quietHistory[move.StartSquare.Index, move.TargetSquare.Index]);
+                                                                           : quietHistory[move.RawValue & 4095]);
 
         var movesEvaluated = 0;
         byte flag = 0; // Upper
@@ -206,7 +206,7 @@ public class MyBot : IChessBot
                         // If the move is not a capture, add a bonus to the quiets table and save it as the current ply's killer move
                         if (!move.IsCapture)
                         {
-                            quietHistory[move.StartSquare.Index, move.TargetSquare.Index] += depth * depth;
+                            quietHistory[move.RawValue & 4095] += depth * depth;
                             killers[ply] = move;
                         }
 
@@ -233,7 +233,7 @@ public class MyBot : IChessBot
         var totalTime = timer.MillisecondsRemaining;
 
         // Decay quiet history instead of clearing it
-        for (var i = 0; i < 4096; quietHistory[i % 64, i++ / 64] /= 8) ;
+        for (var i = 0; i < 4096; quietHistory[i++] /= 8) ;
 
         var killers = new Move[256];
         var bestMove = Move.NullMove;
