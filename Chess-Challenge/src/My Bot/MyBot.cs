@@ -54,10 +54,10 @@ public class MyBot : IChessBot
                     score += material[pieceIndex];
 
                     // Rank PST
-                    score += (sbyte)((pstRanks[pieceIndex] >> (sq / 8 * 8)) & 0xFF) * 2;
+                    score += (sbyte)(pstRanks[pieceIndex] >> (sq / 8 * 8) & 0xFF) * 2;
 
                     // File PST
-                    score += (sbyte)((pstFiles[pieceIndex] >> (sq % 8 * 8)) & 0xFF) * 2;
+                    score += (sbyte)(pstFiles[pieceIndex] >> (sq % 8 * 8) & 0xFF) * 2;
 
                     
                 }
