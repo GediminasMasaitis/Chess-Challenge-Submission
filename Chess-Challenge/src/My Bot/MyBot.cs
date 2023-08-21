@@ -156,8 +156,11 @@ public class MyBot : IChessBot
 
             // Late move reductions
             var reduction = depth > 2 && movesEvaluated > 4 && !move.IsCapture ? 
-                            2 + movesEvaluated / 16 + Convert.ToInt32(inZeroWindow)
+                            2 + movesEvaluated / 16
                           : 1;
+
+            if (inZeroWindow)
+                reduction++;
 
             doSearch:
             var score = -Search(board, timer, totalTime, ply + 1, depth - reduction, -childAlpha, -alpha, killers, true, out _);
