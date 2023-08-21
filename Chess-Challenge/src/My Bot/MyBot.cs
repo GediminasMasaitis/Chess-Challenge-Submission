@@ -69,7 +69,7 @@ public class MyBot : IChessBot
         return board.IsWhiteToMove ? score : -score;
     }
 
-    private int Search(Board board, Timer timer, int totalTime, int ply, int depth, int alpha, int beta, Move[] killers, bool nullAllowed, out Move bestMove)
+    private int Search(Board board, Timer timer, int allocatedTime, int ply, int depth, int alpha, int beta, Move[] killers, bool nullAllowed, out Move bestMove)
     {
         ulong key = board.ZobristKey;
         bestMove = Move.NullMove;
@@ -109,7 +109,7 @@ public class MyBot : IChessBot
             if (nullAllowed && staticScore >= beta && depth > 2)
             {
                 board.ForceSkipTurn();
-                var score = -Search(board, timer, totalTime, ply + 1, depth - 4, -beta, -beta + 1, killers, false, out _);
+                var score = -Search(board, timer, allocatedTime, ply + 1, depth - 4, -beta, -beta + 1, killers, false, out _);
                 board.UndoSkipTurn();
                 if (score >= beta)
                     return beta;
@@ -163,7 +163,7 @@ public class MyBot : IChessBot
                 reduction++;
 
             doSearch:
-            var score = -Search(board, timer, totalTime, ply + 1, depth - reduction, -childAlpha, -alpha, killers, true, out _);
+            var score = -Search(board, timer, allocatedTime, ply + 1, depth - reduction, -childAlpha, -alpha, killers, true, out _);
 
             if (score > alpha) // If score raises alpha, we see if we should do a re-search
             {
@@ -182,7 +182,7 @@ public class MyBot : IChessBot
             board.UndoMove(move);
 
             // If we are out of time, stop searching
-            if (depth > 2 && timer.MillisecondsElapsedThisTurn * 8 > totalTime)
+            if (depth > 2 && timer.MillisecondsElapsedThisTurn > allocatedTime)
                 return bestScore;
 
             // Count the number of moves we have evaluated for detecting mates and stalemates
@@ -230,7 +230,7 @@ public class MyBot : IChessBot
 
     public Move Think(Board board, Timer timer)
     {
-        var totalTime = timer.MillisecondsRemaining;
+        var allocatedTime = timer.MillisecondsRemaining / 8;
 
         // Decay quiet history instead of clearing it
         for (var i = 0; i < 4096; quietHistory[i++] /= 8) ;
@@ -246,12 +246,12 @@ public class MyBot : IChessBot
             research:
 
             // Search with the current window
-            var newScore = Search(board, timer, totalTime, 0, depth, score - window, score + window, killers, false, out var move);
+            var newScore = Search(board, timer, allocatedTime, 0, depth, score - window, score + window, killers, false, out var move);
 
             // Hard time limit
             // If we are out of time, we cannot trust the move that was found
             // during this iteration, so we break without setting bestMove
-            if (timer.MillisecondsElapsedThisTurn * 8 > totalTime)
+            if (timer.MillisecondsElapsedThisTurn > allocatedTime)
                 break;
 
             // If the score is outside of the current window, we must research with a wider window
@@ -269,7 +269,7 @@ public class MyBot : IChessBot
             Console.WriteLine($"info depth {depth} cp {score} time {timer.MillisecondsElapsedThisTurn} {bestMove}"); // #DEBUG
 
             // Soft time limit
-            if (timer.MillisecondsElapsedThisTurn * 40 > totalTime)
+            if (timer.MillisecondsElapsedThisTurn > allocatedTime / 5)
                 break;
         }
 
