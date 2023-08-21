@@ -156,16 +156,14 @@ public class MyBot : IChessBot
 
             // Late move reductions
             var reduction = depth > 2 && movesEvaluated > 4 && !move.IsCapture ? 
-                            2 + movesEvaluated / 16
+                            2 + movesEvaluated / 16 + Convert.ToInt32(inZeroWindow)
                           : 1;
-
-            if (inZeroWindow)
-                reduction++;
 
             doSearch:
             var score = -Search(board, timer, allocatedTime, ply + 1, depth - reduction, -childAlpha, -alpha, killers, true, out _);
 
-            if (score > alpha) // If score raises alpha, we see if we should do a re-search
+            // If score raises alpha, we see if we should do a re-search
+            if (score > alpha)
             {
                 // If we reduced the search previously, we research without a reduction, using the same window as before
                 if (reduction > 1)
@@ -175,8 +173,11 @@ public class MyBot : IChessBot
                 }
 
                 // If the result score is within the current bounds, we must research with a full window
-                if (childAlpha != beta && score < (childAlpha = beta))
+                if (childAlpha != beta && score < beta)
+                {
+                    childAlpha = beta;
                     goto doSearch;
+                }
             }
 
             board.UndoMove(move);
