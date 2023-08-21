@@ -7,7 +7,7 @@ public class MyBot : IChessBot
     int inf = 2000000;
     int mate = 1000000;
 
-    long[,] quietHistory = new long[64, 64];
+    long[] quietHistory = new long[4096];
 
     const int TTSize = 1048576;
     // Key, move, depth, score, flag
@@ -31,13 +31,13 @@ public class MyBot : IChessBot
         {
             var isWhite = color == 0;
 
-            if(BitboardHelper.GetNumberOfSetBits(board.GetPieceBitboard(PieceType.Bishop, isWhite)) == 2)
-                score += 48;
-
             for (var piece = PieceType.Pawn; piece <= PieceType.King; piece++)
             {
                 var pieceIndex = (int)piece;
                 var bitboard = board.GetPieceBitboard(piece, isWhite);
+
+                if (pieceIndex == 3 && BitboardHelper.GetNumberOfSetBits(bitboard) == 2) // Bishop pair
+                    score += 48;
 
                 while (bitboard != 0)
                 {
@@ -50,17 +50,14 @@ public class MyBot : IChessBot
                     // Flip square if black
                     sq ^= 56 * color;
 
-                    var rank = sq >> 3;
-                    var file = sq & 7;
-
                     // Material
                     score += material[pieceIndex];
 
                     // Rank PST
-                    score += (sbyte)((pstRanks[pieceIndex] >> (rank * 8)) & 0xFF) * 2;
+                    score += (sbyte)(pstRanks[pieceIndex] >> (sq / 8 * 8) & 0xFF) * 2;
 
                     // File PST
-                    score += (sbyte)((pstFiles[pieceIndex] >> (file * 8)) & 0xFF) * 2;
+                    score += (sbyte)(pstFiles[pieceIndex] >> (sq % 8 * 8) & 0xFF) * 2;
 
                     
                 }
@@ -72,7 +69,7 @@ public class MyBot : IChessBot
         return board.IsWhiteToMove ? score : -score;
     }
 
-    private int Search(Board board, Timer timer, int totalTime, int ply, int depth, int alpha, int beta, Move[] killers, bool nullAllowed, out Move bestMove)
+    private int Search(Board board, Timer timer, int allocatedTime, int ply, int depth, int alpha, int beta, Move[] killers, bool nullAllowed, out Move bestMove)
     {
         ulong key = board.ZobristKey;
         bestMove = Move.NullMove;
@@ -112,7 +109,7 @@ public class MyBot : IChessBot
             if (nullAllowed && staticScore >= beta && depth > 2)
             {
                 board.ForceSkipTurn();
-                var score = -Search(board, timer, totalTime, ply + 1, depth - 4, -beta, -beta + 1, killers, false, out _);
+                var score = -Search(board, timer, allocatedTime, ply + 1, depth - 4, -beta, -beta + 1, killers, false, out _);
                 board.UndoSkipTurn();
                 if (score >= beta)
                     return beta;
@@ -141,7 +138,10 @@ public class MyBot : IChessBot
         bestMove = ttMove;
 
         // Move generation, best-known move then MVV-LVA ordering then killers then quiet move history
-        var moves = board.GetLegalMoves(inQsearch).OrderByDescending(move => move == ttMove ? 9000000000000000000 : move.IsCapture ? 8000000000000000000 + (long)move.CapturePieceType * 1000 - (long)move.MovePieceType : move == killers[ply] ? 7000000000000000000 : quietHistory[move.StartSquare.Index, move.TargetSquare.Index]);
+        var moves = board.GetLegalMoves(inQsearch).OrderByDescending(move => move == ttMove ? 9000000000000000000
+                                                                           : move.IsCapture ? 8000000000000000000 + (long)move.CapturePieceType * 1000 - (long)move.MovePieceType
+                                                                           : move == killers[ply] ? 7000000000000000000
+                                                                           : quietHistory[move.RawValue & 4095]);
 
         var movesEvaluated = 0;
         byte flag = 0; // Upper
@@ -152,37 +152,38 @@ public class MyBot : IChessBot
             board.MakeMove(move);
 
             // Principal variation search
-            var childAlpha = -beta;
-            var reduction = 1;
-            if(inQsearch || movesEvaluated == 0)
-                goto doSearch;
-            childAlpha = -alpha - 1;
+            var childAlpha = inQsearch || movesEvaluated == 0 ? beta : alpha + 1;
 
             // Late move reductions
-            if(depth > 2 && movesEvaluated > 4 && !move.IsCapture)
-                reduction = 2 + movesEvaluated / 16 + (inZeroWindow ? 1 : 0);
+            var reduction = depth > 2 && movesEvaluated > 4 && !move.IsCapture ? 
+                            2 + movesEvaluated / 16 + Convert.ToInt32(inZeroWindow)
+                          : 1;
 
             doSearch:
-            var score = -Search(board, timer, totalTime, ply + 1, depth - reduction, childAlpha, -alpha, killers, true, out _);
+            var score = -Search(board, timer, allocatedTime, ply + 1, depth - reduction, -childAlpha, -alpha, killers, true, out _);
 
-            // If we reduced the search previously, we research without a reduction, using the same window as before
-            if (reduction > 1 && score > alpha)
+            // If score raises alpha, we see if we should do a re-search
+            if (score > alpha)
             {
-                reduction = 1;
-                goto doSearch;
-            }
+                // If we reduced the search previously, we research without a reduction, using the same window as before
+                if (reduction > 1)
+                {
+                    reduction = 1;
+                    goto doSearch;
+                }
 
-            // If the result score is within the current bounds, we must research with a full window
-            if (childAlpha != -beta && score > alpha && score < beta)
-            {
-                childAlpha = -beta;
-                goto doSearch;
+                // If the result score is within the current bounds, we must research with a full window
+                if (childAlpha != beta && score < beta)
+                {
+                    childAlpha = beta;
+                    goto doSearch;
+                }
             }
 
             board.UndoMove(move);
 
             // If we are out of time, stop searching
-            if (depth > 2 && timer.MillisecondsElapsedThisTurn * 8 > totalTime)
+            if (depth > 2 && timer.MillisecondsElapsedThisTurn > allocatedTime)
                 return bestScore;
 
             // Count the number of moves we have evaluated for detecting mates and stalemates
@@ -206,7 +207,7 @@ public class MyBot : IChessBot
                         // If the move is not a capture, add a bonus to the quiets table and save it as the current ply's killer move
                         if (!move.IsCapture)
                         {
-                            quietHistory[move.StartSquare.Index, move.TargetSquare.Index] += depth * depth;
+                            quietHistory[move.RawValue & 4095] += depth * depth;
                             killers[ply] = move;
                         }
 
@@ -230,10 +231,10 @@ public class MyBot : IChessBot
 
     public Move Think(Board board, Timer timer)
     {
-        var totalTime = timer.MillisecondsRemaining;
+        var allocatedTime = timer.MillisecondsRemaining / 8;
 
         // Decay quiet history instead of clearing it
-        for (var i = 0; i < 4096; quietHistory[i % 64, i++ / 64] /= 8) ;
+        for (var i = 0; i < 4096; quietHistory[i++] /= 8) ;
 
         var killers = new Move[256];
         var bestMove = Move.NullMove;
@@ -246,12 +247,12 @@ public class MyBot : IChessBot
             research:
 
             // Search with the current window
-            var newScore = Search(board, timer, totalTime, 0, depth, score - window, score + window, killers, false, out var move);
+            var newScore = Search(board, timer, allocatedTime, 0, depth, score - window, score + window, killers, false, out var move);
 
             // Hard time limit
             // If we are out of time, we cannot trust the move that was found
             // during this iteration, so we break without setting bestMove
-            if (timer.MillisecondsElapsedThisTurn * 8 > totalTime)
+            if (timer.MillisecondsElapsedThisTurn > allocatedTime)
                 break;
 
             // If the score is outside of the current window, we must research with a wider window
@@ -269,7 +270,7 @@ public class MyBot : IChessBot
             Console.WriteLine($"info depth {depth} cp {score} time {timer.MillisecondsElapsedThisTurn} {bestMove}"); // #DEBUG
 
             // Soft time limit
-            if (timer.MillisecondsElapsedThisTurn * 40 > totalTime)
+            if (timer.MillisecondsElapsedThisTurn > allocatedTime / 5)
                 break;
         }
 
