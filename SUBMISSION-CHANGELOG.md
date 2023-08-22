@@ -1019,3 +1019,27 @@ info depth 13 cp 14 time 1471 Move: 'b1c3'
 info depth 14 cp 14 time 2928 Move: 'b1c3'
 bestmove b1c3
 ```
+
+### 1.35.2
+Add node and nps output
+
+974 tokens (=)
+
+```
+go
+info depth 1 cp 61 time 32 nodes 5 nps 156 Move: 'b1c3'
+info depth 2 cp 0 time 33 nodes 50 nps 1515 Move: 'b1c3'
+info depth 3 cp 61 time 33 nodes 107 nps 3242 Move: 'b1c3'
+info depth 4 cp 0 time 36 nodes 1028 nps 28555 Move: 'b1c3'
+info depth 5 cp 36 time 37 nodes 1565 nps 42297 Move: 'b1c3'
+info depth 6 cp 0 time 43 nodes 4517 nps 105046 Move: 'b1c3'
+info depth 7 cp 53 time 58 nodes 11941 nps 205879 Move: 'b1c3'
+info depth 8 cp 0 time 91 nodes 33138 nps 364153 Move: 'b1c3'
+info depth 9 cp 27 time 111 nodes 45341 nps 408477 Move: 'b1c3'
+info depth 10 cp 11 time 185 nodes 91680 nps 495567 Move: 'b1c3'
+info depth 11 cp 11 time 382 nodes 216960 nps 567958 Move: 'b1c3'
+info depth 12 cp 8 time 891 nodes 557909 nps 626160 Move: 'b1c3'
+info depth 13 cp 14 time 1419 nodes 880064 nps 620200 Move: 'b1c3'
+info depth 14 cp 14 time 2831 nodes 1763271 nps 622843 Move: 'b1c3'
+bestmove b1c3
+```

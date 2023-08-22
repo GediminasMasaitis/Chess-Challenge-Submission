@@ -7,6 +7,7 @@ public class MyBot : IChessBot
     int inf = 2000000;
     int mate = 1000000;
 
+    long nodes = 0; // #DEBUG
     long[] quietHistory = new long[4096];
 
     const int TTSize = 1048576;
@@ -145,6 +146,7 @@ public class MyBot : IChessBot
 
         var movesEvaluated = 0;
         byte flag = 0; // Upper
+        nodes++; // #DEBUG
 
         // Loop over each legal move
         foreach (var move in moves)
@@ -232,13 +234,14 @@ public class MyBot : IChessBot
     public Move Think(Board board, Timer timer)
     {
         var allocatedTime = timer.MillisecondsRemaining / 8;
-
+        
         // Decay quiet history instead of clearing it
         for (var i = 0; i < 4096; quietHistory[i++] /= 8) ;
 
         var killers = new Move[256];
         var bestMove = Move.NullMove;
         var score = 0;
+        nodes = 0; // #DEBUG
         // Iterative deepening
         for (var depth = 1; depth < 128; depth++)
         {
@@ -267,7 +270,8 @@ public class MyBot : IChessBot
             bestMove = move;
 
             // Move is not printed in the usual pv format, because the API does not support easy conversion to UCI notation
-            Console.WriteLine($"info depth {depth} cp {score} time {timer.MillisecondsElapsedThisTurn} {bestMove}"); // #DEBUG
+            var elapsed = timer.MillisecondsElapsedThisTurn > 0 ? timer.MillisecondsElapsedThisTurn : 1; // #DEBUG
+            Console.WriteLine($"info depth {depth} cp {score} time {timer.MillisecondsElapsedThisTurn} nodes {nodes} nps {(nodes * 1000) / elapsed} {bestMove}"); // #DEBUG
 
             // Soft time limit
             if (timer.MillisecondsElapsedThisTurn > allocatedTime / 5)
