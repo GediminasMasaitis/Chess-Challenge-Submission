@@ -32,8 +32,8 @@ public class MyBot : IChessBot
         {
             var isWhite = color == 0;
 
-            //                 Pawn             King
-            for (var pieceIndex = 1; pieceIndex <= 6; pieceIndex++)
+            //       None (skipped)               King
+            for (var pieceIndex = 0; ++pieceIndex <= 6;)
             {
                 var piece = (PieceType)pieceIndex;
                 var bitboard = board.GetPieceBitboard(piece, isWhite);
