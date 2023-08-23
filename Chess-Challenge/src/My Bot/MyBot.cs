@@ -28,7 +28,7 @@ public class MyBot : IChessBot
     private int Evaluate(Board board)
     {
         int score = 0;
-        for (var color = -1; ++color < 2;)
+        for (var color = 2; --color >= 0; score = -score)
         {
             var isWhite = color == 0;
 
@@ -64,11 +64,9 @@ public class MyBot : IChessBot
                     
                 }
             }
-
-            score = -score;
         }
 
-        return board.IsWhiteToMove ? score : -score;
+        return board.IsWhiteToMove ? -score : score;
     }
 
     private int Search(Board board, Timer timer, int allocatedTime, int ply, int depth, int alpha, int beta, Move[] killers, bool nullAllowed, out Move bestMove)
