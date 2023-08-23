@@ -28,7 +28,7 @@ public class MyBot : IChessBot
     private int Evaluate(Board board)
     {
         int score = 0;
-        for (var color = 0; color < 2; color++)
+        for (var color = -1; ++color < 2;)
         {
             var isWhite = color == 0;
 
