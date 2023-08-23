@@ -35,8 +35,7 @@ public class MyBot : IChessBot
             //       None (skipped)               King
             for (var pieceIndex = 0; ++pieceIndex <= 6;)
             {
-                var piece = (PieceType)pieceIndex;
-                var bitboard = board.GetPieceBitboard(piece, isWhite);
+                var bitboard = board.GetPieceBitboard((PieceType)pieceIndex, isWhite);
 
                 if (pieceIndex == 3 && BitboardHelper.GetNumberOfSetBits(bitboard) == 2) // Bishop pair
                     score += 48;
@@ -47,7 +46,7 @@ public class MyBot : IChessBot
 
                     // Mobility
                     if (pieceIndex > 2)
-                        score += mobilities[pieceIndex - 3] * BitboardHelper.GetNumberOfSetBits(BitboardHelper.GetPieceAttacks(piece, new Square(sq), board, isWhite) & ~(isWhite ? board.WhitePiecesBitboard : board.BlackPiecesBitboard));
+                        score += mobilities[pieceIndex - 3] * BitboardHelper.GetNumberOfSetBits(BitboardHelper.GetPieceAttacks((PieceType)pieceIndex, new Square(sq), board, isWhite) & ~(isWhite ? board.WhitePiecesBitboard : board.BlackPiecesBitboard));
 
                     // Flip square if black
                     sq ^= 56 * color;
