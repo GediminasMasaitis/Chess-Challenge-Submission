@@ -32,9 +32,10 @@ public class MyBot : IChessBot
         {
             var isWhite = color == 0;
 
-            for (var piece = PieceType.Pawn; piece <= PieceType.King; piece++)
+            //                 Pawn             King
+            for (var pieceIndex = 1; pieceIndex <= 6; pieceIndex++)
             {
-                var pieceIndex = (int)piece;
+                var piece = (PieceType)pieceIndex;
                 var bitboard = board.GetPieceBitboard(piece, isWhite);
 
                 if (pieceIndex == 3 && BitboardHelper.GetNumberOfSetBits(bitboard) == 2) // Bishop pair

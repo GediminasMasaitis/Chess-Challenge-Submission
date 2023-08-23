@@ -1043,3 +1043,9 @@ info depth 13 cp 14 time 1419 nodes 880064 nps 620200 Move: 'b1c3'
 info depth 14 cp 14 time 2831 nodes 1763271 nps 622843 Move: 'b1c3'
 bestmove b1c3
 ```
+### 1.35.3
+Reduce token count
+
+Implemented by Goh CJ (cj5716)
+
+970 tokens (-4)
