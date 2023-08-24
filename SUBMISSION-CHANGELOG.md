@@ -1026,7 +1026,6 @@ Add node and nps output
 974 tokens (=)
 
 ```
-go
 info depth 1 cp 61 time 32 nodes 5 nps 156 Move: 'b1c3'
 info depth 2 cp 0 time 33 nodes 50 nps 1515 Move: 'b1c3'
 info depth 3 cp 61 time 33 nodes 107 nps 3242 Move: 'b1c3'
@@ -1047,5 +1046,23 @@ bestmove b1c3
 Reduce token count
 
 Implemented by Goh CJ (cj5716)
+
+```
+info depth 1 cp 61 time 36 nodes 5 nps 138 Move: 'b1c3'
+info depth 2 cp 0 time 37 nodes 50 nps 1351 Move: 'b1c3'
+info depth 3 cp 61 time 38 nodes 107 nps 2815 Move: 'b1c3'
+info depth 4 cp 0 time 40 nodes 1028 nps 25700 Move: 'b1c3'
+info depth 5 cp 36 time 42 nodes 1565 nps 37261 Move: 'b1c3'
+info depth 6 cp 0 time 49 nodes 4517 nps 92183 Move: 'b1c3'
+info depth 7 cp 53 time 68 nodes 11941 nps 175602 Move: 'b1c3'
+info depth 8 cp 0 time 105 nodes 33138 nps 315600 Move: 'b1c3'
+info depth 9 cp 27 time 129 nodes 45341 nps 351480 Move: 'b1c3'
+info depth 10 cp 11 time 215 nodes 91680 nps 426418 Move: 'b1c3'
+info depth 11 cp 11 time 425 nodes 216960 nps 510494 Move: 'b1c3'
+info depth 12 cp 8 time 947 nodes 557909 nps 589133 Move: 'b1c3'
+info depth 13 cp 14 time 1463 nodes 880064 nps 601547 Move: 'b1c3'
+info depth 14 cp 14 time 2896 nodes 1763271 nps 608864 Move: 'b1c3'
+bestmove b1c3
+```
 
 960 tokens (-14)
