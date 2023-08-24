@@ -235,7 +235,7 @@ public class MyBot : IChessBot
         var score = 0;
         nodes = 0; // #DEBUG
         // Iterative deepening
-        for (var depth = 1; depth < 128; depth++)
+        for (var depth = 0; ++depth < 128;)
         {
             // Aspiration windows
             var window = 40;
