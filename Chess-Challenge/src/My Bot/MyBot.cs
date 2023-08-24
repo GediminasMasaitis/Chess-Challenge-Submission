@@ -9,6 +9,7 @@ public class MyBot : IChessBot
 
     long nodes = 0; // #DEBUG
     long[] quietHistory = new long[4096];
+    Move[] killers = new Move[256];
 
     const int TTSize = 1048576;
     // Key, move, depth, score, flag
@@ -62,7 +63,7 @@ public class MyBot : IChessBot
         return board.IsWhiteToMove ? -score : score;
     }
 
-    private int Search(Board board, Timer timer, int allocatedTime, int ply, int depth, int alpha, int beta, Move[] killers, bool nullAllowed, out Move bestMove)
+    private int Search(Board board, Timer timer, int allocatedTime, int ply, int depth, int alpha, int beta, bool nullAllowed, out Move bestMove)
     {
         ulong key = board.ZobristKey;
         bestMove = Move.NullMove;
@@ -102,7 +103,7 @@ public class MyBot : IChessBot
             if (nullAllowed && staticScore >= beta && depth > 2)
             {
                 board.ForceSkipTurn();
-                var score = -Search(board, timer, allocatedTime, ply + 1, depth - 4, -beta, -beta + 1, killers, false, out _);
+                var score = -Search(board, timer, allocatedTime, ply + 1, depth - 4, -beta, -beta + 1, false, out _);
                 board.UndoSkipTurn();
                 if (score >= beta)
                     return beta;
@@ -154,7 +155,7 @@ public class MyBot : IChessBot
                           : 1;
 
             doSearch:
-            var score = -Search(board, timer, allocatedTime, ply + 1, depth - reduction, -childAlpha, -alpha, killers, true, out _);
+            var score = -Search(board, timer, allocatedTime, ply + 1, depth - reduction, -childAlpha, -alpha, true, out _);
 
             // If score raises alpha, we see if we should do a re-search
             if (score > alpha)
@@ -230,7 +231,7 @@ public class MyBot : IChessBot
         // Decay quiet history instead of clearing it
         for (var i = 0; i < 4096; quietHistory[i++] /= 8) ;
 
-        var killers = new Move[256];
+        Array.Clear(killers);
         var bestMove = Move.NullMove;
         var score = 0;
         nodes = 0; // #DEBUG
@@ -242,7 +243,7 @@ public class MyBot : IChessBot
             research:
 
             // Search with the current window
-            var newScore = Search(board, timer, allocatedTime, 0, depth, score - window, score + window, killers, false, out var move);
+            var newScore = Search(board, timer, allocatedTime, 0, depth, score - window, score + window, false, out var move);
 
             // Hard time limit
             // If we are out of time, we cannot trust the move that was found
