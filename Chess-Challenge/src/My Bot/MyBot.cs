@@ -14,15 +14,17 @@ public class MyBot : IChessBot
     const int TTSize = 1048576;
     // Key, move, depth, score, flag
     (ulong, Move, int, int, byte)[] TT = new (ulong, Move, int, int, byte)[TTSize];
-    
 
-    int[] material = { 0, 159, 450, 434, 716, 1421, 0 };
+
+    int[] material = { 0, 158, 450, 433, 716, 1422, 0 };
 
     // PSTs are encoded with the following format:
     // Every rank or file is encoded as a byte, with the first rank/file being the LSB and the last rank/file being the MSB.
     // For every value to fit inside a byte, the values are divided by 2, and multiplication inside evaluation is needed.
-    ulong[] pstRanks = { 0, 32125521998837248, 16501772952854001903, 18086463821592985848, 796584101102809849, 864419553310604285, 17729565680195270900 };
-    ulong[] pstFiles = { 0, 18016933991885308669, 17654403052536658922, 18304035169612464635, 17725610693920817404, 794607157805906418, 17943749385544467700 };
+    ulong[] pstRanks = { 0, 32125526293804288, 16501772952854001903, 18086463821593051128, 796865576079520248, 936477147365309181, 17370124342582573551 };
+    ulong[] pstFiles = { 0, 18016932892373680894, 17654403052536658923, 18304034070100836859, 17653270525394616572, 722549563767978482, 17583742894660126190 };
+
+    int[] mobilities = { 6, 5, 3, -5 };
 
     private int Evaluate(Board board)
     {
@@ -45,7 +47,7 @@ public class MyBot : IChessBot
 
                     // Mobility
                     if (pieceIndex > 2)
-                        score += (-pieceIndex - 1) * (pieceIndex - 6) * BitboardHelper.GetNumberOfSetBits(BitboardHelper.GetPieceAttacks((PieceType)pieceIndex, new Square(sq), board, isWhite) & ~(isWhite ? board.WhitePiecesBitboard : board.BlackPiecesBitboard)) / 2;
+                        score += mobilities[pieceIndex - 3] * BitboardHelper.GetNumberOfSetBits(BitboardHelper.GetPieceAttacks((PieceType)pieceIndex, new Square(sq), board, isWhite) & ~(isWhite ? board.WhitePiecesBitboard : board.BlackPiecesBitboard));
 
                     // Flip square if black
                     sq ^= 56 * color;

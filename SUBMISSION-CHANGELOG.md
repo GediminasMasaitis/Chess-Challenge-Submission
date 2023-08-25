@@ -1047,6 +1047,8 @@ Reduce token count
 
 Implemented by Goh CJ (cj5716)
 
+960 tokens (-14)
+
 ```
 info depth 1 cp 61 time 36 nodes 5 nps 138 Move: 'b1c3'
 info depth 2 cp 0 time 37 nodes 50 nps 1351 Move: 'b1c3'
@@ -1065,4 +1067,32 @@ info depth 14 cp 14 time 2896 nodes 1763271 nps 608864 Move: 'b1c3'
 bestmove b1c3
 ```
 
-960 tokens (-14)
+1.36
+King mobility
+
+964 bytes (+4)
+
+```
+info depth 1 cp 61 time 33 nodes 5 nps 151 Move: 'b1c3'
+info depth 2 cp 0 time 34 nodes 50 nps 1470 Move: 'b1c3'
+info depth 3 cp 61 time 34 nodes 107 nps 3147 Move: 'b1c3'
+info depth 4 cp 0 time 36 nodes 950 nps 26388 Move: 'b1c3'
+info depth 5 cp 33 time 38 nodes 1408 nps 37052 Move: 'b1c3'
+info depth 6 cp 0 time 43 nodes 3624 nps 84279 Move: 'b1c3'
+info depth 7 cp 53 time 58 nodes 11000 nps 189655 Move: 'b1c3'
+info depth 8 cp 0 time 91 nodes 31519 nps 346362 Move: 'b1c3'
+info depth 9 cp 28 time 111 nodes 44096 nps 397261 Move: 'b1c3'
+info depth 10 cp 12 time 163 nodes 79880 nps 490061 Move: 'b1c3'
+info depth 11 cp 15 time 301 nodes 168162 nps 558677 Move: 'b1c3'
+info depth 12 cp 8 time 610 nodes 371504 nps 609022 Move: 'b1c3'
+info depth 13 cp 38 time 1895 nodes 1171177 nps 618035 Move: 'e2e4'
+bestmove e2e4
+```
+
+```
+Score of ChessChallenge vs ChessChallengeDev: 16461 - 15957 - 17582  [0.505] 50000
+...      ChessChallenge playing White: 10320 - 6045 - 8635  [0.586] 25000
+...      ChessChallenge playing Black: 6141 - 9912 - 8947  [0.425] 25000
+...      White vs Black: 20232 - 12186 - 17582  [0.580] 50000
+Elo difference: 3.5 +/- 2.4, LOS: 99.7 %, DrawRatio: 35.2 %
+```
