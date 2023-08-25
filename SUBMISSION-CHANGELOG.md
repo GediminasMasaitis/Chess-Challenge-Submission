@@ -1179,3 +1179,17 @@ info depth 12 cp 12 time 903 nodes 509180 nps 563875 Move: 'b1c3'
 info depth 13 cp 24 time 1733 nodes 994340 nps 573768 Move: 'd2d4'
 bestmove d2d4
 ```
+
+```
+Score of ChessChallenge vs ChessChallengeTier2: 2771 - 62 - 167  [0.952] 3000
+...      ChessChallenge playing White: 1427 - 17 - 57  [0.970] 1501
+...      ChessChallenge playing Black: 1344 - 45 - 110  [0.933] 1499
+...      White vs Black: 1472 - 1361 - 167  [0.518] 3000
+Elo difference: 517.1 +/- 24.3, LOS: 100.0 %, DrawRatio: 5.6 %
+
+Score of ChessChallenge vs kimbo1.0: 785 - 805 - 410  [0.495] 2000
+...      ChessChallenge playing White: 487 - 332 - 182  [0.577] 1001
+...      ChessChallenge playing Black: 298 - 473 - 228  [0.412] 999
+...      White vs Black: 960 - 630 - 410  [0.583] 2000
+Elo difference: -3.5 +/- 13.6, LOS: 30.8 %, DrawRatio: 20.5 %
+```
