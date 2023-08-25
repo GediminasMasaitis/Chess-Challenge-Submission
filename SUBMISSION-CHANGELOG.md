@@ -1103,21 +1103,21 @@ RFP margin 100
 964 bytes (=)
 
 ```
-info depth 1 cp 61 time 32 nodes 5 nps 156 Move: 'b1c3'
-info depth 2 cp 0 time 34 nodes 50 nps 1470 Move: 'b1c3'
-info depth 3 cp 61 time 34 nodes 107 nps 3147 Move: 'b1c3'
-info depth 4 cp 0 time 36 nodes 950 nps 26388 Move: 'b1c3'
-info depth 5 cp 33 time 38 nodes 1408 nps 37052 Move: 'b1c3'
-info depth 6 cp 0 time 43 nodes 3602 nps 83767 Move: 'b1c3'
-info depth 7 cp 53 time 58 nodes 10916 nps 188206 Move: 'b1c3'
-info depth 8 cp 0 time 88 nodes 29157 nps 331329 Move: 'b1c3'
-info depth 9 cp 28 time 108 nodes 42074 nps 389574 Move: 'b1c3'
-info depth 10 cp 12 time 161 nodes 78089 nps 485024 Move: 'b1c3'
-info depth 11 cp 15 time 292 nodes 163591 nps 560243 Move: 'b1c3'
-info depth 12 cp 16 time 966 nodes 578913 nps 599288 Move: 'e2e4'
-info depth 13 cp 16 time 1308 nodes 787391 nps 601980 Move: 'e2e4'
-info depth 14 cp 16 time 1793 nodes 1094195 nps 610259 Move: 'e2e4'
-bestmove e2e4
+info depth 1 cp 61 time 31 nodes 5 nps 161 Move: 'b1c3'
+info depth 2 cp 0 time 32 nodes 50 nps 1562 Move: 'b1c3'
+info depth 3 cp 61 time 32 nodes 107 nps 3343 Move: 'b1c3'
+info depth 4 cp 0 time 34 nodes 950 nps 27941 Move: 'b1c3'
+info depth 5 cp 33 time 35 nodes 1408 nps 40228 Move: 'b1c3'
+info depth 6 cp 0 time 40 nodes 3602 nps 90050 Move: 'b1c3'
+info depth 7 cp 53 time 55 nodes 10916 nps 198472 Move: 'b1c3'
+info depth 8 cp 0 time 85 nodes 29159 nps 343047 Move: 'b1c3'
+info depth 9 cp 28 time 106 nodes 41904 nps 395320 Move: 'b1c3'
+info depth 10 cp 12 time 159 nodes 78138 nps 491433 Move: 'b1c3'
+info depth 11 cp 15 time 287 nodes 163446 nps 569498 Move: 'b1c3'
+info depth 12 cp 8 time 722 nodes 444652 nps 615861 Move: 'b1c3'
+info depth 13 cp 10 time 1425 nodes 879272 nps 617032 Move: 'd2d4'
+info depth 14 cp 11 time 2192 nodes 1359327 nps 620130 Move: 'd2d4'
+bestmove d2d4
 ```
 
 ```
