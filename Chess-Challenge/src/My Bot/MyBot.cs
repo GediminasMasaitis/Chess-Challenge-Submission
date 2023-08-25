@@ -248,8 +248,8 @@ public class MyBot : IChessBot
         {
             // Aspiration windows
             var window = 40;
-            research:
 
+            research:
             // Search with the current window
             var newScore = Search(0, depth, score - window, score + window, false, out var move);
 
