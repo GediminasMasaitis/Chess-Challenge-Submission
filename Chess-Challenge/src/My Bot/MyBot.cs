@@ -39,7 +39,7 @@ public class MyBot : IChessBot
                 var bitboard = board.GetPieceBitboard((PieceType)pieceIndex, isWhite);
 
                 if (pieceIndex == 3 && BitboardHelper.GetNumberOfSetBits(bitboard) == 2) // Bishop pair
-                    score += 48;
+                    score += 47;
 
                 while (bitboard != 0)
                 {
