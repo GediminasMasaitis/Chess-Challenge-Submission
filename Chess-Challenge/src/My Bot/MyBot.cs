@@ -16,15 +16,16 @@ public class MyBot : IChessBot
     (ulong, Move, int, int, byte)[] TT = new (ulong, Move, int, int, byte)[TTSize];
 
 
-    int[] material = { 0, 158, 450, 433, 716, 1422, 0 };
+    int[] material = { 0, 159, 450, 434, 720, 1412, 0 };
 
     // PSTs are encoded with the following format:
     // Every rank or file is encoded as a byte, with the first rank/file being the LSB and the last rank/file being the MSB.
     // For every value to fit inside a byte, the values are divided by 2, and multiplication inside evaluation is needed.
-    ulong[] pstRanks = { 0, 32125526293804288, 16501772952854001903, 18086463821593051128, 796865576079520248, 936477147365309181, 17370124342582573551 };
-    ulong[] pstFiles = { 0, 18016932892373680894, 17654403052536658923, 18304034070100836859, 17653270525394616572, 722549563767978482, 17583742894660126190 };
+    ulong[] pstRanks = { 0, 32408100782142720, 16574112021868640239, 18014406223260090617, 796584101102809849, 70654625790754818, 17298066748544776942 };
+    ulong[] pstFiles = { 0, 18016651413102002942, 17654401953025031403, 18231695001086198523, 17653269425882988797, 145242196134722807, 17511685300639041005 };
 
-    int[] mobilities = { 6, 5, 3, -5 };
+    int[] mobilities = { 6, 5, 2, -5 };
+    int[] kingZoneMobilities = { 8, 3, 25, 19 };
 
     private int Evaluate(Board board)
     {
@@ -39,7 +40,7 @@ public class MyBot : IChessBot
                 var bitboard = board.GetPieceBitboard((PieceType)pieceIndex, isWhite);
 
                 if (pieceIndex == 3 && BitboardHelper.GetNumberOfSetBits(bitboard) == 2) // Bishop pair
-                    score += 47;
+                    score += 49;
 
                 while (bitboard != 0)
                 {
@@ -47,7 +48,11 @@ public class MyBot : IChessBot
 
                     // Mobility
                     if (pieceIndex > 2)
-                        score += mobilities[pieceIndex - 3] * BitboardHelper.GetNumberOfSetBits(BitboardHelper.GetPieceAttacks((PieceType)pieceIndex, new Square(sq), board, isWhite) & ~(isWhite ? board.WhitePiecesBitboard : board.BlackPiecesBitboard));
+                    {
+                        var mobility = BitboardHelper.GetPieceAttacks((PieceType)pieceIndex, new Square(sq), board, isWhite) & ~(isWhite ? board.WhitePiecesBitboard : board.BlackPiecesBitboard);
+                        score += mobilities[pieceIndex - 3] * BitboardHelper.GetNumberOfSetBits(mobility);
+                        score += kingZoneMobilities[pieceIndex - 3] * BitboardHelper.GetNumberOfSetBits(mobility & BitboardHelper.GetKingAttacks(board.GetKingSquare(!isWhite)));
+                    }
 
                     // Flip square if black
                     sq ^= 56 * color;
