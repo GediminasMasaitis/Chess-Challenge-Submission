@@ -1067,7 +1067,7 @@ info depth 14 cp 14 time 2896 nodes 1763271 nps 608864 Move: 'b1c3'
 bestmove b1c3
 ```
 
-1.36
+### 1.36
 King mobility
 
 964 bytes (+4)
@@ -1095,4 +1095,35 @@ Score of ChessChallenge vs ChessChallengeDev: 16461 - 15957 - 17582  [0.505] 500
 ...      ChessChallenge playing Black: 6141 - 9912 - 8947  [0.425] 25000
 ...      White vs Black: 20232 - 12186 - 17582  [0.580] 50000
 Elo difference: 3.5 +/- 2.4, LOS: 99.7 %, DrawRatio: 35.2 %
+```
+
+### 1.37
+RFP margin 100
+
+964 bytes (=)
+
+```
+info depth 1 cp 61 time 32 nodes 5 nps 156 Move: 'b1c3'
+info depth 2 cp 0 time 34 nodes 50 nps 1470 Move: 'b1c3'
+info depth 3 cp 61 time 34 nodes 107 nps 3147 Move: 'b1c3'
+info depth 4 cp 0 time 36 nodes 950 nps 26388 Move: 'b1c3'
+info depth 5 cp 33 time 38 nodes 1408 nps 37052 Move: 'b1c3'
+info depth 6 cp 0 time 43 nodes 3602 nps 83767 Move: 'b1c3'
+info depth 7 cp 53 time 58 nodes 10916 nps 188206 Move: 'b1c3'
+info depth 8 cp 0 time 88 nodes 29157 nps 331329 Move: 'b1c3'
+info depth 9 cp 28 time 108 nodes 42074 nps 389574 Move: 'b1c3'
+info depth 10 cp 12 time 161 nodes 78089 nps 485024 Move: 'b1c3'
+info depth 11 cp 15 time 292 nodes 163591 nps 560243 Move: 'b1c3'
+info depth 12 cp 16 time 966 nodes 578913 nps 599288 Move: 'e2e4'
+info depth 13 cp 16 time 1308 nodes 787391 nps 601980 Move: 'e2e4'
+info depth 14 cp 16 time 1793 nodes 1094195 nps 610259 Move: 'e2e4'
+bestmove e2e4
+```
+
+```
+Score of ChessChallenge vs ChessChallengeDev: 13113 - 12486 - 14401  [0.508] 40000
+...      ChessChallenge playing White: 8285 - 4630 - 7085  [0.591] 20000
+...      ChessChallenge playing Black: 4828 - 7856 - 7316  [0.424] 20000
+...      White vs Black: 16141 - 9458 - 14401  [0.584] 40000
+Elo difference: 5.4 +/- 2.7, LOS: 100.0 %, DrawRatio: 36.0 %
 ```
