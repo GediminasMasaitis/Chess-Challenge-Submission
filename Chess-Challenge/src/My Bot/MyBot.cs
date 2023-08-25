@@ -50,10 +50,9 @@ public class MyBot : IChessBot
                     {
                         // Mobility
                         var mobility = BitboardHelper.GetPieceAttacks((PieceType)pieceIndex, new Square(sq), board, isWhite) & ~(isWhite ? board.WhitePiecesBitboard : board.BlackPiecesBitboard);
-                        score += Extract(70652439753129984, pieceIndex) * BitboardHelper.GetNumberOfSetBits(mobility);
-
+                        score += Extract(70652439753129984, pieceIndex) * BitboardHelper.GetNumberOfSetBits(mobility)
                         // King attacks
-                        score += Extract(5375525367316480, pieceIndex) * BitboardHelper.GetNumberOfSetBits(mobility & BitboardHelper.GetKingAttacks(board.GetKingSquare(!isWhite)));
+                              +  Extract(5375525367316480, pieceIndex) * BitboardHelper.GetNumberOfSetBits(mobility & BitboardHelper.GetKingAttacks(board.GetKingSquare(!isWhite)));
                     }
 
                     // Flip square if black
@@ -61,8 +60,8 @@ public class MyBot : IChessBot
 
                     // Material and PSTs
                     score += material[pieceIndex]
-                             + Extract(pstRanks[pieceIndex], sq / 8) * 2
-                             + Extract(pstFiles[pieceIndex], sq % 8) * 2;
+                          +  Extract(pstRanks[pieceIndex], sq / 8) * 2
+                          +  Extract(pstFiles[pieceIndex], sq % 8) * 2;
                 }
             }
         }

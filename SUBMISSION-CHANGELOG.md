@@ -1193,3 +1193,10 @@ Score of ChessChallenge vs kimbo1.0: 785 - 805 - 410  [0.495] 2000
 ...      White vs Black: 960 - 630 - 410  [0.583] 2000
 Elo difference: -3.5 +/- 13.6, LOS: 30.8 %, DrawRatio: 20.5 %
 ```
+
+### 1.38.2
+Reduce token count
+
+Implemented by Goh CJ (cj5716)
+
+984 tokens (-1)
