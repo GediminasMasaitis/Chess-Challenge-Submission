@@ -24,8 +24,7 @@ public class MyBot : IChessBot
     ulong[] pstRanks = { 0, 32408100782142720, 16574112021868640239, 18014406223260090617, 796584101102809849, 70654625790754818, 17298066748544776942 };
     ulong[] pstFiles = { 0, 18016651413102002942, 17654401953025031403, 18231695001086198523, 17653269425882988797, 145242196134722807, 17511685300639041005 };
 
-    int[] mobilities = { 6, 5, 2, -5 };
-    int[] kingZoneMobilities = { 8, 3, 25, 19 };
+    sbyte Extract(ulong term, int index) => (sbyte)(term >> (index * 8) & 0xFF);
 
     private int Evaluate(Board board)
     {
@@ -46,21 +45,24 @@ public class MyBot : IChessBot
                 {
                     var sq = BitboardHelper.ClearAndGetIndexOfLSB(ref bitboard);
 
-                    // Mobility
+                    // For bishop, rook, queen and king
                     if (pieceIndex > 2)
                     {
+                        // Mobility
                         var mobility = BitboardHelper.GetPieceAttacks((PieceType)pieceIndex, new Square(sq), board, isWhite) & ~(isWhite ? board.WhitePiecesBitboard : board.BlackPiecesBitboard);
-                        score += mobilities[pieceIndex - 3] * BitboardHelper.GetNumberOfSetBits(mobility);
-                        score += kingZoneMobilities[pieceIndex - 3] * BitboardHelper.GetNumberOfSetBits(mobility & BitboardHelper.GetKingAttacks(board.GetKingSquare(!isWhite)));
+                        score += Extract(70652439753129984, pieceIndex) * BitboardHelper.GetNumberOfSetBits(mobility);
+
+                        // King attacks
+                        score += Extract(5375525367316480, pieceIndex) * BitboardHelper.GetNumberOfSetBits(mobility & BitboardHelper.GetKingAttacks(board.GetKingSquare(!isWhite)));
                     }
 
                     // Flip square if black
                     sq ^= 56 * color;
 
-                    // Material
+                    // Material and PSTs
                     score += material[pieceIndex]
-                          +  (sbyte)(pstRanks[pieceIndex] >> (sq / 8 * 8) & 0xFF) * 2  // Rank PST
-                          +  (sbyte)(pstFiles[pieceIndex] >> (sq % 8 * 8) & 0xFF) * 2; // File PST
+                             + Extract(pstRanks[pieceIndex], sq / 8) * 2
+                             + Extract(pstFiles[pieceIndex], sq % 8) * 2;
                 }
             }
         }
