@@ -9,7 +9,6 @@ public class MyBot : IChessBot
 
     long nodes = 0; // #DEBUG
     long[] quietHistory = new long[4096];
-    Move[] killers = new Move[256];
 
     const int TTSize = 1048576;
     // Key, move, depth, score, flag
@@ -75,7 +74,7 @@ public class MyBot : IChessBot
         // Decay quiet history instead of clearing it
         for (var i = 0; i < 4096; quietHistory[i++] /= 8) ;
 
-        Array.Clear(killers);
+        var killers = new Move[256];
 
         int Search(int ply, int depth, int alpha, int beta, bool nullAllowed, out Move bestMove)
         {
