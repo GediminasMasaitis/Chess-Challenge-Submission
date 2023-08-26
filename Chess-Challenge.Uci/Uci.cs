@@ -28,7 +28,7 @@ namespace Chess_Challenge.Cli
         private void HandleUci()
         {
             Console.WriteLine("id name Chess Challenge");
-            Console.WriteLine("id author Gediminas Masaitis, Sebastian Lague");
+            Console.WriteLine("id author Gediminas Masaitis, Goh CJ, Sebastian Lague");
             Console.WriteLine("option name Tune1 type spin default 0 min -2147483648 max 2147483647");
             Console.WriteLine("option name Tune2 type spin default 0 min -2147483648 max 2147483647");
             Console.WriteLine("option name Tune3 type spin default 0 min -2147483648 max 2147483647");

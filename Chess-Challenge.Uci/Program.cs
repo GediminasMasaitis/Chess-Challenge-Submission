@@ -14,7 +14,7 @@ namespace Chess_Challenge.Cli
 
         static void Main(string[] args)
         {
-            Console.WriteLine("Sebastian Lague's Chess Challenge submission by Gediminas Masaitis");
+            Console.WriteLine("Sebastian Lague's Chess Challenge submission by Gediminas Masaitis and Goh CJ");
             var assemblyPath = Assembly.GetEntryAssembly().Location;
             var assemblyDirectory = Path.GetDirectoryName(assemblyPath);
             Directory.SetCurrentDirectory(assemblyDirectory);
