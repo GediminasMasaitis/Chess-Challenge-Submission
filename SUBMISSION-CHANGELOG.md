@@ -1195,7 +1195,7 @@ Elo difference: -3.5 +/- 13.6, LOS: 30.8 %, DrawRatio: 20.5 %
 ```
 
 ### 1.38.2
-Reduce token count
+Reduce token count. Also improve UCI output to use the correct PV format.
 
 Implemented by Goh CJ (cj5716)
 

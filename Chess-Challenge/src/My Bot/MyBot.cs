@@ -269,9 +269,8 @@ public class MyBot : IChessBot
             score = newScore;
             bestMove = move;
 
-            // Move is not printed in the usual pv format, because the API does not support easy conversion to UCI notation
             var elapsed = timer.MillisecondsElapsedThisTurn > 0 ? timer.MillisecondsElapsedThisTurn : 1; // #DEBUG
-            Console.WriteLine($"info depth {depth} cp {score} time {timer.MillisecondsElapsedThisTurn} nodes {nodes} nps {(nodes * 1000) / elapsed} {bestMove}"); // #DEBUG
+            Console.WriteLine($"info depth {depth} cp {score} time {timer.MillisecondsElapsedThisTurn} nodes {nodes} nps {(nodes * 1000) / elapsed} pv {bestMove.ToString().Substring(7, bestMove.ToString().Length - 8)}"); // #DEBUG
 
             // Soft time limit
             if (timer.MillisecondsElapsedThisTurn > allocatedTime / 5)
