@@ -9,7 +9,6 @@ public class MyBot : IChessBot
 
     long nodes = 0; // #DEBUG
     long[] quietHistory = new long[4096];
-    Move[] killers = new Move[256];
 
     const int TTSize = 1048576;
     // Key, move, depth, score, flag
@@ -50,10 +49,9 @@ public class MyBot : IChessBot
                     {
                         // Mobility
                         var mobility = BitboardHelper.GetPieceAttacks((PieceType)pieceIndex, new Square(sq), board, isWhite) & ~(isWhite ? board.WhitePiecesBitboard : board.BlackPiecesBitboard);
-                        score += Extract(70652439753129984, pieceIndex) * BitboardHelper.GetNumberOfSetBits(mobility);
-
+                        score += Extract(70652439753129984, pieceIndex) * BitboardHelper.GetNumberOfSetBits(mobility)
                         // King attacks
-                        score += Extract(5375525367316480, pieceIndex) * BitboardHelper.GetNumberOfSetBits(mobility & BitboardHelper.GetKingAttacks(board.GetKingSquare(!isWhite)));
+                              +  Extract(5375525367316480, pieceIndex) * BitboardHelper.GetNumberOfSetBits(mobility & BitboardHelper.GetKingAttacks(board.GetKingSquare(!isWhite)));
                     }
 
                     // Flip square if black
@@ -61,8 +59,8 @@ public class MyBot : IChessBot
 
                     // Material and PSTs
                     score += material[pieceIndex]
-                             + Extract(pstRanks[pieceIndex], sq / 8) * 2
-                             + Extract(pstFiles[pieceIndex], sq % 8) * 2;
+                          +  Extract(pstRanks[pieceIndex], sq / 8) * 2
+                          +  Extract(pstFiles[pieceIndex], sq % 8) * 2;
                 }
             }
         }
@@ -70,187 +68,189 @@ public class MyBot : IChessBot
         return board.IsWhiteToMove ? -score : score;
     }
 
-    private int Search(Board board, Timer timer, int allocatedTime, int ply, int depth, int alpha, int beta, bool nullAllowed, out Move bestMove)
-    {
-        ulong key = board.ZobristKey;
-        bestMove = Move.NullMove;
-
-        // Repetition detection
-        if (ply > 0 && board.IsRepeatedPosition())
-            return 0;
-
-        // If we are in check, we should search deeper
-        var inCheck = board.IsInCheck();
-        if (inCheck)
-            depth++;
-
-        var inQsearch = depth <= 0;
-        var inZeroWindow = alpha == beta - 1;
-
-        var staticScore = Evaluate(board);
-        var bestScore = -inf;
-        if (inQsearch)
-        {
-            if (staticScore >= beta)
-                return staticScore;
-
-            if (staticScore > alpha)
-                alpha = staticScore;
-
-            bestScore = staticScore;
-        }
-
-        else if (ply > 0 && inZeroWindow && !inCheck)
-        {
-            // Reverse futility pruning
-            if (depth < 5 && staticScore - depth * 100 > beta)
-                return beta;
-
-            // Null move pruning
-            if (nullAllowed && staticScore >= beta && depth > 2)
-            {
-                board.ForceSkipTurn();
-                var score = -Search(board, timer, allocatedTime, ply + 1, depth - 4, -beta, -beta + 1, false, out _);
-                board.UndoSkipTurn();
-                if (score >= beta)
-                    return beta;
-            }
-        }
-
-        // Look up best move known so far if it is available
-        var (ttKey, ttMove, ttDepth, ttScore, ttFlag) = TT[key % TTSize];
-
-        if (ttKey == key)
-        {
-            // If conditions match, we can trust the table entry and return immediately
-            if (ply > 0 && ttDepth >= depth && (ttFlag == 0 && ttScore <= alpha || ttFlag == 1 && ttScore >= beta || ttFlag == 2))
-                return ttScore;
-        }
-        else
-        {
-            // If the table entry is not for this position, we can't trust the move to be the best known move
-            ttMove = Move.NullMove;
-
-            // Internal iterative reduction
-            if (depth > 3)
-                depth--;
-        }
-
-        bestMove = ttMove;
-
-        // Move generation, best-known move then MVV-LVA ordering then killers then quiet move history
-        var moves = board.GetLegalMoves(inQsearch).OrderByDescending(move => move == ttMove ? 9000000000000000000
-                                                                           : move.IsCapture ? 8000000000000000000 + (long)move.CapturePieceType * 1000 - (long)move.MovePieceType
-                                                                           : move == killers[ply] ? 7000000000000000000
-                                                                           : quietHistory[move.RawValue & 4095]);
-
-        var movesEvaluated = 0;
-        byte flag = 0; // Upper
-        nodes++; // #DEBUG
-
-        // Loop over each legal move
-        foreach (var move in moves)
-        {
-            board.MakeMove(move);
-
-            // Principal variation search
-            var childAlpha = inQsearch || movesEvaluated == 0 ? beta : alpha + 1;
-
-            // Late move reductions
-            var reduction = depth > 2 && movesEvaluated > 4 && !move.IsCapture ? 
-                            2 + movesEvaluated / 16 + Convert.ToInt32(inZeroWindow)
-                          : 1;
-
-            doSearch:
-            var score = -Search(board, timer, allocatedTime, ply + 1, depth - reduction, -childAlpha, -alpha, true, out _);
-
-            // If score raises alpha, we see if we should do a re-search
-            if (score > alpha)
-            {
-                // If we reduced the search previously, we research without a reduction, using the same window as before
-                if (reduction > 1)
-                {
-                    reduction = 1;
-                    goto doSearch;
-                }
-
-                // If the result score is within the current bounds, we must research with a full window
-                if (childAlpha != beta && score < beta)
-                {
-                    childAlpha = beta;
-                    goto doSearch;
-                }
-            }
-
-            board.UndoMove(move);
-
-            // If we are out of time, stop searching
-            if (depth > 2 && timer.MillisecondsElapsedThisTurn > allocatedTime)
-                return bestScore;
-
-            // Count the number of moves we have evaluated for detecting mates and stalemates
-            movesEvaluated++;
-
-            // If the move is better than our current best, update our best move
-            if (score > bestScore)
-            {
-                bestScore = score;
-
-                // If the move is better than our current alpha, update alpha
-                if (score > alpha)
-                {
-                    bestMove = move;
-                    alpha = score;
-                    flag = 2; // Exact
-
-                    // If the move is better than our current beta, we can stop searching
-                    if (score >= beta)
-                    {
-                        // If the move is not a capture, add a bonus to the quiets table and save it as the current ply's killer move
-                        if (!move.IsCapture)
-                        {
-                            quietHistory[move.RawValue & 4095] += depth * depth;
-                            killers[ply] = move;
-                        }
-
-                        flag = 1; // Lower
-
-                        break;
-                    }
-                }
-            }
-        }
-
-        // Checkmate / stalemate detection
-        if (movesEvaluated == 0)
-            return inQsearch ? bestScore : inCheck ? ply - mate : 0;
-
-        // Store the current position in the transposition table
-        TT[key % TTSize] = (key, bestMove, inQsearch ? 0 : depth, bestScore, flag);
-
-        return bestScore;
-    }
-
     public Move Think(Board board, Timer timer)
     {
         var allocatedTime = timer.MillisecondsRemaining / 8;
-        
         // Decay quiet history instead of clearing it
         for (var i = 0; i < 4096; quietHistory[i++] /= 8) ;
 
-        Array.Clear(killers);
+        var killers = new Move[256];
+
+        int Search(int ply, int depth, int alpha, int beta, bool nullAllowed, out Move bestMove)
+        {
+            ulong key = board.ZobristKey;
+            bestMove = Move.NullMove;
+
+            // Repetition detection
+            if (ply > 0 && board.IsRepeatedPosition())
+                return 0;
+
+            // If we are in check, we should search deeper
+            var inCheck = board.IsInCheck();
+            if (inCheck)
+                depth++;
+
+            var inQsearch = depth <= 0;
+            var inZeroWindow = alpha == beta - 1;
+
+            var staticScore = Evaluate(board);
+            var bestScore = -inf;
+            if (inQsearch)
+            {
+                if (staticScore >= beta)
+                    return staticScore;
+
+                if (staticScore > alpha)
+                    alpha = staticScore;
+
+                bestScore = staticScore;
+            }
+
+            else if (ply > 0 && inZeroWindow && !inCheck)
+            {
+                // Reverse futility pruning
+                if (depth < 5 && staticScore - depth * 100 > beta)
+                    return beta;
+
+                // Null move pruning
+                if (nullAllowed && staticScore >= beta && depth > 2)
+                {
+                    board.ForceSkipTurn();
+                    var score = -Search(ply + 1, depth - 4, -beta, -beta + 1, false, out _);
+                    board.UndoSkipTurn();
+                    if (score >= beta)
+                        return beta;
+                }
+            }
+
+            // Look up best move known so far if it is available
+            var (ttKey, ttMove, ttDepth, ttScore, ttFlag) = TT[key % TTSize];
+
+            if (ttKey == key)
+            {
+                // If conditions match, we can trust the table entry and return immediately
+                if (ply > 0 && ttDepth >= depth && (ttFlag == 0 && ttScore <= alpha || ttFlag == 1 && ttScore >= beta || ttFlag == 2))
+                    return ttScore;
+            }
+            else
+            {
+                // If the table entry is not for this position, we can't trust the move to be the best known move
+                ttMove = Move.NullMove;
+
+                // Internal iterative reduction
+                if (depth > 3)
+                    depth--;
+            }
+
+            bestMove = ttMove;
+
+            // Move generation, best-known move then MVV-LVA ordering then killers then quiet move history
+            var moves = board.GetLegalMoves(inQsearch).OrderByDescending(move => move == ttMove ? 9000000000000000000
+                                                                               : move.IsCapture ? 8000000000000000000 + (long)move.CapturePieceType * 1000 - (long)move.MovePieceType
+                                                                               : move == killers[ply] ? 7000000000000000000
+                                                                               : quietHistory[move.RawValue & 4095]);
+
+            var movesEvaluated = 0;
+            byte flag = 0; // Upper
+            nodes++; // #DEBUG
+
+            // Loop over each legal move
+            foreach (var move in moves)
+            {
+                board.MakeMove(move);
+
+                // Principal variation search
+                var childAlpha = inQsearch || movesEvaluated == 0 ? beta : alpha + 1;
+
+                // Late move reductions
+                var reduction = depth > 2 && movesEvaluated > 4 && !move.IsCapture ? 
+                                2 + movesEvaluated / 16 + Convert.ToInt32(inZeroWindow)
+                              : 1;
+
+                doSearch:
+                var score = -Search(ply + 1, depth - reduction, -childAlpha, -alpha, true, out _);
+
+                // If score raises alpha, we see if we should do a re-search
+                if (score > alpha)
+                {
+                    // If we reduced the search previously, we research without a reduction, using the same window as before
+                    if (reduction > 1)
+                    {
+                        reduction = 1;
+                        goto doSearch;
+                    }
+
+                    // If the result score is within the current bounds, we must research with a full window
+                    if (childAlpha != beta && score < beta)
+                    {
+                        childAlpha = beta;
+                        goto doSearch;
+                    }
+                }
+
+                board.UndoMove(move);
+
+                // If we are out of time, stop searching
+                if (depth > 2 && timer.MillisecondsElapsedThisTurn > allocatedTime)
+                    return bestScore;
+
+                // Count the number of moves we have evaluated for detecting mates and stalemates
+                movesEvaluated++;
+
+                // If the move is better than our current best, update our best move
+                if (score > bestScore)
+                {
+                    bestScore = score;
+
+                    // If the move is better than our current alpha, update alpha
+                    if (score > alpha)
+                    {
+                        bestMove = move;
+                        alpha = score;
+                        flag = 2; // Exact
+
+                        // If the move is better than our current beta, we can stop searching
+                        if (score >= beta)
+                        {
+                            // If the move is not a capture, add a bonus to the quiets table and save it as the current ply's killer move
+                            if (!move.IsCapture)
+                            {
+                                quietHistory[move.RawValue & 4095] += depth * depth;
+                                killers[ply] = move;
+                            }
+
+                            flag = 1; // Lower
+
+                            break;
+                        }
+                    }
+                }
+            }
+
+            // Checkmate / stalemate detection
+            if (movesEvaluated == 0)
+                return inQsearch ? bestScore : inCheck ? ply - mate : 0;
+
+            // Store the current position in the transposition table
+            TT[key % TTSize] = (key, bestMove, inQsearch ? 0 : depth, bestScore, flag);
+
+            return bestScore;
+        }
+
+
+        nodes = 0; // #DEBUG
         var bestMove = Move.NullMove;
         var score = 0;
-        nodes = 0; // #DEBUG
+
         // Iterative deepening
         for (var depth = 0; ++depth < 128;)
         {
             // Aspiration windows
             var window = 40;
-            research:
 
+            research:
             // Search with the current window
-            var newScore = Search(board, timer, allocatedTime, 0, depth, score - window, score + window, false, out var move);
+            var newScore = Search(0, depth, score - window, score + window, false, out var move);
 
             // Hard time limit
             // If we are out of time, we cannot trust the move that was found
@@ -269,9 +269,8 @@ public class MyBot : IChessBot
             score = newScore;
             bestMove = move;
 
-            // Move is not printed in the usual pv format, because the API does not support easy conversion to UCI notation
             var elapsed = timer.MillisecondsElapsedThisTurn > 0 ? timer.MillisecondsElapsedThisTurn : 1; // #DEBUG
-            Console.WriteLine($"info depth {depth} cp {score} time {timer.MillisecondsElapsedThisTurn} nodes {nodes} nps {(nodes * 1000) / elapsed} {bestMove}"); // #DEBUG
+            Console.WriteLine($"info depth {depth} cp {score} time {timer.MillisecondsElapsedThisTurn} nodes {nodes} nps {(nodes * 1000) / elapsed} pv {bestMove.ToString().Substring(7, bestMove.ToString().Length - 8)}"); // #DEBUG
 
             // Soft time limit
             if (timer.MillisecondsElapsedThisTurn > allocatedTime / 5)

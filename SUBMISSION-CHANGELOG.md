@@ -1100,7 +1100,7 @@ Elo difference: 3.5 +/- 2.4, LOS: 99.7 %, DrawRatio: 35.2 %
 ### 1.37
 RFP margin 100
 
-964 bytes (=)
+964 tokens (=)
 
 ```
 info depth 1 cp 61 time 31 nodes 5 nps 161 Move: 'b1c3'
@@ -1192,4 +1192,28 @@ Score of ChessChallenge vs kimbo1.0: 785 - 805 - 410  [0.495] 2000
 ...      ChessChallenge playing Black: 298 - 473 - 228  [0.412] 999
 ...      White vs Black: 960 - 630 - 410  [0.583] 2000
 Elo difference: -3.5 +/- 13.6, LOS: 30.8 %, DrawRatio: 20.5 %
+```
+
+### 1.38.2
+Reduce token count. Also improve UCI output to use the correct PV format.
+
+Implemented by Goh CJ (cj5716)
+
+962 tokens (-23)
+
+```
+info depth 1 cp 59 time 33 nodes 5 nps 151 pv b1c3
+info depth 2 cp 0 time 33 nodes 50 nps 1515 pv b1c3
+info depth 3 cp 59 time 33 nodes 107 nps 3242 pv b1c3
+info depth 4 cp 0 time 36 nodes 1017 nps 28250 pv b1c3
+info depth 5 cp 31 time 38 nodes 1466 nps 38578 pv b1c3
+info depth 6 cp 0 time 44 nodes 4400 nps 100000 pv b1c3
+info depth 7 cp 47 time 53 nodes 8977 nps 169377 pv b1c3
+info depth 8 cp 0 time 89 nodes 27407 nps 307943 pv b1c3
+info depth 9 cp 18 time 111 nodes 40869 nps 368189 pv b1c3
+info depth 10 cp 11 time 210 nodes 100586 nps 478980 pv b1c3
+info depth 11 cp 29 time 365 nodes 193880 nps 531178 pv b1c3
+info depth 12 cp 12 time 885 nodes 509180 nps 575344 pv b1c3
+info depth 13 cp 24 time 1696 nodes 994340 nps 586285 pv d2d4
+bestmove d2d4
 ```
