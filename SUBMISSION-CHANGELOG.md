@@ -1100,7 +1100,7 @@ Elo difference: 3.5 +/- 2.4, LOS: 99.7 %, DrawRatio: 35.2 %
 ### 1.37
 RFP margin 100
 
-964 bytes (=)
+964 tokens (=)
 
 ```
 info depth 1 cp 61 time 31 nodes 5 nps 161 Move: 'b1c3'
