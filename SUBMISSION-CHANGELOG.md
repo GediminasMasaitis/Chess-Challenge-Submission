@@ -1218,9 +1218,35 @@ info depth 13 cp 24 time 1696 nodes 994340 nps 586285 pv d2d4
 bestmove d2d4
 ```
 
+40+0.4:
+```
+Score of ChessChallengeDev vs kimbo1.0: 2086 - 1784 - 1130  [0.530] 5000
+...      ChessChallengeDev playing White: 1249 - 674 - 578  [0.615] 2501
+...      ChessChallengeDev playing Black: 837 - 1110 - 552  [0.445] 2499
+...      White vs Black: 2359 - 1511 - 1130  [0.585] 5000
+Elo difference: 21.0 +/- 8.5, LOS: 100.0 %, DrawRatio: 22.6 %
+```
+
 ### 1.38.3
 Reduce token count. Also improve UCI output so that CLI or GUI can track eval.
 
 Implemented by Goh CJ (cj5716)
 
 948 tokens (-14)
+
+```
+info depth 1 score cp 59 time 33 nodes 5 nps 151 pv b1c3
+info depth 2 score cp 0 time 34 nodes 50 nps 1470 pv b1c3
+info depth 3 score cp 59 time 34 nodes 107 nps 3147 pv b1c3
+info depth 4 score cp 0 time 37 nodes 1017 nps 27486 pv b1c3
+info depth 5 score cp 31 time 38 nodes 1466 nps 38578 pv b1c3
+info depth 6 score cp 0 time 44 nodes 4400 nps 100000 pv b1c3
+info depth 7 score cp 47 time 53 nodes 8977 nps 169377 pv b1c3
+info depth 8 score cp 0 time 89 nodes 27407 nps 307943 pv b1c3
+info depth 9 score cp 18 time 113 nodes 40869 nps 361672 pv b1c3
+info depth 10 score cp 11 time 207 nodes 100586 nps 485922 pv b1c3
+info depth 11 score cp 29 time 358 nodes 193880 nps 541564 pv b1c3
+info depth 12 score cp 12 time 881 nodes 509180 nps 577956 pv b1c3
+info depth 13 score cp 24 time 1715 nodes 994340 nps 579790 pv d2d4
+bestmove d2d4
+```
