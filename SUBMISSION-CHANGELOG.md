@@ -1217,3 +1217,10 @@ info depth 12 cp 12 time 885 nodes 509180 nps 575344 pv b1c3
 info depth 13 cp 24 time 1696 nodes 994340 nps 586285 pv d2d4
 bestmove d2d4
 ```
+
+### 1.38.3
+Reduce token count. Also improve UCI output so that CLI or GUI can track eval.
+
+Implemented by Goh CJ (cj5716)
+
+948 tokens (-14)
