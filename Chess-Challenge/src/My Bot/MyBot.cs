@@ -232,7 +232,7 @@ public class MyBot : IChessBot
                 }
 
                 // Late move pruning
-                if (!inCheck && alpha == beta - 1 && quietsEvaluated > 3 + 2 * depth * depth)
+                if (!inCheck && inZeroWindow && quietsEvaluated > 3 + 2 * depth * depth)
                     break;
             }
 
