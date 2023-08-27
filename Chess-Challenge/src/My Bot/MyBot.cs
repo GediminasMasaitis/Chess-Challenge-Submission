@@ -152,7 +152,8 @@ public class MyBot : IChessBot
                                                                                : quietHistory[move.RawValue & 4095]);
 
             byte flag = 0, // Upper
-                 movesEvaluated = 0;
+                 movesEvaluated = 0,
+                 quietsEvaluated = 0;
 
             nodes++; // #DEBUG
 
@@ -198,6 +199,8 @@ public class MyBot : IChessBot
 
                 // Count the number of moves we have evaluated for detecting mates and stalemates
                 movesEvaluated++;
+                if (!move.IsCapture)
+                    quietsEvaluated++;
 
                 // If the move is better than our current best, update our best move
                 if (score > bestScore)
@@ -227,6 +230,10 @@ public class MyBot : IChessBot
                         }
                     }
                 }
+
+                // Late move pruning
+                if (!inCheck && alpha == beta - 1 && quietsEvaluated > 3 + 2 * depth * depth)
+                    break;
             }
 
             // Checkmate / stalemate detection

@@ -1250,3 +1250,34 @@ info depth 12 score cp 12 time 881 nodes 509180 nps 577956 pv b1c3
 info depth 13 score cp 24 time 1715 nodes 994340 nps 579790 pv d2d4
 bestmove d2d4
 ```
+
+### 1.39
+Late move pruning
+
+980 tokens (+32)
+
+```
+info depth 1 score cp 59 time 34 nodes 5 nps 147 pv b1c3
+info depth 2 score cp 0 time 35 nodes 50 nps 1428 pv b1c3
+info depth 3 score cp 59 time 36 nodes 107 nps 2972 pv b1c3
+info depth 4 score cp 0 time 37 nodes 749 nps 20243 pv b1c3
+info depth 5 score cp 31 time 38 nodes 1111 nps 29236 pv b1c3
+info depth 6 score cp 0 time 43 nodes 3095 nps 71976 pv b1c3
+info depth 7 score cp 45 time 48 nodes 5203 nps 108395 pv b1c3
+info depth 8 score cp 4 time 73 nodes 18050 nps 247260 pv b1c3
+info depth 9 score cp 20 time 88 nodes 26045 nps 295965 pv b1c3
+info depth 10 score cp 10 time 133 nodes 53397 nps 401481 pv b1c3
+info depth 11 score cp 11 time 247 nodes 124747 nps 505048 pv d2d4
+info depth 12 score cp 20 time 470 nodes 265324 nps 564519 pv g1f3
+info depth 13 score cp 20 time 732 nodes 422640 nps 577377 pv g1f3
+info depth 14 score cp 22 time 1538 nodes 907386 nps 589977 pv b1c3
+bestmove b1c3
+```
+
+```
+Score of ChessChallenge vs ChessChallengeDev: 6896 - 6034 - 7070  [0.522] 20000
+...      ChessChallenge playing White: 4317 - 2208 - 3475  [0.605] 10000
+...      ChessChallenge playing Black: 2579 - 3826 - 3595  [0.438] 10000
+...      White vs Black: 8143 - 4787 - 7070  [0.584] 20000
+Elo difference: 15.0 +/- 3.9, LOS: 100.0 %, DrawRatio: 35.4 %
+```
