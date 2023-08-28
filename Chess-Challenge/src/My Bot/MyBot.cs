@@ -111,7 +111,7 @@ public class MyBot : IChessBot
                 bestScore = staticScore;
             }
 
-            else if (ply > 0 && inZeroWindow && !inCheck)
+            else if (inZeroWindow && !inCheck)
             {
                 // Reverse futility pruning
                 if (depth < 5 && staticScore - depth * 100 > beta)
@@ -166,11 +166,13 @@ public class MyBot : IChessBot
             {
                 board.MakeMove(move);
 
+                bool isQuiet = !move.IsCapture;
+
                 // Principal variation search
                 int childAlpha = inQsearch || movesEvaluated == 0 ? beta : alpha + 1,
 
                 // Late move reductions
-                reduction = depth > 2 && movesEvaluated > 4 && !move.IsCapture ? 
+                reduction = depth > 2 && movesEvaluated > 4 && isQuiet ? 
                             2 + movesEvaluated / 16 + Convert.ToInt32(inZeroWindow)
                           : 1;
 
@@ -203,7 +205,7 @@ public class MyBot : IChessBot
 
                 // Count the number of moves we have evaluated for detecting mates and stalemates
                 movesEvaluated++;
-                if (!move.IsCapture)
+                if (isQuiet)
                     quietsEvaluated++;
 
                 // If the move is better than our current best, update our best move
@@ -222,7 +224,7 @@ public class MyBot : IChessBot
                         if (score >= beta)
                         {
                             // If the move is not a capture, add a bonus to the quiets table and save it as the current ply's killer move
-                            if (!move.IsCapture)
+                            if (isQuiet)
                             {
                                 quietHistory[move.RawValue & 4095] += depth * depth;
                                 killers[ply] = move;
