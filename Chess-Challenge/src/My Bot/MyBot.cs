@@ -255,10 +255,11 @@ public class MyBot : IChessBot
 
         nodes = 0; // #DEBUG
         var bestMove = Move.NullMove;
-        var score = 0;
+        int score = 0,
+            depth = 0;
 
         // Iterative deepening
-        for (var depth = 0; timer.MillisecondsElapsedThisTurn <= allocatedTime / 5 /* Soft time limit */ && ++depth < 128;)
+        for (;timer.MillisecondsElapsedThisTurn <= allocatedTime / 5 /* Soft time limit */ && ++depth < 128;)
         {
             // Aspiration windows
             var window = 40;
