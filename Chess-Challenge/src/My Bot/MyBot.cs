@@ -10,7 +10,7 @@ public class MyBot : IChessBot
     // Key, move, depth, score, flag
     (ulong, Move, int, int, byte)[] TT = new (ulong, Move, int, int, byte)[TTSize];
 
-    int[] material = { 0, 159, 450, 434, 720, 1412, 0 };
+    int[] material = { 0, 148, 456, 442, 727, 1434, 0 };
 
     // PSTs are encoded with the following format:
     // Every rank or file is encoded as a byte, with the first rank/file being the LSB and the last rank/file being the MSB.
@@ -46,20 +46,24 @@ public class MyBot : IChessBot
                     var bitboard = board.GetPieceBitboard((PieceType)pieceIndex, isWhite);
 
                     if (pieceIndex == 3 && BitboardHelper.GetNumberOfSetBits(bitboard) == 2) // Bishop pair
-                        score += 49;
+                        score += 52;
 
                     while (bitboard != 0)
                     {
                         var sq = BitboardHelper.ClearAndGetIndexOfLSB(ref bitboard);
+
+                        // Open files, doubled pawns
+                        if ((0x101010101010101UL << sq % 8 & ~(1UL << sq) & board.GetPieceBitboard(PieceType.Pawn, isWhite)) == 0)
+                            score += Extract(69534330849924352, pieceIndex);
 
                         // For bishop, rook, queen and king
                         if (pieceIndex > 2)
                         {
                             // Mobility
                             var mobility = BitboardHelper.GetPieceAttacks((PieceType)pieceIndex, new Square(sq), board, isWhite) & ~(isWhite ? board.WhitePiecesBitboard : board.BlackPiecesBitboard);
-                            score += Extract(70652439753129984, pieceIndex) * BitboardHelper.GetNumberOfSetBits(mobility)
+                            score += Extract(70933906139906048, pieceIndex) * BitboardHelper.GetNumberOfSetBits(mobility)
                             // King attacks
-                                  +  Extract(5375525367316480, pieceIndex) * BitboardHelper.GetNumberOfSetBits(mobility & BitboardHelper.GetKingAttacks(board.GetKingSquare(!isWhite)));
+                                  +  Extract(6221049792299008, pieceIndex) * BitboardHelper.GetNumberOfSetBits(mobility & BitboardHelper.GetKingAttacks(board.GetKingSquare(!isWhite)));
                         }
 
                         // Flip square if black
