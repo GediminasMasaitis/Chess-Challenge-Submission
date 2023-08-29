@@ -22,14 +22,15 @@ public class MyBot : IChessBot
 
     public Move Think(Board board, Timer timer)
     {
-        // Decay quiet history instead of clearing it
-        for (var i = 0; i < 4096; quietHistory[i++] /= 8) ;
-
         var killers = new Move[256];
         
         int inf = 2000000,
             mate = 1000000,
-            allocatedTime = timer.MillisecondsRemaining / 8;
+            allocatedTime = timer.MillisecondsRemaining / 8,
+            i = 0;
+
+        // Decay quiet history instead of clearing it
+        for (;i < 4096; quietHistory[i++] /= 8) ;
 
         long nodes = 0; // #DEBUG
 
