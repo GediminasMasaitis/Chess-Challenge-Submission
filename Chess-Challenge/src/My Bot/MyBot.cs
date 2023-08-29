@@ -94,7 +94,7 @@ public class MyBot : IChessBot
             if (inCheck)
                 depth++;
 
-            var (inQsearch, staticScore, bestScore) = (depth <= 0, Evaluate(), -inf);
+            var (inQsearch, staticScore, bestScore, doPruning) = (depth <= 0, Evaluate(), -inf, inZeroWindow && !inCheck);
 
             if (inQsearch)
             {
@@ -107,7 +107,7 @@ public class MyBot : IChessBot
                 bestScore = staticScore;
             }
 
-            else if (inZeroWindow && !inCheck)
+            else if (doPruning)
             {
                 // Reverse futility pruning
                 if (depth < 5 && staticScore - depth * 100 > beta)
@@ -234,7 +234,7 @@ public class MyBot : IChessBot
                 }
 
                 // Late move pruning
-                if (!inCheck && inZeroWindow && quietsEvaluated > 3 + 2 * depth * depth)
+                if (doPruning && quietsEvaluated > 3 + 2 * depth * depth)
                     break;
             }
 
