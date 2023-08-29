@@ -22,21 +22,19 @@ public class MyBot : IChessBot
 
     public Move Think(Board board, Timer timer)
     {
-        // Decay quiet history instead of clearing it
-        for (var i = 0; i < 4096; quietHistory[i++] /= 8) ;
+        var (killers, inf, mate, allocatedTime, i) = (new Move[256], 2000000, 1000000, timer.MillisecondsRemaining / 8, 0);
 
-        var killers = new Move[256];
-        
-        int inf = 2000000,
-            mate = 1000000,
-            allocatedTime = timer.MillisecondsRemaining / 8;
+        // Decay quiet history instead of clearing it
+        for (; i < 4096; quietHistory[i++] /= 8) ;
 
         long nodes = 0; // #DEBUG
 
         int Evaluate()
         {
-            int score = 0;
-            for (var color = 2; --color >= 0; score = -score)
+            int score = 0,
+                color = 2;
+
+            for (; --color >= 0; score = -score)
             {
                 var isWhite = color == 0;
 
@@ -82,23 +80,19 @@ public class MyBot : IChessBot
 
         int Search(int ply, int depth, int alpha, int beta, bool nullAllowed, out Move bestMove)
         {
-            ulong key = board.ZobristKey;
             bestMove = Move.NullMove;
 
             // Repetition detection
             if (ply > 0 && board.IsRepeatedPosition())
                 return 0;
             
-            bool inCheck = board.IsInCheck(),
-                 inZeroWindow = alpha == beta - 1;
+            var (inCheck, inZeroWindow, key) = (board.IsInCheck(), alpha == beta - 1, board.ZobristKey);
 
             // If we are in check, we should search deeper
             if (inCheck)
                 depth++;
 
-            bool inQsearch = depth <= 0;
-            int staticScore = Evaluate(),
-                bestScore = -inf;
+            var (inQsearch, staticScore, bestScore, doPruning) = (depth <= 0, Evaluate(), -inf, inZeroWindow && !inCheck);
 
             if (inQsearch)
             {
@@ -111,7 +105,7 @@ public class MyBot : IChessBot
                 bestScore = staticScore;
             }
 
-            else if (ply > 0 && inZeroWindow && !inCheck)
+            else if (doPruning)
             {
                 // Reverse futility pruning
                 if (depth < 5 && staticScore - depth * 100 > beta)
@@ -159,18 +153,19 @@ public class MyBot : IChessBot
                  movesEvaluated = 0,
                  quietsEvaluated = 0;
 
-            nodes++; // #DEBUG
-
             // Loop over each legal move
             foreach (var move in moves)
             {
                 board.MakeMove(move);
+                nodes++; // #DEBUG
+
+                bool isQuiet = !move.IsCapture;
 
                 // Principal variation search
                 int childAlpha = inQsearch || movesEvaluated == 0 ? beta : alpha + 1,
 
                 // Late move reductions
-                reduction = depth > 2 && movesEvaluated > 4 && !move.IsCapture ? 
+                reduction = depth > 2 && movesEvaluated > 4 && isQuiet ? 
                             2 + movesEvaluated / 16 + Convert.ToInt32(inZeroWindow)
                           : 1;
 
@@ -203,7 +198,7 @@ public class MyBot : IChessBot
 
                 // Count the number of moves we have evaluated for detecting mates and stalemates
                 movesEvaluated++;
-                if (!move.IsCapture)
+                if (isQuiet)
                     quietsEvaluated++;
 
                 // If the move is better than our current best, update our best move
@@ -222,7 +217,7 @@ public class MyBot : IChessBot
                         if (score >= beta)
                         {
                             // If the move is not a capture, add a bonus to the quiets table and save it as the current ply's killer move
-                            if (!move.IsCapture)
+                            if (isQuiet)
                             {
                                 quietHistory[move.RawValue & 4095] += depth * depth;
                                 killers[ply] = move;
@@ -236,7 +231,7 @@ public class MyBot : IChessBot
                 }
 
                 // Late move pruning
-                if (!inCheck && inZeroWindow && quietsEvaluated > 3 + 2 * depth * depth)
+                if (doPruning && quietsEvaluated > 3 + 2 * depth * depth)
                     break;
             }
 
@@ -252,11 +247,10 @@ public class MyBot : IChessBot
 
 
         nodes = 0; // #DEBUG
-        var bestMove = Move.NullMove;
-        var score = 0;
+        var (bestMove, score, depth) = (Move.NullMove, 0, 0);
 
         // Iterative deepening
-        for (var depth = 0; timer.MillisecondsElapsedThisTurn <= allocatedTime / 5 /* Soft time limit */ && ++depth < 128;)
+        for (; timer.MillisecondsElapsedThisTurn <= allocatedTime / 5 /* Soft time limit */ && ++depth < 128;)
         {
             // Aspiration windows
             var window = 40;
