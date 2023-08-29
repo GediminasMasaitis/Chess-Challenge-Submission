@@ -94,9 +94,7 @@ public class MyBot : IChessBot
             if (inCheck)
                 depth++;
 
-            bool inQsearch = depth <= 0;
-            int staticScore = Evaluate(),
-                bestScore = -inf;
+            var (inQsearch, staticScore, bestScore) = (depth <= 0, Evaluate(), -inf);
 
             if (inQsearch)
             {
