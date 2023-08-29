@@ -153,12 +153,11 @@ public class MyBot : IChessBot
                  movesEvaluated = 0,
                  quietsEvaluated = 0;
 
-            nodes++; // #DEBUG
-
             // Loop over each legal move
             foreach (var move in moves)
             {
                 board.MakeMove(move);
+                nodes++; // #DEBUG
 
                 bool isQuiet = !move.IsCapture;
 

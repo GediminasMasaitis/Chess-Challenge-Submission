@@ -1347,7 +1347,7 @@ Elo difference: 21.8 +/- 7.2, LOS: 100.0 %, DrawRatio: 33.2 %
 ```
 
 ### 1.41.1
-Reduce token count
+Reduce token count. Also correct definition of node.
 
 Implemented by Goh CJ (cj5716)
 
