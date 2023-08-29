@@ -80,15 +80,13 @@ public class MyBot : IChessBot
 
         int Search(int ply, int depth, int alpha, int beta, bool nullAllowed, out Move bestMove)
         {
-            ulong key = board.ZobristKey;
             bestMove = Move.NullMove;
 
             // Repetition detection
             if (ply > 0 && board.IsRepeatedPosition())
                 return 0;
             
-            bool inCheck = board.IsInCheck(),
-                 inZeroWindow = alpha == beta - 1;
+            var (inCheck, inZeroWindow, key) = (board.IsInCheck(), alpha == beta - 1, board.ZobristKey);
 
             // If we are in check, we should search deeper
             if (inCheck)
