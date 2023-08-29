@@ -30,14 +30,15 @@ public class MyBot : IChessBot
             i = 0;
 
         // Decay quiet history instead of clearing it
-        for (;i < 4096; quietHistory[i++] /= 8) ;
+        for (; i < 4096; quietHistory[i++] /= 8) ;
 
         long nodes = 0; // #DEBUG
 
         int Evaluate()
         {
-            int score = 0;
-            for (var color = 2; --color >= 0; score = -score)
+            int score = 0,
+                color = 2;
+            for (; --color >= 0; score = -score)
             {
                 var isWhite = color == 0;
 
