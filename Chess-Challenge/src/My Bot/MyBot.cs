@@ -38,6 +38,7 @@ public class MyBot : IChessBot
         {
             int score = 0,
                 color = 2;
+
             for (; --color >= 0; score = -score)
             {
                 var isWhite = color == 0;
@@ -261,7 +262,7 @@ public class MyBot : IChessBot
             depth = 0;
 
         // Iterative deepening
-        for (;timer.MillisecondsElapsedThisTurn <= allocatedTime / 5 /* Soft time limit */ && ++depth < 128;)
+        for (; timer.MillisecondsElapsedThisTurn <= allocatedTime / 5 /* Soft time limit */ && ++depth < 128;)
         {
             // Aspiration windows
             var window = 40;
