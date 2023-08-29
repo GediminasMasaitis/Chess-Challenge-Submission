@@ -1351,4 +1351,4 @@ Reduce token count
 
 Implemented by Goh CJ (cj5716)
 
-998 tokens (-9)
+995 tokens (-12)
