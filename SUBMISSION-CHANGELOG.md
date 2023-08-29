@@ -1344,6 +1344,18 @@ Score of ChessChallenge vs ChessChallengeDev: 2192 - 1816 - 1992  [0.531] 6000
 ...      ChessChallenge playing Black: 894 - 1109 - 998  [0.464] 3001
 ...      White vs Black: 2407 - 1601 - 1992  [0.567] 6000
 Elo difference: 21.8 +/- 7.2, LOS: 100.0 %, DrawRatio: 33.2 %
+
+Score of ChessChallenge vs ChessChallenge1.34: 3953 - 2410 - 2637  [0.586] 9000
+...      ChessChallenge playing White: 2335 - 892 - 1273  [0.660] 4500
+...      ChessChallenge playing Black: 1618 - 1518 - 1364  [0.511] 4500
+...      White vs Black: 3853 - 2510 - 2637  [0.575] 9000
+Elo difference: 60.2 +/- 6.1, LOS: 100.0 %, DrawRatio: 29.3 %
+
+Score of ChessChallenge vs ChessChallengeTier2: 11188 - 226 - 586  [0.957] 12000
+...      ChessChallenge playing White: 5746 - 61 - 194  [0.974] 6001
+...      ChessChallenge playing Black: 5442 - 165 - 392  [0.940] 5999
+...      White vs Black: 5911 - 5503 - 586  [0.517] 12000
+Elo difference: 537.9 +/- 12.8, LOS: 100.0 %, DrawRatio: 4.9 %
 ```
 
 ### 1.41.1
@@ -1352,3 +1364,22 @@ Reduce token count. Also correct definition of node.
 Implemented by Goh CJ (cj5716)
 
 991 tokens (-16)
+
+```
+info depth 1 score cp 57 time 31 nodes 22 nps 709 pv b1c3
+info depth 2 score cp 0 time 32 nodes 103 nps 3218 pv b1c3
+info depth 3 score cp 57 time 32 nodes 237 nps 7406 pv b1c3
+info depth 4 score cp 0 time 34 nodes 1083 nps 31852 pv b1c3
+info depth 5 score cp 32 time 35 nodes 1666 nps 47600 pv b1c3
+info depth 6 score cp 0 time 39 nodes 4515 nps 115769 pv b1c3
+info depth 7 score cp 43 time 44 nodes 7521 nps 170931 pv b1c3
+info depth 8 score cp 2 time 71 nodes 30300 nps 426760 pv b1c3
+info depth 9 score cp 18 time 86 nodes 43734 nps 508534 pv b1c3
+info depth 10 score cp 0 time 148 nodes 107473 nps 726168 pv b1c3
+info depth 11 score cp 10 time 254 nodes 226898 nps 893299 pv d2d4
+info depth 12 score cp 14 time 501 nodes 500741 nps 999483 pv b1c3
+info depth 13 score cp 14 time 790 nodes 823444 nps 1042334 pv b1c3
+info depth 14 score cp 14 time 1233 nodes 1329412 nps 1078193 pv b1c3
+info depth 15 score cp 20 time 2767 nodes 3086019 nps 1115294 pv b1c3
+bestmove b1c3
+```
