@@ -166,7 +166,7 @@ public class MyBot : IChessBot
 
                 // Late move reductions
                 reduction = depth > 2 && movesEvaluated > 4 && isQuiet ? 
-                            2 + movesEvaluated / 16 + Convert.ToInt32(inZeroWindow)
+                            2 + depth / 8 + movesEvaluated / 16 + Convert.ToInt32(inZeroWindow)
                           : 1;
 
                 doSearch:
