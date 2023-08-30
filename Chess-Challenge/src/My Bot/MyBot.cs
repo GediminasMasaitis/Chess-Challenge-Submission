@@ -115,7 +115,7 @@ public class MyBot : IChessBot
                 if (nullAllowed && staticScore >= beta && depth > 2)
                 {
                     board.ForceSkipTurn();
-                    var score = -Search(ply + 1, depth - 4, -beta, -beta + 1, false, out _);
+                    var score = -Search(ply + 1, depth - 4 - depth / 6, -beta, -beta + 1, false, out _);
                     board.UndoSkipTurn();
                     if (score >= beta)
                         return beta;
