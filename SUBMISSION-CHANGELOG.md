@@ -1419,6 +1419,8 @@ Elo difference: 3.6 +/- 2.3, LOS: 99.9 %, DrawRatio: 37.9 %
 ### 1.43
 NMP adjustment by depth
 
+999 tokens (+4)
+
 ```
 info depth 1 score cp 57 time 33 nodes 22 nps 666 pv b1c3
 info depth 2 score cp 0 time 33 nodes 103 nps 3121 pv b1c3
