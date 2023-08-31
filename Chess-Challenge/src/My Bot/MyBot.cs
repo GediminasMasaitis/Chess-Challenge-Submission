@@ -80,7 +80,7 @@ public class MyBot : IChessBot
 
         int Search(int ply, int depth, int alpha, int beta, bool nullAllowed, out Move bestMove)
         {
-            bestMove = Move.NullMove;
+            bestMove = default;
 
             // Repetition detection
             if (ply > 0 && board.IsRepeatedPosition())
