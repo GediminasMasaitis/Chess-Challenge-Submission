@@ -274,7 +274,12 @@ public class MyBot : IChessBot
             bestMove = move;
 
             var elapsed = timer.MillisecondsElapsedThisTurn > 0 ? timer.MillisecondsElapsedThisTurn : 1; // #DEBUG
-            Console.WriteLine($"info depth {depth} score cp {score} time {timer.MillisecondsElapsedThisTurn} nodes {nodes} nps {(nodes * 1000) / elapsed} pv {bestMove.ToString().Substring(7, bestMove.ToString().Length - 8)}"); // #DEBUG
+            Console.WriteLine($"info depth {depth} " + // #DEBUG
+                              $"score cp {score} " + // #DEBUG
+                              $"time {timer.MillisecondsElapsedThisTurn} " + // #DEBUG
+                              $"nodes {nodes} " + // #DEBUG
+                              $"nps {(nodes * 1000) / elapsed} " + // #DEBUG
+                              $"pv {bestMove.ToString().Substring(7, bestMove.ToString().Length - 8)}"); // #DEBUG
         }
 
         return bestMove;
