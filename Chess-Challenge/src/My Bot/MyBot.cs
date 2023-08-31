@@ -92,7 +92,7 @@ public class MyBot : IChessBot
             if (inCheck)
                 depth++;
 
-            var (inQsearch, staticScore, bestScore, doPruning) = (depth <= 0, Evaluate(), -inf, inZeroWindow && !inCheck);
+            var (inQsearch, staticScore, score, bestScore, doPruning) = (depth <= 0, Evaluate(), 0, -inf, inZeroWindow && !inCheck);
 
             if (inQsearch)
             {
@@ -115,7 +115,7 @@ public class MyBot : IChessBot
                 if (nullAllowed && staticScore >= beta && depth > 2)
                 {
                     board.ForceSkipTurn();
-                    var score = -Search(ply + 1, depth - 4 - depth / 6, -beta, -beta + 1, false, out _);
+                    score = -Search(ply + 1, depth - 4 - depth / 6, -beta, -beta + 1, false, out _);
                     board.UndoSkipTurn();
                     if (score >= beta)
                         return beta;
@@ -170,7 +170,7 @@ public class MyBot : IChessBot
                           : 1;
 
                 doSearch:
-                var score = -Search(ply + 1, depth - reduction, -childAlpha, -alpha, true, out _);
+                score = -Search(ply + 1, depth - reduction, -childAlpha, -alpha, true, out _);
 
                 // If score raises alpha, we see if we should do a re-search
                 if (score > alpha)
