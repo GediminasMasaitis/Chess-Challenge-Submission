@@ -247,7 +247,10 @@ public class MyBot : IChessBot
 
 
         nodes = 0; // #DEBUG
-        var (bestMove, score, depth) = (Move.NullMove, 0, 0);
+
+        Move bestMove = default;
+        int score = 0,
+            depth = 0;
 
         // Iterative deepening
         for (; timer.MillisecondsElapsedThisTurn <= allocatedTime / 5 /* Soft time limit */ && ++depth < 128;)
