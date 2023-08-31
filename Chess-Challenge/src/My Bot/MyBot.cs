@@ -47,7 +47,7 @@ public class MyBot : IChessBot
             var (key, inQsearch, bestScore, doPruning, score) = (board.ZobristKey, depth <= 0, -inf, inZeroWindow && !inCheck, 0);
 
             // Evaluation inlined into search
-            foreach (bool isWhite in new[] {false, true})
+            foreach (bool isWhite in new[] {!board.IsWhiteToMove, board.IsWhiteToMove})
             {
                 score = -score;
 
@@ -87,8 +87,6 @@ public class MyBot : IChessBot
                     }
                 }
             }
-
-            score = board.IsWhiteToMove ? score : -score;
 
             if (inQsearch)
             {
