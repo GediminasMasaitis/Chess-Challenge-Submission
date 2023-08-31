@@ -44,7 +44,7 @@ public class MyBot : IChessBot
             if (inCheck)
                 depth++;
 
-            var (key, inQsearch, bestScore, doPruning, score) = (board.ZobristKey, depth <= 0, -inf, inZeroWindow && !inCheck, 0);
+            var (key, inQsearch, bestScore, doPruning, score) = (board.ZobristKey, depth <= 0, -inf, inZeroWindow && !inCheck, 15);
 
             // Evaluation inlined into search
             foreach (bool isWhite in new[] {!board.IsWhiteToMove, board.IsWhiteToMove})
