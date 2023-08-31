@@ -128,7 +128,7 @@ public class MyBot : IChessBot
             else
             {
                 // If the table entry is not for this position, we can't trust the move to be the best known move
-                ttMove = Move.NullMove;
+                ttMove = default;
 
                 // Internal iterative reduction
                 if (depth > 3)
