@@ -29,14 +29,27 @@ public class MyBot : IChessBot
 
         long nodes = 0; // #DEBUG
 
-        int Evaluate()
+        int Search(int ply, int depth, int alpha, int beta, bool nullAllowed, out Move bestMove)
         {
-            int score = 0,
-                color = 2;
+            bestMove = default;
 
-            for (; --color >= 0; score = -score)
+            // Repetition detection
+            if (ply > 0 && board.IsRepeatedPosition())
+                return 0;
+            
+            bool inCheck = board.IsInCheck(), 
+                 inZeroWindow = alpha == beta - 1;
+
+            // If we are in check, we should search deeper
+            if (inCheck)
+                depth++;
+
+            var (key, inQsearch, bestScore, doPruning, score) = (board.ZobristKey, depth <= 0, -inf, inZeroWindow && !inCheck, 0);
+
+            // Evaluation inlined into search
+            foreach (bool isWhite in new[] {!board.IsWhiteToMove, board.IsWhiteToMove})
             {
-                var isWhite = color == 0;
+                score = -score;
 
                 //       None (skipped)               King
                 for (var pieceIndex = 0; ++pieceIndex <= 6;)
@@ -65,57 +78,38 @@ public class MyBot : IChessBot
                         }
 
                         // Flip square if black
-                        sq ^= 56 * color;
+                        if (!isWhite) sq ^= 56;
 
                         // Material and PSTs
                         score += material[pieceIndex]
-                              +  Extract(pstRanks[pieceIndex], sq / 8) * 2
-                              +  Extract(pstFiles[pieceIndex], sq % 8) * 2;
+                              + (Extract(pstRanks[pieceIndex], sq / 8)
+                              +  Extract(pstFiles[pieceIndex], sq % 8)) * 2;
                     }
                 }
             }
 
-            return board.IsWhiteToMove ? -score : score;
-        }
-
-        int Search(int ply, int depth, int alpha, int beta, bool nullAllowed, out Move bestMove)
-        {
-            bestMove = Move.NullMove;
-
-            // Repetition detection
-            if (ply > 0 && board.IsRepeatedPosition())
-                return 0;
-            
-            var (inCheck, inZeroWindow, key) = (board.IsInCheck(), alpha == beta - 1, board.ZobristKey);
-
-            // If we are in check, we should search deeper
-            if (inCheck)
-                depth++;
-
-            var (inQsearch, staticScore, bestScore, doPruning) = (depth <= 0, Evaluate(), -inf, inZeroWindow && !inCheck);
-
             if (inQsearch)
             {
-                if (staticScore >= beta)
-                    return staticScore;
+                if (score >= beta)
+                    return score;
 
-                if (staticScore > alpha)
-                    alpha = staticScore;
+                if (score > alpha)
+                    alpha = score;
 
-                bestScore = staticScore;
+                bestScore = score;
             }
 
             else if (doPruning)
             {
                 // Reverse futility pruning
-                if (depth < 5 && staticScore - depth * 100 > beta)
+                if (depth < 5 && score - depth * 100 > beta)
                     return beta;
 
                 // Null move pruning
-                if (nullAllowed && staticScore >= beta && depth > 2)
+                if (nullAllowed && score >= beta && depth > 2)
                 {
                     board.ForceSkipTurn();
-                    var score = -Search(ply + 1, depth - 4 - depth / 6, -beta, -beta + 1, false, out _);
+                    score = -Search(ply + 1, depth - 4 - depth / 6, -beta, -beta + 1, false, out _);
                     board.UndoSkipTurn();
                     if (score >= beta)
                         return beta;
@@ -134,7 +128,7 @@ public class MyBot : IChessBot
             else
             {
                 // If the table entry is not for this position, we can't trust the move to be the best known move
-                ttMove = Move.NullMove;
+                ttMove = default;
 
                 // Internal iterative reduction
                 if (depth > 3)
@@ -170,7 +164,7 @@ public class MyBot : IChessBot
                           : 1;
 
                 doSearch:
-                var score = -Search(ply + 1, depth - reduction, -childAlpha, -alpha, true, out _);
+                score = -Search(ply + 1, depth - reduction, -childAlpha, -alpha, true, out _);
 
                 // If score raises alpha, we see if we should do a re-search
                 if (score > alpha)
@@ -245,9 +239,9 @@ public class MyBot : IChessBot
             return bestScore;
         }
 
-
-        nodes = 0; // #DEBUG
-        var (bestMove, score, depth) = (Move.NullMove, 0, 0);
+        Move bestMove = default;
+        int score = 0,
+            depth = 0;
 
         // Iterative deepening
         for (; timer.MillisecondsElapsedThisTurn <= allocatedTime / 5 /* Soft time limit */ && ++depth < 128;)
@@ -277,7 +271,12 @@ public class MyBot : IChessBot
             bestMove = move;
 
             var elapsed = timer.MillisecondsElapsedThisTurn > 0 ? timer.MillisecondsElapsedThisTurn : 1; // #DEBUG
-            Console.WriteLine($"info depth {depth} score cp {score} time {timer.MillisecondsElapsedThisTurn} nodes {nodes} nps {(nodes * 1000) / elapsed} pv {bestMove.ToString().Substring(7, bestMove.ToString().Length - 8)}"); // #DEBUG
+            Console.WriteLine($"info depth {depth} " + // #DEBUG
+                              $"score cp {score} " + // #DEBUG
+                              $"time {timer.MillisecondsElapsedThisTurn} " + // #DEBUG
+                              $"nodes {nodes} " + // #DEBUG
+                              $"nps {(nodes * 1000) / elapsed} " + // #DEBUG
+                              $"pv {bestMove.ToString().Substring(7, bestMove.ToString().Length - 8)}"); // #DEBUG
         }
 
         return bestMove;

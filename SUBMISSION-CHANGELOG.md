@@ -1448,3 +1448,30 @@ Score of ChessChallenge vs ChessChallengeDev: 6415 - 6062 - 8123  [0.509] 20600
 ...      White vs Black: 7850 - 4627 - 8123  [0.578] 20600
 Elo difference: 6.0 +/- 3.7, LOS: 99.9 %, DrawRatio: 39.4 %
 ```
+
+### 1.43.1
+Reduce token count
+
+Implemented by Goh CJ (cj5716)
+
+974 tokens (-25)
+
+```
+info depth 1 score cp 57 time 33 nodes 22 nps 666 pv b1c3
+info depth 2 score cp 0 time 34 nodes 103 nps 3029 pv b1c3
+info depth 3 score cp 57 time 34 nodes 237 nps 6970 pv b1c3
+info depth 4 score cp 0 time 36 nodes 1083 nps 30083 pv b1c3
+info depth 5 score cp 32 time 37 nodes 1666 nps 45027 pv b1c3
+info depth 6 score cp 0 time 42 nodes 4515 nps 107500 pv b1c3
+info depth 7 score cp 43 time 46 nodes 7734 nps 168130 pv b1c3
+info depth 8 score cp 2 time 67 nodes 21769 nps 324910 pv b1c3
+info depth 9 score cp 18 time 80 nodes 33714 nps 421425 pv b1c3
+info depth 10 score cp 0 time 115 nodes 64795 nps 563434 pv b1c3
+info depth 11 score cp 24 time 232 nodes 184284 nps 794327 pv b1c3
+info depth 12 score cp 30 time 329 nodes 286374 nps 870437 pv b1c3
+info depth 13 score cp 30 time 397 nodes 357542 nps 900609 pv b1c3
+info depth 14 score cp 12 time 1064 nodes 1070964 nps 1006545 pv b1c3
+info depth 15 score cp 12 time 1450 nodes 1480979 nps 1021364 pv b1c3
+info depth 16 score cp 14 time 1784 nodes 1840374 nps 1031599 pv b1c3
+bestmove b1c3
+```
