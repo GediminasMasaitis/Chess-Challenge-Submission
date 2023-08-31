@@ -69,8 +69,8 @@ public class MyBot : IChessBot
 
                         // Material and PSTs
                         score += material[pieceIndex]
-                              +  Extract(pstRanks[pieceIndex], sq / 8) * 2
-                              +  Extract(pstFiles[pieceIndex], sq % 8) * 2;
+                              + (Extract(pstRanks[pieceIndex], sq / 8)
+                              +  Extract(pstFiles[pieceIndex], sq % 8)) * 2;
                     }
                 }
             }
