@@ -43,12 +43,12 @@ public class MyBot : IChessBot
             if (inCheck)
                 depth++;
 
-            var (inQsearch, bestScore, doPruning, score, color) = (depth <= 0, -inf, inZeroWindow && !inCheck, 0, 2);
+            var (inQsearch, bestScore, doPruning, score) = (depth <= 0, -inf, inZeroWindow && !inCheck, 0);
 
             // Evaluation inlined into search
-            for (; --color >= 0; score = -score)
+            foreach (bool isWhite in new[] {false, true})
             {
-                var isWhite = color == 0;
+                score = -score;
 
                 //       None (skipped)               King
                 for (var pieceIndex = 0; ++pieceIndex <= 6;)
@@ -77,7 +77,7 @@ public class MyBot : IChessBot
                         }
 
                         // Flip square if black
-                        sq ^= 56 * color;
+                        if (!isWhite) sq ^= 56;
 
                         // Material and PSTs
                         score += material[pieceIndex]
@@ -87,7 +87,7 @@ public class MyBot : IChessBot
                 }
             }
 
-            score = board.IsWhiteToMove ? -score : score;
+            score = board.IsWhiteToMove ? score : -score;
 
             if (inQsearch)
             {
