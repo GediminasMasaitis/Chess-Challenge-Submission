@@ -37,13 +37,14 @@ public class MyBot : IChessBot
             if (ply > 0 && board.IsRepeatedPosition())
                 return 0;
             
-            var (inCheck, inZeroWindow, key) = (board.IsInCheck(), alpha == beta - 1, board.ZobristKey);
+            bool inCheck = board.IsInCheck(), 
+                 inZeroWindow = alpha == beta - 1;
 
             // If we are in check, we should search deeper
             if (inCheck)
                 depth++;
 
-            var (inQsearch, bestScore, doPruning, score) = (depth <= 0, -inf, inZeroWindow && !inCheck, 0);
+            var (key, inQsearch, bestScore, doPruning, score) = (board.ZobristKey, depth <= 0, -inf, inZeroWindow && !inCheck, 0);
 
             // Evaluation inlined into search
             foreach (bool isWhite in new[] {false, true})
