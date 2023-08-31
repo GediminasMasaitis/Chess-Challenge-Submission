@@ -92,27 +92,27 @@ public class MyBot : IChessBot
             if (inCheck)
                 depth++;
 
-            var (inQsearch, staticScore, score, bestScore, doPruning) = (depth <= 0, Evaluate(), 0, -inf, inZeroWindow && !inCheck);
+            var (inQsearch, score, bestScore, doPruning) = (depth <= 0, Evaluate(), -inf, inZeroWindow && !inCheck);
 
             if (inQsearch)
             {
-                if (staticScore >= beta)
-                    return staticScore;
+                if (score >= beta)
+                    return score;
 
-                if (staticScore > alpha)
-                    alpha = staticScore;
+                if (score > alpha)
+                    alpha = score;
 
-                bestScore = staticScore;
+                bestScore = score;
             }
 
             else if (doPruning)
             {
                 // Reverse futility pruning
-                if (depth < 5 && staticScore - depth * 100 > beta)
+                if (depth < 5 && score - depth * 100 > beta)
                     return beta;
 
                 // Null move pruning
-                if (nullAllowed && staticScore >= beta && depth > 2)
+                if (nullAllowed && score >= beta && depth > 2)
                 {
                     board.ForceSkipTurn();
                     score = -Search(ply + 1, depth - 4 - depth / 6, -beta, -beta + 1, false, out _);
