@@ -29,11 +29,23 @@ public class MyBot : IChessBot
 
         long nodes = 0; // #DEBUG
 
-        int Evaluate()
+        int Search(int ply, int depth, int alpha, int beta, bool nullAllowed, out Move bestMove)
         {
-            int score = 0,
-                color = 2;
+            bestMove = default;
 
+            // Repetition detection
+            if (ply > 0 && board.IsRepeatedPosition())
+                return 0;
+            
+            var (inCheck, inZeroWindow, key) = (board.IsInCheck(), alpha == beta - 1, board.ZobristKey);
+
+            // If we are in check, we should search deeper
+            if (inCheck)
+                depth++;
+
+            var (inQsearch, bestScore, doPruning, score, color) = (depth <= 0, -inf, inZeroWindow && !inCheck, 0, 2);
+
+            // Evaluation inlined into search
             for (; --color >= 0; score = -score)
             {
                 var isWhite = color == 0;
@@ -75,24 +87,7 @@ public class MyBot : IChessBot
                 }
             }
 
-            return board.IsWhiteToMove ? -score : score;
-        }
-
-        int Search(int ply, int depth, int alpha, int beta, bool nullAllowed, out Move bestMove)
-        {
-            bestMove = default;
-
-            // Repetition detection
-            if (ply > 0 && board.IsRepeatedPosition())
-                return 0;
-            
-            var (inCheck, inZeroWindow, key) = (board.IsInCheck(), alpha == beta - 1, board.ZobristKey);
-
-            // If we are in check, we should search deeper
-            if (inCheck)
-                depth++;
-
-            var (inQsearch, score, bestScore, doPruning) = (depth <= 0, Evaluate(), -inf, inZeroWindow && !inCheck);
+            score = board.IsWhiteToMove ? -score : score;
 
             if (inQsearch)
             {
