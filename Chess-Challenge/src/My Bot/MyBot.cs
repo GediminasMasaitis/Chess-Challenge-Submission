@@ -239,9 +239,6 @@ public class MyBot : IChessBot
             return bestScore;
         }
 
-
-        nodes = 0; // #DEBUG
-
         Move bestMove = default;
         int score = 0,
             depth = 0;
