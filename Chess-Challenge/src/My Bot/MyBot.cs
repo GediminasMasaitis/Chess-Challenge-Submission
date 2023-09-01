@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using ChessChallenge.API;
 
@@ -148,8 +149,8 @@ public class MyBot : IChessBot
                                                                                : quietHistory[move.RawValue & 4095]);
 
             byte flag = 0, // Upper
-                 movesEvaluated = 0,
-                 quietsEvaluated = 0;
+                movesEvaluated = 0;
+            var quietsEvaluated = new List<Move>();
 
             // Loop over each legal move
             foreach (var move in moves)
@@ -173,8 +174,6 @@ public class MyBot : IChessBot
 
                 // Count the number of moves we have evaluated for detecting mates and stalemates
                 movesEvaluated++;
-                if (isQuiet)
-                    quietsEvaluated++;
 
                 // If the move is better than our current best, update our best move
                 if (score > bestScore)
@@ -195,6 +194,8 @@ public class MyBot : IChessBot
                             if (isQuiet)
                             {
                                 quietHistory[move.RawValue & 4095] += depth * depth;
+                                foreach (var previousMove in quietsEvaluated)
+                                    quietHistory[previousMove.RawValue & 4095] -= depth * depth;
                                 killers[ply] = move;
                             }
 
@@ -205,8 +206,11 @@ public class MyBot : IChessBot
                     }
                 }
 
+                if (isQuiet)
+                    quietsEvaluated.Add(move);
+
                 // Late move pruning
-                if (doPruning && quietsEvaluated > 3 + 2 * depth * depth)
+                if (doPruning && quietsEvaluated.Count > 3 + 2 * depth * depth)
                     break;
             }
 
