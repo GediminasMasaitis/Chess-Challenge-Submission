@@ -1507,3 +1507,29 @@ Score of ChessChallenge vs ChessChallengeDev: 9845 - 9410 - 12745  [0.507] 32000
 ...      White vs Black: 12328 - 6927 - 12745  [0.584] 32000
 Elo difference: 4.7 +/- 2.9, LOS: 99.9 %, DrawRatio: 39.8 %
 ```
+
+### 1.44.1
+Reduce token count via an approach inspired by Tyrant7 in his submission here: https://github.com/Tyrant7/Chess-Challenge
+
+Implemented by Goh CJ (cj5716)
+
+953 tokens (-21)
+
+```
+info depth 1 score cp 42 time 38 nodes 22 nps 578 pv b1c3
+info depth 2 score cp 15 time 39 nodes 82 nps 2102 pv b1c3
+info depth 3 score cp 42 time 39 nodes 200 nps 5128 pv b1c3
+info depth 4 score cp 15 time 40 nodes 598 nps 14950 pv b1c3
+info depth 5 score cp 17 time 41 nodes 1411 nps 34414 pv b1c3
+info depth 6 score cp 15 time 44 nodes 3101 nps 70477 pv b1c3
+info depth 7 score cp 28 time 49 nodes 5802 nps 118408 pv b1c3
+info depth 8 score cp 15 time 58 nodes 12012 nps 207103 pv b1c3
+info depth 9 score cp 3 time 83 nodes 28596 nps 344530 pv b1c3
+info depth 10 score cp 20 time 139 nodes 74480 nps 535827 pv b1c3
+info depth 11 score cp 12 time 196 nodes 130481 nps 665719 pv b1c3
+info depth 12 score cp 26 time 283 nodes 219024 nps 773936 pv b1c3
+info depth 13 score cp 21 time 680 nodes 626848 nps 921835 pv e2e4
+info depth 14 score cp 27 time 926 nodes 887775 nps 958720 pv e2e4
+info depth 15 score cp 20 time 1984 nodes 2031158 nps 1023769 pv e2e4
+bestmove e2e4
+```
