@@ -1513,4 +1513,4 @@ Reduce token count via an approach inspired by Tyrant7.
 
 Implemented by Goh CJ (cj5716)
 
-961 tokens (-13)
+956 tokens (-18)

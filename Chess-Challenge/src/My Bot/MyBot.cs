@@ -88,7 +88,7 @@ public class MyBot : IChessBot
                 }
             }
 
-            // Local method for similar calls to Search, inspired by Tyrant's approach.
+            // Local method for similar calls to Search, inspired by Tyrant7's approach.
             int defaultSearch(int beta, int reduction = 1, bool nullAllowed = true) => score = -Search(ply + 1, depth - reduction, -beta, -alpha, nullAllowed, out _);
 
 
@@ -159,13 +159,11 @@ public class MyBot : IChessBot
 
                 bool isQuiet = !move.IsCapture;
 
-                if (inQsearch || movesEvaluated == 0)
-                    defaultSearch(beta);
-
-                else if ((depth > 2 && movesEvaluated > 4 && isQuiet 
-                        ? defaultSearch(alpha + 1, 2 + depth / 8 + movesEvaluated / 16 + Convert.ToInt32(inZeroWindow))
-                        : alpha + 1) > alpha
-                        && alpha < defaultSearch(alpha + 1) && score < beta)
+                if (inQsearch || movesEvaluated == 0 // No PVS for first move or qsearch
+                || (depth > 2 && movesEvaluated > 4 && isQuiet // Conditions to do LMR
+                  ? defaultSearch(alpha + 1, 2 + depth / 8 + movesEvaluated / 16 + Convert.ToInt32(inZeroWindow))
+                  : alpha + 1) > alpha // Raised alpha
+                 && alpha < defaultSearch(alpha + 1) && score < beta)
                     defaultSearch(beta);
 
                 board.UndoMove(move);
