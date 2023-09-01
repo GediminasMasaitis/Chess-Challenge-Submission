@@ -106,7 +106,7 @@ public class MyBot : IChessBot
             else if (doPruning)
             {
                 // Reverse futility pruning
-                if (depth < 5 && score - depth * 100 > beta)
+                if (depth < 7 && score - depth * 100 > beta)
                     return beta;
 
                 // Null move pruning
