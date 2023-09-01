@@ -88,6 +88,10 @@ public class MyBot : IChessBot
                 }
             }
 
+            // Local method for similar calls to Search, inspired by Tyrant's approach.
+            int defaultSearch(int beta, int reduction = 1, bool nullAllowed = true) => score = -Search(ply + 1, depth - reduction, -beta, -alpha, nullAllowed, out _);
+
+
             if (inQsearch)
             {
                 if (score >= beta)
@@ -109,7 +113,7 @@ public class MyBot : IChessBot
                 if (nullAllowed && score >= beta && depth > 2)
                 {
                     board.ForceSkipTurn();
-                    score = -Search(ply + 1, depth - 4 - depth / 6, -beta, -beta + 1, false, out _);
+                    defaultSearch(beta, 4 + depth / 6, false);
                     board.UndoSkipTurn();
                     if (score >= beta)
                         return beta;
@@ -155,34 +159,14 @@ public class MyBot : IChessBot
 
                 bool isQuiet = !move.IsCapture;
 
-                // Principal variation search
-                int childAlpha = inQsearch || movesEvaluated == 0 ? beta : alpha + 1,
+                if (inQsearch || movesEvaluated == 0)
+                    defaultSearch(beta);
 
-                // Late move reductions
-                reduction = depth > 2 && movesEvaluated > 4 && isQuiet ? 
-                            2 + depth / 8 + movesEvaluated / 16 + Convert.ToInt32(inZeroWindow)
-                          : 1;
-
-                doSearch:
-                score = -Search(ply + 1, depth - reduction, -childAlpha, -alpha, true, out _);
-
-                // If score raises alpha, we see if we should do a re-search
-                if (score > alpha)
-                {
-                    // If we reduced the search previously, we research without a reduction, using the same window as before
-                    if (reduction > 1)
-                    {
-                        reduction = 1;
-                        goto doSearch;
-                    }
-
-                    // If the result score is within the current bounds, we must research with a full window
-                    if (childAlpha != beta && score < beta)
-                    {
-                        childAlpha = beta;
-                        goto doSearch;
-                    }
-                }
+                else if ((depth > 2 && movesEvaluated > 4 && isQuiet 
+                        ? defaultSearch(alpha + 1, 2 + depth / 8 + movesEvaluated / 16 + Convert.ToInt32(inZeroWindow))
+                        : alpha + 1) > alpha
+                        && alpha < defaultSearch(alpha + 1) && score < beta)
+                    defaultSearch(beta);
 
                 board.UndoMove(move);
 
