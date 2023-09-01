@@ -162,7 +162,7 @@ public class MyBot : IChessBot
 
                 if (inQsearch || movesEvaluated == 0 // No PVS for first move or qsearch
                 || (depth <= 2 || movesEvaluated <= 4 || !isQuiet // Conditions not to do LMR
-                ||  defaultSearch(alpha + 1, 2 + depth / 8 + movesEvaluated / 16 + Convert.ToInt32(inZeroWindow)) > alpha) // LMR search raised alpha
+                ||  defaultSearch(alpha + 1, 2 + depth / 8 + movesEvaluated / 16 + Convert.ToInt32(inZeroWindow) - Convert.ToInt32(quietHistory[move.RawValue & 4095] > 0)) > alpha) // LMR search raised alpha
                 &&  alpha < defaultSearch(alpha + 1) && score < beta) // Full depth search failed high
                     defaultSearch(beta); // Do full window search
 
