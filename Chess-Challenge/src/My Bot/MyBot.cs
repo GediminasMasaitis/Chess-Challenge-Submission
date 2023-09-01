@@ -160,10 +160,10 @@ public class MyBot : IChessBot
                 bool isQuiet = !move.IsCapture;
 
                 if (inQsearch || movesEvaluated == 0 // No PVS for first move or qsearch
-                || (depth > 2 && movesEvaluated > 4 && isQuiet // Conditions to do LMR
-                  ? defaultSearch(alpha + 1, 2 + depth / 8 + movesEvaluated / 16 + Convert.ToInt32(inZeroWindow))
-                  : alpha + 1) > alpha // Raised alpha
-                 && alpha < defaultSearch(alpha + 1) && score < beta)
+
+                || (depth <= 2 || movesEvaluated <= 4 || !isQuiet // Conditions not to do LMR
+                ||  defaultSearch(alpha + 1, 2 + depth / 8 + movesEvaluated / 16 + Convert.ToInt32(inZeroWindow)) > alpha) // Raised alpha
+                &&  alpha < defaultSearch(alpha + 1) && score < beta)
                     defaultSearch(beta);
 
                 board.UndoMove(move);
