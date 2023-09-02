@@ -1726,7 +1726,7 @@ Score of ChessChallengeDev vs ChessChallenge1.34: 1332 - 505 - 663  [0.665] 2500
 Elo difference: 119.4 +/- 12.1, LOS: 100.0 %, DrawRatio: 26.5 %
 ```
 
-### 1.48.1
+### 1.49.1
 Reduce token count
 
-1000 tokens (-1)
+998 tokens (-1)
