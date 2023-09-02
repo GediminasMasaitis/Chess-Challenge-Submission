@@ -23,7 +23,8 @@ public class MyBot : IChessBot
 
     public Move Think(Board board, Timer timer)
     {
-        var (killers, inf, mate, allocatedTime, i, rootBestMove) = (new Move[256], 2000000, 1000000, timer.MillisecondsRemaining / 8, 0, Move.NullMove);
+        Move rootBestMove = default;
+        var (killers, inf, mate, allocatedTime, i) = (new Move[256], 2000000, 1000000, timer.MillisecondsRemaining / 8, 0);
 
         // Decay quiet history instead of clearing it
         for (; i < 4096; quietHistory[i++] /= 8) ;
