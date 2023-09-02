@@ -210,7 +210,7 @@ public class MyBot : IChessBot
                     quietsEvaluated.Add(move);
 
                 // Late move pruning
-                if (doPruning && quietsEvaluated.Count > 3 + 2 * depth * depth)
+                if (doPruning && quietsEvaluated.Count > 3 + depth * depth)
                     break;
             }
 
