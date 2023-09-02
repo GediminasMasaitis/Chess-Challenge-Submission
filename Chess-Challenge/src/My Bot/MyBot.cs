@@ -143,14 +143,14 @@ public class MyBot : IChessBot
             bestMove = ttMove;
 
             // Move generation, best-known move then MVV-LVA ordering then killers then quiet move history
-            var moves = board.GetLegalMoves(inQsearch).OrderByDescending(move => move == ttMove ? 9000000000000000000
-                                                                               : move.IsCapture ? 8000000000000000000 + (long)move.CapturePieceType * 1000 - (long)move.MovePieceType
-                                                                               : move == killers[ply] ? 7000000000000000000
-                                                                               : quietHistory[move.RawValue & 4095]);
+            var (moves, quietsEvaluated, movesEvaluated) = (board.GetLegalMoves(inQsearch).OrderByDescending(move => move == ttMove ? 9000000000000000000
+                                                                                                                   : move.IsCapture ? 8000000000000000000 + (long)move.CapturePieceType * 1000 - (long)move.MovePieceType
+                                                                                                                   : move == killers[ply] ? 7000000000000000000
+                                                                                                                   : quietHistory[move.RawValue & 4095]),
+                                                            new List<Move>(),
+                                                            0);
 
-            byte flag = 0, // Upper
-                movesEvaluated = 0;
-            var quietsEvaluated = new List<Move>();
+            byte flag = 0; // Upper
 
             // Loop over each legal move
             foreach (var move in moves)
