@@ -1729,4 +1729,6 @@ Elo difference: 119.4 +/- 12.1, LOS: 100.0 %, DrawRatio: 26.5 %
 ### 1.49.1
 Reduce token count
 
+Implemented by Goh CJ (cj5716)
+
 991 tokens (-8)
