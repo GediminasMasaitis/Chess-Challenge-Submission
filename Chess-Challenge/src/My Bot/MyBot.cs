@@ -19,13 +19,11 @@ public class MyBot : IChessBot
     ulong[] pstRanks = { 0, 32408100782142720, 16574112021868640239, 18014406223260090617, 796584101102809849, 70654625790754818, 17298066748544776942 },
             pstFiles = { 0, 18016651413102002942, 17654401953025031403, 18231695001086198523, 17653269425882988797, 145242196134722807, 17511685300639041005 };
 
-    Move rootBestMove = default;
-
     sbyte Extract(ulong term, int index) => (sbyte)(term >> (index * 8) & 0xFF);
 
     public Move Think(Board board, Timer timer)
     {
-        var (killers, inf, mate, allocatedTime, i) = (new Move[256], 2000000, 1000000, timer.MillisecondsRemaining / 8, 0);
+        var (killers, inf, mate, allocatedTime, i, rootBestMove) = (new Move[256], 2000000, 1000000, timer.MillisecondsRemaining / 8, 0, Move.NullMove);
 
         // Decay quiet history instead of clearing it
         for (; i < 4096; quietHistory[i++] /= 8) ;
@@ -140,15 +138,14 @@ public class MyBot : IChessBot
                     depth--;
             }
 
-            Move bestMove = ttMove;
-
             // Move generation, best-known move then MVV-LVA ordering then killers then quiet move history
-            var (moves, quietsEvaluated, movesEvaluated) = (board.GetLegalMoves(inQsearch).OrderByDescending(move => move == ttMove ? 9000000000000000000
-                                                                                                                   : move.IsCapture ? 8000000000000000000 + (long)move.CapturePieceType * 1000 - (long)move.MovePieceType
-                                                                                                                   : move == killers[ply] ? 7000000000000000000
-                                                                                                                   : quietHistory[move.RawValue & 4095]),
-                                                            new List<Move>(),
-                                                            0);
+            var (bestMove, moves, quietsEvaluated, movesEvaluated) = (ttMove,
+                                                                      board.GetLegalMoves(inQsearch).OrderByDescending(move => move == ttMove ? 9000000000000000000
+                                                                                                                     : move.IsCapture ? 8000000000000000000 + (long)move.CapturePieceType * 1000 - (long)move.MovePieceType
+                                                                                                                     : move == killers[ply] ? 7000000000000000000
+                                                                                                                     : quietHistory[move.RawValue & 4095]),
+                                                                      new List<Move>(),
+                                                                      0);
 
             byte flag = 0; // Upper
 
@@ -225,7 +222,6 @@ public class MyBot : IChessBot
             return bestScore;
         }
 
-        Move bestMove = default;
         int score = 0,
             depth = 0;
 
