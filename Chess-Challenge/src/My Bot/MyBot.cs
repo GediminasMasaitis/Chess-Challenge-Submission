@@ -23,6 +23,7 @@ public class MyBot : IChessBot
 
     public Move Think(Board board, Timer timer)
     {
+        Move rootBestMove = default;
         var (killers, inf, mate, allocatedTime, i) = (new Move[256], 2000000, 1000000, timer.MillisecondsRemaining / 8, 0);
 
         // Decay quiet history instead of clearing it
@@ -30,10 +31,8 @@ public class MyBot : IChessBot
 
         long nodes = 0; // #DEBUG
 
-        int Search(int ply, int depth, int alpha, int beta, bool nullAllowed, out Move bestMove)
+        int Search(int ply, int depth, int alpha, int beta, bool nullAllowed)
         {
-            bestMove = default;
-
             // Repetition detection
             if (ply > 0 && board.IsRepeatedPosition())
                 return 0;
@@ -90,7 +89,7 @@ public class MyBot : IChessBot
             }
 
             // Local method for similar calls to Search, inspired by Tyrant7's approach.
-            int defaultSearch(int beta, int reduction = 1, bool nullAllowed = true) => score = -Search(ply + 1, depth - reduction, -beta, -alpha, nullAllowed, out _);
+            int defaultSearch(int beta, int reduction = 1, bool nullAllowed = true) => score = -Search(ply + 1, depth - reduction, -beta, -alpha, nullAllowed);
 
 
             if (inQsearch)
@@ -140,17 +139,16 @@ public class MyBot : IChessBot
                     depth--;
             }
 
-            bestMove = ttMove;
-
             // Move generation, best-known move then MVV-LVA ordering then killers then quiet move history
-            var moves = board.GetLegalMoves(inQsearch).OrderByDescending(move => move == ttMove ? 9000000000000000000
-                                                                               : move.IsCapture ? 8000000000000000000 + (long)move.CapturePieceType * 1000 - (long)move.MovePieceType
-                                                                               : move == killers[ply] ? 7000000000000000000
-                                                                               : quietHistory[move.RawValue & 4095]);
+            var (bestMove, moves, quietsEvaluated, movesEvaluated) = (ttMove,
+                                                                      board.GetLegalMoves(inQsearch).OrderByDescending(move => move == ttMove ? 9000000000000000000
+                                                                                                                     : move.IsCapture ? 8000000000000000000 + (long)move.CapturePieceType * 1000 - (long)move.MovePieceType
+                                                                                                                     : move == killers[ply] ? 7000000000000000000
+                                                                                                                     : quietHistory[move.RawValue & 4095]),
+                                                                      new List<Move>(),
+                                                                      0);
 
-            byte flag = 0, // Upper
-                movesEvaluated = 0;
-            var quietsEvaluated = new List<Move>();
+            byte flag = 0; // Upper
 
             // Loop over each legal move
             foreach (var move in moves)
@@ -184,6 +182,7 @@ public class MyBot : IChessBot
                     if (score > alpha)
                     {
                         bestMove = move;
+                        if (ply == 0) rootBestMove = move;
                         alpha = score;
                         flag = 2; // Exact
 
@@ -224,7 +223,6 @@ public class MyBot : IChessBot
             return bestScore;
         }
 
-        Move bestMove = default;
         int score = 0,
             depth = 0;
 
@@ -236,7 +234,7 @@ public class MyBot : IChessBot
 
             research:
             // Search with the current window
-            var newScore = Search(0, depth, score - window, score + window, false, out var move);
+            var newScore = Search(0, depth, score - window, score + window, false);
 
             // Hard time limit
             // If we are out of time, we cannot trust the move that was found
@@ -253,7 +251,6 @@ public class MyBot : IChessBot
             }
 
             score = newScore;
-            bestMove = move;
 
             var elapsed = timer.MillisecondsElapsedThisTurn > 0 ? timer.MillisecondsElapsedThisTurn : 1; // #DEBUG
             Console.WriteLine($"info depth {depth} " + // #DEBUG
@@ -261,9 +258,9 @@ public class MyBot : IChessBot
                               $"time {timer.MillisecondsElapsedThisTurn} " + // #DEBUG
                               $"nodes {nodes} " + // #DEBUG
                               $"nps {(nodes * 1000) / elapsed} " + // #DEBUG
-                              $"pv {bestMove.ToString().Substring(7, bestMove.ToString().Length - 8)}"); // #DEBUG
+                              $"pv {rootBestMove.ToString().Substring(7, rootBestMove.ToString().Length - 8)}"); // #DEBUG
         }
 
-        return bestMove;
+        return rootBestMove;
     }
 }
