@@ -1751,3 +1751,10 @@ info depth 14 score cp 36 time 1084 nodes 1000291 nps 922777 pv b1c3
 info depth 15 score cp 36 time 1580 nodes 1493149 nps 945031 pv b1c3
 bestmove b1c3
 ```
+
+### 1.49.2
+Reduce token count
+
+Implemented by Goh CJ (cj5716)
+
+985 tokens (-6)

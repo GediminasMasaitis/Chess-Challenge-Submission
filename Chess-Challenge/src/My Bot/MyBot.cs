@@ -67,15 +67,11 @@ public class MyBot : IChessBot
                         if ((0x101010101010101UL << sq % 8 & ~(1UL << sq) & board.GetPieceBitboard(PieceType.Pawn, isWhite)) == 0)
                             score += Extract(69534330849924352, pieceIndex);
 
-                        // For bishop, rook, queen and king
-                        if (pieceIndex > 2)
-                        {
-                            // Mobility
-                            var mobility = BitboardHelper.GetPieceAttacks((PieceType)pieceIndex, new Square(sq), board, isWhite) & ~(isWhite ? board.WhitePiecesBitboard : board.BlackPiecesBitboard);
-                            score += Extract(70933906139906048, pieceIndex) * BitboardHelper.GetNumberOfSetBits(mobility)
-                            // King attacks
-                                  +  Extract(6221049792299008, pieceIndex) * BitboardHelper.GetNumberOfSetBits(mobility & BitboardHelper.GetKingAttacks(board.GetKingSquare(!isWhite)));
-                        }
+                        // Mobility for bishop, rook, queen and king
+                        var mobility = BitboardHelper.GetPieceAttacks((PieceType)pieceIndex, new Square(sq), board, isWhite) & ~(isWhite ? board.WhitePiecesBitboard : board.BlackPiecesBitboard);
+                        score += Extract(70933906139906048, pieceIndex) * BitboardHelper.GetNumberOfSetBits(mobility)
+                        // King attacks
+                              +  Extract(6221049792299008, pieceIndex) * BitboardHelper.GetNumberOfSetBits(mobility & BitboardHelper.GetKingAttacks(board.GetKingSquare(!isWhite)));
 
                         // Flip square if black
                         if (!isWhite) sq ^= 56;
