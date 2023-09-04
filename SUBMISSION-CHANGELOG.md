@@ -1,4 +1,4 @@
-Engines tested against:
+ Engines tested against:
 
 | Name | Version | ELO |
 | --- | --- | --- |
@@ -1675,11 +1675,7 @@ Score of ChessChallenge vs ChessChallengeTier2: 1891 - 27 - 82  [0.966] 2000
 ...      White vs Black: 990 - 928 - 82  [0.515] 2000
 Elo difference: 581.4 +/- 35.2, LOS: 100.0 %, DrawRatio: 4.1 %
 
-Score of ChessChallenge vs 4ku1.0: 564 - 1053 - 383  [0.378] 2000
-...      ChessChallenge playing White: 343 - 435 - 222  [0.454] 1000
-...      ChessChallenge playing Black: 221 - 618 - 161  [0.301] 1000
-...      White vs Black: 961 - 656 - 383  [0.576] 2000
-Elo difference: -86.7 +/- 14.0, LOS: 0.0 %, DrawRatio: 19.1 %
+cx
 ```
 
 ### 1.49
@@ -1750,4 +1746,21 @@ info depth 13 score cp 13 time 621 nodes 552393 nps 889521 pv b1c3
 info depth 14 score cp 36 time 1084 nodes 1000291 nps 922777 pv b1c3
 info depth 15 score cp 36 time 1580 nodes 1493149 nps 945031 pv b1c3
 bestmove b1c3
+```
+
+### 1.50
+Reverse futility pruning fail-soft
+
+991 tokens (=)
+
+```
+
+```
+
+```
+Score of ChessChallenge vs ChessChallengeDev: 24880 - 23812 - 30308  [0.507] 79000
+...      ChessChallenge playing White: 15898 - 8405 - 15197  [0.595] 39500
+...      ChessChallenge playing Black: 8982 - 15407 - 15111  [0.419] 39500
+...      White vs Black: 31305 - 17387 - 30308  [0.588] 79000
+Elo difference: 4.7 +/- 1.9, LOS: 100.0 %, DrawRatio: 38.4 %
 ```
