@@ -1754,7 +1754,23 @@ Reverse futility pruning fail-soft
 991 tokens (=)
 
 ```
-
+info depth 1 score cp 42 time 44 nodes 22 nps 500 pv b1c3
+info depth 2 score cp 15 time 45 nodes 82 nps 1822 pv b1c3
+info depth 3 score cp 42 time 45 nodes 190 nps 4222 pv b1c3
+info depth 4 score cp 15 time 47 nodes 552 nps 11744 pv b1c3
+info depth 5 score cp 17 time 48 nodes 1134 nps 23625 pv b1c3
+info depth 6 score cp 15 time 50 nodes 2787 nps 55740 pv b1c3
+info depth 7 score cp 28 time 57 nodes 6981 nps 122473 pv b1c3
+info depth 8 score cp 15 time 65 nodes 12074 nps 185753 pv b1c3
+info depth 9 score cp 14 time 102 nodes 35644 nps 349450 pv b1c3
+info depth 10 score cp 20 time 138 nodes 66453 nps 481543 pv b1c3
+info depth 11 score cp 15 time 196 nodes 122453 nps 624760 pv b1c3
+info depth 12 score cp 23 time 306 nodes 226899 nps 741500 pv b1c3
+info depth 13 score cp 15 time 500 nodes 415023 nps 830046 pv b1c3
+info depth 14 score cp 40 time 999 nodes 901024 nps 901925 pv b1c3
+info depth 15 score cp 28 time 1327 nodes 1212429 nps 913661 pv b1c3
+info depth 16 score cp 25 time 2040 nodes 1920485 nps 941414 pv b1c3
+bestmove b1c3
 ```
 
 ```
