@@ -19,12 +19,12 @@ public class MyBot : IChessBot
     ulong[] pstRanks = { 0, 32408100782142720, 16574112021868640239, 18014406223260090617, 796584101102809849, 70654625790754818, 17298066748544776942 },
             pstFiles = { 0, 18016651413102002942, 17654401953025031403, 18231695001086198523, 17653269425882988797, 145242196134722807, 17511685300639041005 };
 
-    sbyte Extract(ulong term, int index) => (sbyte)(term >> (index * 8) & 0xFF);
+    sbyte Extract(ulong term, int index) => (sbyte)(term >> index * 8 & 0xFF);
 
     public Move Think(Board board, Timer timer)
     {
         Move rootBestMove = default;
-        var (killers, inf, mate, allocatedTime, i) = (new Move[256], 2000000, 1000000, timer.MillisecondsRemaining / 8, 0);
+        var (killers, allocatedTime, i) = (new Move[256], timer.MillisecondsRemaining / 8, 0);
 
         // Decay quiet history instead of clearing it
         for (; i < 4096; quietHistory[i++] /= 8) ;
@@ -44,7 +44,9 @@ public class MyBot : IChessBot
             if (inCheck)
                 depth++;
 
-            var (key, inQsearch, bestScore, doPruning, score) = (board.ZobristKey, depth <= 0, -inf, inZeroWindow && !inCheck, 15);
+            // -2000000 = -inf
+            // Use 15 tempo for evaluation
+            var (key, inQsearch, bestScore, doPruning, score) = (board.ZobristKey, depth <= 0, -2_000_000, inZeroWindow && !inCheck, 15);
 
             // Evaluation inlined into search
             foreach (bool isWhite in new[] {!board.IsWhiteToMove, board.IsWhiteToMove})
@@ -141,9 +143,9 @@ public class MyBot : IChessBot
 
             // Move generation, best-known move then MVV-LVA ordering then killers then quiet move history
             var (bestMove, moves, quietsEvaluated, movesEvaluated) = (ttMove,
-                                                                      board.GetLegalMoves(inQsearch).OrderByDescending(move => move == ttMove ? 9000000000000000000
-                                                                                                                     : move.IsCapture ? 8000000000000000000 + (long)move.CapturePieceType * 1000 - (long)move.MovePieceType
-                                                                                                                     : move == killers[ply] ? 7000000000000000000
+                                                                      board.GetLegalMoves(inQsearch).OrderByDescending(move => move == ttMove ? 9_000_000_000_000_000_000
+                                                                                                                     : move.IsCapture ? 8_000_000_000_000_000_000 + (long)move.CapturePieceType * 1000 - (long)move.MovePieceType
+                                                                                                                     : move == killers[ply] ? 7_000_000_000_000_000_000
                                                                                                                      : quietHistory[move.RawValue & 4095]),
                                                                       new List<Move>(),
                                                                       0);
@@ -214,8 +216,9 @@ public class MyBot : IChessBot
             }
 
             // Checkmate / stalemate detection
+            // 1000000 = mate score
             if (movesEvaluated == 0)
-                return inQsearch ? bestScore : inCheck ? ply - mate : 0;
+                return inQsearch ? bestScore : inCheck ? ply - 1_000_000 : 0;
 
             // Store the current position in the transposition table
             TT[key % TTSize] = (key, bestMove, inQsearch ? 0 : depth, bestScore, flag);
@@ -257,7 +260,7 @@ public class MyBot : IChessBot
                               $"score cp {score} " + // #DEBUG
                               $"time {timer.MillisecondsElapsedThisTurn} " + // #DEBUG
                               $"nodes {nodes} " + // #DEBUG
-                              $"nps {(nodes * 1000) / elapsed} " + // #DEBUG
+                              $"nps {nodes * 1000 / elapsed} " + // #DEBUG
                               $"pv {rootBestMove.ToString().Substring(7, rootBestMove.ToString().Length - 8)}"); // #DEBUG
         }
 
