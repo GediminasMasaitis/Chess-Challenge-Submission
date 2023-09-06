@@ -128,7 +128,7 @@ public class MyBot : IChessBot
             if (ttKey == key)
             {
                 // If conditions match, we can trust the table entry and return immediately
-                if (ply > 0 && ttDepth >= depth && (ttFlag == 0 && ttScore <= alpha || ttFlag == 1 && ttScore >= beta || ttFlag == 2))
+                if (inZeroWindow && ttDepth >= depth && (ttFlag & (ttScore >= beta ? 2 : 1)) != 0)
                     return ttScore;
             }
             else
@@ -150,7 +150,7 @@ public class MyBot : IChessBot
                                                                       new List<Move>(),
                                                                       0);
 
-            byte flag = 0; // Upper
+            byte flag = 1; // Upper
 
             // Loop over each legal move
             foreach (var move in moves)
@@ -186,7 +186,7 @@ public class MyBot : IChessBot
                         bestMove = move;
                         if (ply == 0) rootBestMove = move;
                         alpha = score;
-                        flag = 2; // Exact
+                        flag = 3; // Exact
 
                         // If the move is better than our current beta, we can stop searching
                         if (score >= beta)
@@ -200,7 +200,7 @@ public class MyBot : IChessBot
                                 killers[ply] = move;
                             }
 
-                            flag = 1; // Lower
+                            flag = 2; // Lower
 
                             break;
                         }
