@@ -1784,7 +1784,7 @@ Elo difference: 4.7 +/- 1.9, LOS: 100.0 %, DrawRatio: 38.4 %
 ### 1.50.1
 Reduce token count
 
-986 tokens
+986 tokens (-5)
 
 ```
 info depth 1 score cp 42 time 46 nodes 22 nps 478 pv b1c3
@@ -1805,3 +1805,8 @@ info depth 15 score cp 28 time 1317 nodes 1212429 nps 920599 pv b1c3
 info depth 16 score cp 25 time 2010 nodes 1920485 nps 955465 pv b1c3
 bestmove b1c3
 ```
+
+### 1.51
+Only do TT cutoffs on non-PV nodes
+
+977 tokens (-9)
