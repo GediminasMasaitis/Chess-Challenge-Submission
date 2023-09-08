@@ -1805,3 +1805,52 @@ info depth 15 score cp 28 time 1317 nodes 1212429 nps 920599 pv b1c3
 info depth 16 score cp 25 time 2010 nodes 1920485 nps 955465 pv b1c3
 bestmove b1c3
 ```
+
+```
+5+0.05
+Score of ChessChallenge vs kimbo1.0: 8308 - 5411 - 3281  [0.585] 17000
+...      ChessChallenge playing White: 4845 - 2081 - 1574  [0.663] 8500
+...      ChessChallenge playing Black: 3463 - 3330 - 1707  [0.508] 8500
+...      White vs Black: 8175 - 5544 - 3281  [0.577] 17000
+Elo difference: 59.8 +/- 4.7, LOS: 100.0 %, DrawRatio: 19.3 %
+
+40+0.4
+Score of ChessChallenge vs kimbo1.0: 12420 - 5169 - 4411  [0.665] 22000
+...      ChessChallenge playing White: 7187 - 1875 - 1938  [0.741] 11000
+...      ChessChallenge playing Black: 5233 - 3294 - 2473  [0.588] 11000
+...      White vs Black: 10481 - 7108 - 4411  [0.577] 22000
+Elo difference: 119.0 +/- 4.3, LOS: 100.0 %, DrawRatio: 20.1 %
+```
+
+### 1.51
+No incorrect key check for TT
+
+982 tokens (-4)
+
+```
+info depth 1 score cp 42 time 36 nodes 22 nps 611 pv b1c3
+info depth 2 score cp 15 time 37 nodes 82 nps 2216 pv b1c3
+info depth 3 score cp 42 time 38 nodes 190 nps 5000 pv b1c3
+info depth 4 score cp 15 time 39 nodes 552 nps 14153 pv b1c3
+info depth 5 score cp 17 time 40 nodes 1134 nps 28350 pv b1c3
+info depth 6 score cp 15 time 43 nodes 2787 nps 64813 pv b1c3
+info depth 7 score cp 28 time 50 nodes 6981 nps 139620 pv b1c3
+info depth 8 score cp 15 time 59 nodes 12079 nps 204728 pv b1c3
+info depth 9 score cp 14 time 94 nodes 35651 nps 379265 pv b1c3
+info depth 10 score cp 20 time 130 nodes 66433 nps 511023 pv b1c3
+info depth 11 score cp 15 time 197 nodes 122474 nps 621695 pv b1c3
+info depth 12 score cp 23 time 329 nodes 241763 nps 734841 pv b1c3
+info depth 13 score cp 23 time 509 nodes 404416 nps 794530 pv b1c3
+info depth 14 score cp 28 time 845 nodes 718761 nps 850604 pv b1c3
+info depth 15 score cp 12 time 1499 nodes 1338594 nps 892991 pv b1c3
+info depth 16 score cp 23 time 2233 nodes 2084044 nps 933293 pv e2e4
+bestmove e2e4
+```
+
+```
+Score of ChessChallenge vs ChessChallengeDev: 6385 - 6464 - 8151  [0.498] 21000
+...      ChessChallenge playing White: 4161 - 2304 - 4036  [0.588] 10501
+...      ChessChallenge playing Black: 2224 - 4160 - 4115  [0.408] 10499
+...      White vs Black: 8321 - 4528 - 8151  [0.590] 21000
+Elo difference: -1.3 +/- 3.7, LOS: 24.3 %, DrawRatio: 38.8 %
+```

@@ -131,15 +131,8 @@ public class MyBot : IChessBot
                 if (ply > 0 && ttDepth >= depth && (ttFlag == 0 && ttScore <= alpha || ttFlag == 1 && ttScore >= beta || ttFlag == 2))
                     return ttScore;
             }
-            else
-            {
-                // If the table entry is not for this position, we can't trust the move to be the best known move
-                ttMove = default;
-
-                // Internal iterative reduction
-                if (depth > 3)
+            else if (depth > 3)
                     depth--;
-            }
 
             // Move generation, best-known move then MVV-LVA ordering then killers then quiet move history
             var (bestMove, moves, quietsEvaluated, movesEvaluated) = (ttMove,
