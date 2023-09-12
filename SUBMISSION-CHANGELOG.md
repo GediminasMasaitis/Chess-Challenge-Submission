@@ -1854,3 +1854,43 @@ Score of ChessChallenge vs ChessChallengeDev: 6385 - 6464 - 8151  [0.498] 21000
 ...      White vs Black: 8321 - 4528 - 8151  [0.590] 21000
 Elo difference: -1.3 +/- 3.7, LOS: 24.3 %, DrawRatio: 38.8 %
 ```
+
+### 1.52
+
+Double transposition table size
+
+```
+info depth 1 score cp 42 time 36 nodes 22 nps 611 pv b1c3
+info depth 2 score cp 15 time 37 nodes 82 nps 2216 pv b1c3
+info depth 3 score cp 42 time 37 nodes 190 nps 5135 pv b1c3
+info depth 4 score cp 15 time 38 nodes 552 nps 14526 pv b1c3
+info depth 5 score cp 17 time 40 nodes 1134 nps 28350 pv b1c3
+info depth 6 score cp 15 time 42 nodes 2787 nps 66357 pv b1c3
+info depth 7 score cp 28 time 49 nodes 6981 nps 142469 pv b1c3
+info depth 8 score cp 15 time 57 nodes 12073 nps 211807 pv b1c3
+info depth 9 score cp 14 time 94 nodes 35641 nps 379159 pv b1c3
+info depth 10 score cp 20 time 129 nodes 65348 nps 506573 pv b1c3
+info depth 11 score cp 30 time 193 nodes 123557 nps 640191 pv b1c3
+info depth 12 score cp 23 time 301 nodes 228415 nps 758853 pv b1c3
+info depth 13 score cp 15 time 544 nodes 466081 nps 856766 pv b1c3
+info depth 14 score cp 28 time 927 nodes 831548 nps 897031 pv b1c3
+info depth 15 score cp 22 time 1383 nodes 1281383 nps 926524 pv b1c3
+info depth 16 score cp 22 time 2257 nodes 2180876 nps 966272 pv b1c3
+bestmove b1c3
+```
+
+```
+5+0.05
+Score of ChessChallenge vs ChessChallengeDev: 30761 - 30943 - 38296  [0.499] 100000
+...      ChessChallenge playing White: 19928 - 10874 - 19198  [0.591] 50000
+...      ChessChallenge playing Black: 10833 - 20069 - 19098  [0.408] 50000
+...      White vs Black: 39997 - 21707 - 38296  [0.591] 100000
+Elo difference: -0.6 +/- 1.7, LOS: 23.2 %, DrawRatio: 38.3 %
+
+40+0.4
+Score of ChessChallenge vs ChessChallengeDev: 2301 - 2118 - 3581  [0.511] 8000
+...      ChessChallenge playing White: 1627 - 568 - 1806  [0.632] 4001
+...      ChessChallenge playing Black: 674 - 1550 - 1775  [0.390] 3999
+...      White vs Black: 3177 - 1242 - 3581  [0.621] 8000
+Elo difference: 7.9 +/- 5.7, LOS: 99.7 %, DrawRatio: 44.8 %
+```

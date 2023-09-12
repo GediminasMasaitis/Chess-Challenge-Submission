@@ -7,7 +7,7 @@ public class MyBot : IChessBot
 {
     long[] quietHistory = new long[4096];
 
-    const int TTSize = 1048576;
+    const int TTSize = 2097152;
     // Key, move, depth, score, flag
     (ulong, Move, int, int, byte)[] TT = new (ulong, Move, int, int, byte)[TTSize];
 
