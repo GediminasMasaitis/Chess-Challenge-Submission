@@ -135,13 +135,12 @@ public class MyBot : IChessBot
                     depth--;
 
             // Move generation, best-known move then MVV-LVA ordering then killers then quiet move history
-            var (bestMove, moves, quietsEvaluated, movesEvaluated) = (ttMove,
-                                                                      board.GetLegalMoves(inQsearch).OrderByDescending(move => move == ttMove ? 9_000_000_000_000_000_000
-                                                                                                                     : move.IsCapture ? 8_000_000_000_000_000_000 + (long)move.CapturePieceType * 1000 - (long)move.MovePieceType
-                                                                                                                     : move == killers[ply] ? 7_000_000_000_000_000_000
-                                                                                                                     : quietHistory[move.RawValue & 4095]),
-                                                                      new List<Move>(),
-                                                                      0);
+            var (moves, quietsEvaluated, movesEvaluated) = (board.GetLegalMoves(inQsearch).OrderByDescending(move => move == ttMove ? 9_000_000_000_000_000_000
+                                                                                                                   : move.IsCapture ? 8_000_000_000_000_000_000 + (long)move.CapturePieceType * 1000 - (long)move.MovePieceType
+                                                                                                                   : move == killers[ply] ? 7_000_000_000_000_000_000
+                                                                                                                   : quietHistory[move.RawValue & 4095]),
+                                                            new List<Move>(),
+                                                            0);
 
             byte flag = 0; // Upper
 
@@ -176,7 +175,7 @@ public class MyBot : IChessBot
                     // If the move is better than our current alpha, update alpha
                     if (score > alpha)
                     {
-                        bestMove = move;
+                        ttMove = move;
                         if (ply == 0) rootBestMove = move;
                         alpha = score;
                         flag = 2; // Exact
@@ -214,7 +213,7 @@ public class MyBot : IChessBot
                 return inQsearch ? bestScore : inCheck ? ply - 1_000_000 : 0;
 
             // Store the current position in the transposition table
-            TT[key % TTSize] = (key, bestMove, inQsearch ? 0 : depth, bestScore, flag);
+            TT[key % TTSize] = (key, ttMove, inQsearch ? 0 : depth, bestScore, flag);
 
             return bestScore;
         }

@@ -1784,7 +1784,7 @@ Elo difference: 4.7 +/- 1.9, LOS: 100.0 %, DrawRatio: 38.4 %
 ### 1.50.1
 Reduce token count
 
-986 tokens
+986 tokens (-5)
 
 ```
 info depth 1 score cp 42 time 46 nodes 22 nps 478 pv b1c3
@@ -1856,8 +1856,9 @@ Elo difference: -1.3 +/- 3.7, LOS: 24.3 %, DrawRatio: 38.8 %
 ```
 
 ### 1.52
-
 Double transposition table size
+
+982 tokens (=)
 
 ```
 info depth 1 score cp 42 time 36 nodes 22 nps 611 pv b1c3
@@ -1894,3 +1895,10 @@ Score of ChessChallenge vs ChessChallengeDev: 2301 - 2118 - 3581  [0.511] 8000
 ...      White vs Black: 3177 - 1242 - 3581  [0.621] 8000
 Elo difference: 7.9 +/- 5.7, LOS: 99.7 %, DrawRatio: 44.8 %
 ```
+
+### 1.52.1
+Reduce token count
+
+Implemented by Goh CJ (cj5716)
+
+980 tokens (-2)
