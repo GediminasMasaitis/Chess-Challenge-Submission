@@ -24,7 +24,7 @@ public class MyBot : IChessBot
     public Move Think(Board board, Timer timer)
     {
         Move rootBestMove = default;
-        var (killers, allocatedTime, i) = (new Move[256], timer.MillisecondsRemaining / 8, 0);
+        var (killers, allocatedTime, i, score, depth) = (new Move[256], timer.MillisecondsRemaining / 8, 0, 0, 0);
 
         // Decay quiet history instead of clearing it
         for (; i < 4096; quietHistory[i++] /= 8) ;
@@ -132,7 +132,7 @@ public class MyBot : IChessBot
                     return ttScore;
             }
             else if (depth > 3)
-                    depth--;
+                depth--;
 
             // Move generation, best-known move then MVV-LVA ordering then killers then quiet move history
             var (moves, quietsEvaluated, movesEvaluated) = (board.GetLegalMoves(inQsearch).OrderByDescending(move => move == ttMove ? 9_000_000_000_000_000_000
@@ -217,9 +217,6 @@ public class MyBot : IChessBot
 
             return bestScore;
         }
-
-        int score = 0,
-            depth = 0;
 
         // Iterative deepening
         for (; timer.MillisecondsElapsedThisTurn <= allocatedTime / 5 /* Soft time limit */ && ++depth < 128;)
