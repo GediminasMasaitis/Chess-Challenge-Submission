@@ -34,7 +34,7 @@ public class MyBot : IChessBot
         int Search(int ply, int depth, int alpha, int beta, bool nullAllowed)
         {
             // Repetition detection
-            if (ply > 0 && board.IsRepeatedPosition())
+            if (nullAllowed && board.IsRepeatedPosition())
                 return 0;
             
             bool inCheck = board.IsInCheck(), 
