@@ -128,7 +128,7 @@ public class MyBot : IChessBot
             if (ttKey == key)
             {
                 // If conditions match, we can trust the table entry and return immediately
-                if (ply > 0 && ttDepth >= depth && (ttFlag == 0 && ttScore <= alpha || ttFlag == 1 && ttScore >= beta || ttFlag == 2))
+                if (ply > 0 && ttDepth >= depth && (ttFlag == 0 && ttScore <= alpha || ttFlag == 2 && ttScore >= beta || ttFlag == 1))
                     return ttScore;
             }
             else if (depth > 3)
@@ -178,7 +178,7 @@ public class MyBot : IChessBot
                         ttMove = move;
                         if (ply == 0) rootBestMove = move;
                         alpha = score;
-                        ttFlag = 2; // Exact
+                        ttFlag = 1; // Exact
 
                         // If the move is better than our current beta, we can stop searching
                         if (score >= beta)
@@ -192,7 +192,7 @@ public class MyBot : IChessBot
                                 killers[ply] = move;
                             }
 
-                            ttFlag = 1; // Lower
+                            ttFlag++; // Lower
 
                             break;
                         }
