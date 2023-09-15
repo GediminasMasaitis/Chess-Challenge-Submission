@@ -142,7 +142,7 @@ public class MyBot : IChessBot
                                                             new List<Move>(),
                                                             0);
 
-            byte flag = 0; // Upper
+            ttFlag = 0; // Upper
 
             // Loop over each legal move
             foreach (var move in moves)
@@ -178,7 +178,7 @@ public class MyBot : IChessBot
                         ttMove = move;
                         if (ply == 0) rootBestMove = move;
                         alpha = score;
-                        flag = 2; // Exact
+                        ttFlag = 2; // Exact
 
                         // If the move is better than our current beta, we can stop searching
                         if (score >= beta)
@@ -192,7 +192,7 @@ public class MyBot : IChessBot
                                 killers[ply] = move;
                             }
 
-                            flag = 1; // Lower
+                            ttFlag = 1; // Lower
 
                             break;
                         }
@@ -213,7 +213,7 @@ public class MyBot : IChessBot
                 return inQsearch ? bestScore : inCheck ? ply - 1_000_000 : 0;
 
             // Store the current position in the transposition table
-            TT[key % TTSize] = (key, ttMove, inQsearch ? 0 : depth, bestScore, flag);
+            TT[key % TTSize] = (key, ttMove, inQsearch ? 0 : depth, bestScore, ttFlag);
 
             return bestScore;
         }
