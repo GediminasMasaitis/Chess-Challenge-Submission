@@ -24,7 +24,7 @@ public class MyBot : IChessBot
     public Move Think(Board board, Timer timer)
     {
         Move rootBestMove = default;
-        var (killers, allocatedTime, i) = (new Move[256], timer.MillisecondsRemaining / 8, 0);
+        var (killers, allocatedTime, i, score, depth) = (new Move[256], timer.MillisecondsRemaining / 8, 0, 0, 0);
 
         // Decay quiet history instead of clearing it
         for (; i < 4096; quietHistory[i++] /= 8) ;
@@ -34,7 +34,7 @@ public class MyBot : IChessBot
         int Search(int ply, int depth, int alpha, int beta, bool nullAllowed)
         {
             // Repetition detection
-            if (ply > 0 && board.IsRepeatedPosition())
+            if (nullAllowed && board.IsRepeatedPosition())
                 return 0;
             
             bool inCheck = board.IsInCheck(), 
@@ -128,22 +128,21 @@ public class MyBot : IChessBot
             if (ttKey == key)
             {
                 // If conditions match, we can trust the table entry and return immediately
-                if (ply > 0 && ttDepth >= depth && (ttFlag == 0 && ttScore <= alpha || ttFlag == 1 && ttScore >= beta || ttFlag == 2))
+                if (ply > 0 && ttDepth >= depth && (ttFlag == 0 && ttScore <= alpha || ttFlag == 2 && ttScore >= beta || ttFlag == 1))
                     return ttScore;
             }
             else if (depth > 3)
-                    depth--;
+                depth--;
 
             // Move generation, best-known move then MVV-LVA ordering then killers then quiet move history
-            var (bestMove, moves, quietsEvaluated, movesEvaluated) = (ttMove,
-                                                                      board.GetLegalMoves(inQsearch).OrderByDescending(move => move == ttMove ? 9_000_000_000_000_000_000
-                                                                                                                     : move.IsCapture ? 8_000_000_000_000_000_000 + (long)move.CapturePieceType * 1000 - (long)move.MovePieceType
-                                                                                                                     : move == killers[ply] ? 7_000_000_000_000_000_000
-                                                                                                                     : quietHistory[move.RawValue & 4095]),
-                                                                      new List<Move>(),
-                                                                      0);
+            var (moves, quietsEvaluated, movesEvaluated) = (board.GetLegalMoves(inQsearch).OrderByDescending(move => move == ttMove ? 9_000_000_000_000_000_000
+                                                                                                                   : move.IsCapture ? 8_000_000_000_000_000_000 + (long)move.CapturePieceType * 1000 - (long)move.MovePieceType
+                                                                                                                   : move == killers[ply] ? 7_000_000_000_000_000_000
+                                                                                                                   : quietHistory[move.RawValue & 4095]),
+                                                            new List<Move>(),
+                                                            0);
 
-            byte flag = 0; // Upper
+            ttFlag = 0; // Upper
 
             // Loop over each legal move
             foreach (var move in moves)
@@ -176,10 +175,10 @@ public class MyBot : IChessBot
                     // If the move is better than our current alpha, update alpha
                     if (score > alpha)
                     {
-                        bestMove = move;
+                        ttMove = move;
                         if (ply == 0) rootBestMove = move;
                         alpha = score;
-                        flag = 2; // Exact
+                        ttFlag = 1; // Exact
 
                         // If the move is better than our current beta, we can stop searching
                         if (score >= beta)
@@ -193,7 +192,7 @@ public class MyBot : IChessBot
                                 killers[ply] = move;
                             }
 
-                            flag = 1; // Lower
+                            ttFlag++; // Lower
 
                             break;
                         }
@@ -214,13 +213,10 @@ public class MyBot : IChessBot
                 return inQsearch ? bestScore : inCheck ? ply - 1_000_000 : 0;
 
             // Store the current position in the transposition table
-            TT[key % TTSize] = (key, bestMove, inQsearch ? 0 : depth, bestScore, flag);
+            TT[key % TTSize] = (key, ttMove, inQsearch ? 0 : depth, bestScore, ttFlag);
 
             return bestScore;
         }
-
-        int score = 0,
-            depth = 0;
 
         // Iterative deepening
         for (; timer.MillisecondsElapsedThisTurn <= allocatedTime / 5 /* Soft time limit */ && ++depth < 128;)

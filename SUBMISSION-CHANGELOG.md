@@ -1784,7 +1784,7 @@ Elo difference: 4.7 +/- 1.9, LOS: 100.0 %, DrawRatio: 38.4 %
 ### 1.50.1
 Reduce token count
 
-986 tokens
+986 tokens (-5)
 
 ```
 info depth 1 score cp 42 time 46 nodes 22 nps 478 pv b1c3
@@ -1856,8 +1856,9 @@ Elo difference: -1.3 +/- 3.7, LOS: 24.3 %, DrawRatio: 38.8 %
 ```
 
 ### 1.52
-
 Double transposition table size
+
+982 tokens (=)
 
 ```
 info depth 1 score cp 42 time 36 nodes 22 nps 611 pv b1c3
@@ -1893,4 +1894,39 @@ Score of ChessChallenge vs ChessChallengeDev: 2301 - 2118 - 3581  [0.511] 8000
 ...      ChessChallenge playing Black: 674 - 1550 - 1775  [0.390] 3999
 ...      White vs Black: 3177 - 1242 - 3581  [0.621] 8000
 Elo difference: 7.9 +/- 5.7, LOS: 99.7 %, DrawRatio: 44.8 %
+```
+
+### 1.53
+No repetition detection after null move, reduce token count
+
+Implemented by Goh CJ (cj5716)
+
+973 tokens (-9)
+
+```
+info depth 1 score cp 42 time 33 nodes 22 nps 666 pv b1c3
+info depth 2 score cp 15 time 34 nodes 82 nps 2411 pv b1c3
+info depth 3 score cp 42 time 34 nodes 190 nps 5588 pv b1c3
+info depth 4 score cp 15 time 35 nodes 552 nps 15771 pv b1c3
+info depth 5 score cp 17 time 37 nodes 1134 nps 31500 pv b1c3
+info depth 6 score cp 15 time 39 nodes 2787 nps 71461 pv b1c3
+info depth 7 score cp 28 time 45 nodes 6981 nps 155133 pv b1c3
+info depth 8 score cp 15 time 53 nodes 12073 nps 227792 pv b1c3
+info depth 9 score cp 14 time 89 nodes 35641 nps 400460 pv b1c3
+info depth 10 score cp 20 time 125 nodes 65348 nps 522784 pv b1c3
+info depth 11 score cp 30 time 189 nodes 123557 nps 653740 pv b1c3
+info depth 12 score cp 23 time 294 nodes 228415 nps 776921 pv b1c3
+info depth 13 score cp 15 time 536 nodes 466081 nps 869554 pv b1c3
+info depth 14 score cp 28 time 914 nodes 831548 nps 909789 pv b1c3
+info depth 15 score cp 22 time 1361 nodes 1281371 nps 941492 pv b1c3
+info depth 16 score cp 22 time 2231 nodes 2180856 nps 977523 pv b1c3
+bestmove b1c3
+```
+
+```
+Score of ChessChallenge vs ChessChallengeDev: 12312 - 12318 - 15370  [0.500] 40000
+...      ChessChallenge playing White: 7918 - 4310 - 7771  [0.590] 19999
+...      ChessChallenge playing Black: 4394 - 8008 - 7599  [0.410] 20001
+...      White vs Black: 15926 - 8704 - 15370  [0.590] 40000
+Elo difference: -0.1 +/- 2.7, LOS: 48.5 %, DrawRatio: 38.4 %
 ```
