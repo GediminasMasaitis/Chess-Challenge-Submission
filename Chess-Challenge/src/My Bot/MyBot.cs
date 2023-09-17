@@ -11,13 +11,13 @@ public class MyBot : IChessBot
     // Key, move, depth, score, flag
     (ulong, Move, int, int, byte)[] TT = new (ulong, Move, int, int, byte)[TTSize];
 
-    int[] material = { 0, 148, 456, 442, 727, 1434, 0 };
+    int[] material = { 0, 148, 455, 442, 727, 1434, 0 };
 
     // PSTs are encoded with the following format:
     // Every rank or file is encoded as a byte, with the first rank/file being the LSB and the last rank/file being the MSB.
     // For every value to fit inside a byte, the values are divided by 2, and multiplication inside evaluation is needed.
-    ulong[] pstRanks = { 0, 32408100782142720, 16574112021868640239, 18014406223260090617, 796584101102809849, 70654625790754818, 17298066748544776942 },
-            pstFiles = { 0, 18016651413102002942, 17654401953025031403, 18231695001086198523, 17653269425882988797, 145242196134722807, 17511685300639041005 };
+    ulong[] pstRanks = { 0, 32409204571894784, 16501771853342374127, 18086181242826522872, 868641695140737529, 70373146535854081, 17225726580018576367 },
+            pstFiles = { 0, 17872258044306195199, 17726459547062959339, 18231976471767941883, 17797668283630158078, 217582364644211958, 17511403825662264814 };
 
     sbyte Extract(ulong term, int index) => (sbyte)(term >> index * 8 & 0xFF);
 
@@ -76,7 +76,7 @@ public class MyBot : IChessBot
                             var mobility = BitboardHelper.GetPieceAttacks((PieceType)pieceIndex, new Square(sq), board, isWhite) & ~(isWhite ? board.WhitePiecesBitboard : board.BlackPiecesBitboard);
                             score += Extract(70933906139906048, pieceIndex) * BitboardHelper.GetNumberOfSetBits(mobility)
                             // King attacks
-                                  +  Extract(6221049792299008, pieceIndex) * BitboardHelper.GetNumberOfSetBits(mobility & BitboardHelper.GetKingAttacks(board.GetKingSquare(!isWhite)));
+                                  +  Extract(6502524769140736, pieceIndex) * BitboardHelper.GetNumberOfSetBits(mobility & BitboardHelper.GetKingAttacks(board.GetKingSquare(!isWhite)));
                         }
 
                         // Flip square if black
