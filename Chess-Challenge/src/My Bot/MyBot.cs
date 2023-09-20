@@ -7,21 +7,16 @@ public class MyBot : IChessBot
 {
     long[] quietHistory = new long[4096];
 
-    const int TTSize = 2097152;
     // Key, move, depth, score, flag
-    (ulong, Move, int, int, byte)[] TT = new (ulong, Move, int, int, byte)[TTSize];
+    (ulong, Move, int, int, byte)[] TT = new (ulong, Move, int, int, byte)[2097152];
 
-    sbyte[] extracted;
-
-    public MyBot()
-    {
-        extracted = new [] { 2796297551267389584288251904m, 3109409357789783036160379913m, 3728388840468349277839166219m, 5284300093476035887994047756m, 2025242252059287326m, 9946008112216170676325711872m, 12736213607878816010049233954m, 11811399652461978252246198313m, 13668304878198991683783895078m, 11186380244388902675264645931m, 11185157095046488219959239193m, 11498268883121003954237154340m, 12116029976944079466840598052m, 11497069439071958395569644839m, 11495851013107370795033110053m, 11186356576926899825522583078m, 18331221896546282567051787324m, 18332435563251179525922044987m, 19263313203687036659670203708m, 19264531592831041447520976446m, 19574016639617933361543069503m, 36354172505677480548682907455m, 37594539822671859694700165239m, 37595753507895559420913547641m, 37594535100522396235400247415m, 38834911917661459167443778939m, 78298507920305998264631130230m, 78918682245256502042628718077m, 1241576242886614322568626686m, 4854666820726972779463428m, 933309622282177155845915907m, 78300925836834079954216158211m, 935718029186185580901302272m, 254824050530717190329111m }.SelectMany(x => decimal.GetBits(x).Take(3).SelectMany(y => BitConverter.GetBytes(y).Select(z => (sbyte)z))).ToArray();
-    }
+    static sbyte[] extracted = new [] { 4835740172228143389605888m, 1862983114964290202813595648m, 6529489037797228073584297991m, 6818450810788061916507740187m, 7154536855449028663353021722m, 14899014974757699833696556826m, 25468819436707891759039590695m, 29180306561342183501734565961m, 944189991765834239743752701m, 4194697739m, 4340114601700738076711583744m, 3410436627687897068963695623m, 11182743911298765866015857947m, 10873240011723255639678263585m, 17684436730682332602697851426m, 17374951722591802467805509926m, 31068658689795177567161113954m, 1534136309681498319279645285m, 18014679997410182140m, 1208741569195510172352512m, 13789093343132567021105512448m, 6502873946609222871099113472m, 1250m }.SelectMany(x => decimal.GetBits(x).Take(3).SelectMany(y => (sbyte[])(Array)BitConverter.GetBytes(y))).ToArray();
+    int[] evalValues = Enumerable.Range(0, 138).Select(i => extracted[i * 2] | extracted[i * 2 + 1] << 16).ToArray();
 
     public Move Think(Board board, Timer timer)
     {
         Move rootBestMove = default;
-        var (killers, allocatedTime, i, score, depth) = (new Move[256], timer.MillisecondsRemaining / 8, 0, 0, 0);
+        var (killers, allocatedTime, i, score, depth) = (new Move[256], timer.MillisecondsRemaining / 8, 0, 0, 1);
 
         // Decay quiet history instead of clearing it
         for (; i < 4096; quietHistory[i++] /= 8) ;
@@ -43,7 +38,7 @@ public class MyBot : IChessBot
 
             // -2000000 = -inf
             // Use 15 tempo for evaluation
-            var (key, inQsearch, bestScore, doPruning, score) = (board.ZobristKey, depth <= 0, -2_000_000, inZeroWindow && !inCheck, 15);
+            var (key, inQsearch, bestScore, doPruning, score, phase) = (board.ZobristKey, depth <= 0, -2_000_000, inZeroWindow && !inCheck, 15, 0);
 
             // Evaluation inlined into search
             foreach (bool isWhite in new[] {!board.IsWhiteToMove, board.IsWhiteToMove})
@@ -55,36 +50,38 @@ public class MyBot : IChessBot
                 {
                     var bitboard = board.GetPieceBitboard((PieceType)pieceIndex, isWhite);
 
-                    if (pieceIndex == 3 && BitboardHelper.GetNumberOfSetBits(bitboard) == 2) // Bishop pair
-                        score += extracted[405];
-                        
-
                     while (bitboard != 0)
                     {
                         var sq = BitboardHelper.ClearAndGetIndexOfLSB(ref bitboard);
 
                         // Open files, doubled pawns
                         if ((0x101010101010101UL << sq % 8 & ~(1UL << sq) & board.GetPieceBitboard(PieceType.Pawn, isWhite)) == 0)
-                            score += extracted[398 + pieceIndex];
+                            score += evalValues[126 + pieceIndex];
 
                         // For bishop, rook, queen and king
                         if (pieceIndex > 2)
                         {
                             // Mobility
                             var mobility = BitboardHelper.GetPieceAttacks((PieceType)pieceIndex, new Square(sq), board, isWhite) & ~(isWhite ? board.WhitePiecesBitboard : board.BlackPiecesBitboard);
-                            score += extracted[384 + pieceIndex] * BitboardHelper.GetNumberOfSetBits(mobility)
-                            // King attacks
-                                   + extracted[391 + pieceIndex] * BitboardHelper.GetNumberOfSetBits(mobility & BitboardHelper.GetKingAttacks(board.GetKingSquare(!isWhite)));
+                            score += evalValues[112 + pieceIndex] * BitboardHelper.GetNumberOfSetBits(mobility)
+                                     // King attacks
+                                   + evalValues[119 + pieceIndex] * BitboardHelper.GetNumberOfSetBits(mobility & BitboardHelper.GetKingAttacks(board.GetKingSquare(!isWhite)));
                         }
 
                         // Flip square if black
                         if (!isWhite) sq ^= 56;
 
-                        // Material and PST using 12 quantization
-                        score += extracted[(pieceIndex - 1) * 64 + sq] * 12;
+                        phase += evalValues[pieceIndex];
+
+                        // Material and PSTs
+                        score += evalValues[pieceIndex * 8 + sq / 8]
+                               + evalValues[56 + pieceIndex * 8 + sq % 8]
+                               << 3;
                     }
                 }
             }
+            
+            score = ((short)score * phase + (score + 0x8000 >> 16) * (24 - phase)) / 24;
 
             // Local method for similar calls to Search, inspired by Tyrant7's approach.
             int defaultSearch(int beta, int reduction = 1, bool nullAllowed = true) => score = -Search(ply + 1, depth - reduction, -beta, -alpha, nullAllowed);
@@ -119,7 +116,7 @@ public class MyBot : IChessBot
             }
 
             // Look up best move known so far if it is available
-            var (ttKey, ttMove, ttDepth, ttScore, ttFlag) = TT[key % TTSize];
+            var (ttKey, ttMove, ttDepth, ttScore, ttFlag) = TT[key % 2097152];
 
             if (ttKey == key)
             {
@@ -132,8 +129,8 @@ public class MyBot : IChessBot
 
             // Move generation, best-known move then MVV-LVA ordering then killers then quiet move history
             var (moves, quietsEvaluated, movesEvaluated) = (board.GetLegalMoves(inQsearch).OrderByDescending(move => move == ttMove ? 9_000_000_000_000_000_000
-                                                                                                                   : move.IsCapture ? 8_000_000_000_000_000_000 + (long)move.CapturePieceType * 1000 - (long)move.MovePieceType
-                                                                                                                   : move == killers[ply] ? 7_000_000_000_000_000_000
+                                                                                                                   : move.IsCapture ? 1_000_000_000_000_000_000 * (long)move.CapturePieceType - (long)move.MovePieceType
+                                                                                                                   : move == killers[ply] ? 500_000_000_000_000_000
                                                                                                                    : quietHistory[move.RawValue & 4095]),
                                                             new List<Move>(),
                                                             0);
@@ -209,13 +206,13 @@ public class MyBot : IChessBot
                 return inQsearch ? bestScore : inCheck ? ply - 1_000_000 : 0;
 
             // Store the current position in the transposition table
-            TT[key % TTSize] = (key, ttMove, inQsearch ? 0 : depth, bestScore, ttFlag);
+            TT[key % 2097152] = (key, ttMove, inQsearch ? 0 : depth, bestScore, ttFlag);
 
             return bestScore;
         }
 
         // Iterative deepening
-        for (; timer.MillisecondsElapsedThisTurn <= allocatedTime / 5 /* Soft time limit */ && ++depth < 128;)
+        for (; timer.MillisecondsElapsedThisTurn <= allocatedTime / 5 /* Soft time limit */; ++depth)
         {
             // Aspiration windows
             var window = 40;

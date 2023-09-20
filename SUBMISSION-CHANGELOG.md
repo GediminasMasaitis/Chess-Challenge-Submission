@@ -2027,3 +2027,37 @@ Score of ChessChallenge vs ChessChallengeDev: 2920 - 2465 - 2615  [0.528] 8000
 ...      White vs Black: 3334 - 2051 - 2615  [0.580] 8000
 Elo difference: 19.8 +/- 6.2, LOS: 100.0 %, DrawRatio: 32.7 %
 ```
+
+### 1.57
+Tapered evaluation, remove bishop pair evaluation, revert to split PSTs quantized by 8
+
+1023 tokens (+30)
+
+Evaluation implemented by Gediminas Masaitis, size reduction by Goh CJ (cj5716)
+
+```
+info depth 1 score cp 44 time 35 nodes 22 nps 628 pv b1c3
+info depth 2 score cp 15 time 36 nodes 82 nps 2277 pv b1c3
+info depth 3 score cp 36 time 36 nodes 190 nps 5277 pv b1c3
+info depth 4 score cp 15 time 37 nodes 548 nps 14810 pv b1c3
+info depth 5 score cp 19 time 39 nodes 1198 nps 30717 pv b1c3
+info depth 6 score cp 15 time 42 nodes 2907 nps 69214 pv b1c3
+info depth 7 score cp 30 time 46 nodes 5722 nps 124391 pv b1c3
+info depth 8 score cp 15 time 54 nodes 10616 nps 196592 pv b1c3
+info depth 9 score cp 5 time 74 nodes 23980 nps 324054 pv b1c3
+info depth 10 score cp 12 time 109 nodes 51690 nps 474220 pv b1c3
+info depth 11 score cp 31 time 194 nodes 128546 nps 662608 pv g1f3
+info depth 12 score cp 26 time 346 nodes 279007 nps 806378 pv g1f3
+info depth 13 score cp 26 time 537 nodes 469017 nps 873402 pv g1f3
+info depth 14 score cp 24 time 921 nodes 846386 nps 918985 pv g1f3
+info depth 15 score cp 15 time 2847 nodes 2769443 nps 972758 pv b1c3
+bestmove b1c3
+```
+
+```
+Score of ChessChallenge vs ChessChallengeDev: 2031 - 1652 - 1317  [0.538] 5000
+...      ChessChallenge playing White: 1246 - 605 - 649  [0.628] 2500
+...      ChessChallenge playing Black: 785 - 1047 - 668  [0.448] 2500
+...      White vs Black: 2293 - 1390 - 1317  [0.590] 5000
+Elo difference: 26.4 +/- 8.3, LOS: 100.0 %, DrawRatio: 26.3 %
+```
