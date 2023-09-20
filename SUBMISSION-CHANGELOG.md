@@ -1963,3 +1963,35 @@ Score of ChessChallenge vs ChessChallengeDev: 2263 - 2120 - 2618  [0.510] 7001
 ...      White vs Black: 2805 - 1578 - 2618  [0.588] 7001
 Elo difference: 7.1 +/- 6.4, LOS: 98.5 %, DrawRatio: 37.4 %
 ```
+
+### 1.55
+Remove material, quantize PSTs by 8
+
+956 tokens (-17)
+
+```
+info depth 1 score cp 44 time 34 nodes 22 nps 647 pv b1c3
+info depth 2 score cp 15 time 35 nodes 82 nps 2342 pv b1c3
+info depth 3 score cp 44 time 35 nodes 190 nps 5428 pv b1c3
+info depth 4 score cp 15 time 36 nodes 507 nps 14083 pv b1c3
+info depth 5 score cp 15 time 37 nodes 1117 nps 30189 pv b1c3
+info depth 6 score cp 15 time 39 nodes 2675 nps 68589 pv b1c3
+info depth 7 score cp 28 time 45 nodes 6320 nps 140444 pv b1c3
+info depth 8 score cp 15 time 59 nodes 13325 nps 225847 pv b1c3
+info depth 9 score cp 20 time 74 nodes 24412 nps 329891 pv b1c3
+info depth 10 score cp 24 time 110 nodes 52959 nps 481445 pv b1c3
+info depth 11 score cp 17 time 168 nodes 106848 nps 636000 pv b1c3
+info depth 12 score cp 15 time 361 nodes 289397 nps 801653 pv b1c3
+info depth 13 score cp 16 time 1165 nodes 1074175 nps 922038 pv e2e4
+info depth 14 score cp 30 time 1451 nodes 1356363 nps 934778 pv e2e4
+info depth 15 score cp 22 time 1984 nodes 1887187 nps 951203 pv e2e4
+bestmove e2e4
+```
+
+```
+Score of ChessChallenge vs ChessChallengeDev: 4749 - 4853 - 5398  [0.497] 15000
+...      ChessChallenge playing White: 3049 - 1754 - 2697  [0.586] 7500
+...      ChessChallenge playing Black: 1700 - 3099 - 2701  [0.407] 7500
+...      White vs Black: 6148 - 3454 - 5398  [0.590] 15000
+Elo difference: -2.4 +/- 4.4, LOS: 14.4 %, DrawRatio: 36.0 %
+```

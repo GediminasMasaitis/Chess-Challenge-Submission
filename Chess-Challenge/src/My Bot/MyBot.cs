@@ -11,13 +11,11 @@ public class MyBot : IChessBot
     // Key, move, depth, score, flag
     (ulong, Move, int, int, byte)[] TT = new (ulong, Move, int, int, byte)[TTSize];
 
-    int[] material = { 0, 148, 455, 442, 727, 1434, 0 };
-
     // PSTs are encoded with the following format:
     // Every rank or file is encoded as a byte, with the first rank/file being the LSB and the last rank/file being the MSB.
     // For every value to fit inside a byte, the values are divided by 2, and multiplication inside evaluation is needed.
-    ulong[] pstRanks = { 0, 32409204571894784, 16501771853342374127, 18086181242826522872, 868641695140737529, 70373146535854081, 17225726580018576367 },
-            pstFiles = { 0, 17872258044306195199, 17726459547062959339, 18231976471767941883, 17797668283630158078, 217582364644211958, 17511403825662264814 };
+    ulong[] pstRanks = { 0, 8744450419655936, 1304105577946355220, 1519710990518195989, 3182966496689464615, 5786933451581050960, 18087304939398299387 },
+            pstFiles = { 0, 651909283319515914, 2171055129189490459, 2315167010106974495, 3472895657163043378, 7234016184295973473, 18230852766589321723 };
 
     sbyte Extract(ulong term, int index) => (sbyte)(term >> index * 8 & 0xFF);
 
@@ -83,9 +81,8 @@ public class MyBot : IChessBot
                         if (!isWhite) sq ^= 56;
 
                         // Material and PSTs
-                        score += material[pieceIndex]
-                              + (Extract(pstRanks[pieceIndex], sq / 8)
-                              +  Extract(pstFiles[pieceIndex], sq % 8)) * 2;
+                        score += (Extract(pstRanks[pieceIndex], sq / 8)
+                               +  Extract(pstFiles[pieceIndex], sq % 8)) * 8;
                     }
                 }
             }
