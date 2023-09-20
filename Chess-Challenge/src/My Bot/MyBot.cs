@@ -11,13 +11,12 @@ public class MyBot : IChessBot
     // Key, move, depth, score, flag
     (ulong, Move, int, int, byte)[] TT = new (ulong, Move, int, int, byte)[TTSize];
 
-    // PSTs are encoded with the following format:
-    // Every rank or file is encoded as a byte, with the first rank/file being the LSB and the last rank/file being the MSB.
-    // For every value to fit inside a byte, the values are divided by 2, and multiplication inside evaluation is needed.
-    ulong[] pstRanks = { 0, 8744450419655936, 1304105577946355220, 1519710990518195989, 3182966496689464615, 5786933451581050960, 18087304939398299387 },
-            pstFiles = { 0, 651909283319515914, 2171055129189490459, 2315167010106974495, 3472895657163043378, 7234016184295973473, 18230852766589321723 };
+    sbyte[] extracted;
 
-    sbyte Extract(ulong term, int index) => (sbyte)(term >> index * 8 & 0xFF);
+    public MyBot()
+    {
+        extracted = new [] { 2796297551267389584288251904m, 3109409357789783036160379913m, 3728388840468349277839166219m, 5284300093476035887994047756m, 2025242252059287326m, 9946008112216170676325711872m, 12736213607878816010049233954m, 11811399652461978252246198313m, 13668304878198991683783895078m, 11186380244388902675264645931m, 11185157095046488219959239193m, 11498268883121003954237154340m, 12116029976944079466840598052m, 11497069439071958395569644839m, 11495851013107370795033110053m, 11186356576926899825522583078m, 18331221896546282567051787324m, 18332435563251179525922044987m, 19263313203687036659670203708m, 19264531592831041447520976446m, 19574016639617933361543069503m, 36354172505677480548682907455m, 37594539822671859694700165239m, 37595753507895559420913547641m, 37594535100522396235400247415m, 38834911917661459167443778939m, 78298507920305998264631130230m, 78918682245256502042628718077m, 1241576242886614322568626686m, 4854666820726972779463428m, 933309622282177155845915907m, 78300925836834079954216158211m, 935718029186185580901302272m, 254824050530717190329111m }.SelectMany(x => decimal.GetBits(x).Take(3).SelectMany(y => BitConverter.GetBytes(y).Select(z => (sbyte)z))).ToArray();
+    }
 
     public Move Think(Board board, Timer timer)
     {
@@ -57,7 +56,8 @@ public class MyBot : IChessBot
                     var bitboard = board.GetPieceBitboard((PieceType)pieceIndex, isWhite);
 
                     if (pieceIndex == 3 && BitboardHelper.GetNumberOfSetBits(bitboard) == 2) // Bishop pair
-                        score += 52;
+                        score += extracted[405];
+                        
 
                     while (bitboard != 0)
                     {
@@ -65,24 +65,23 @@ public class MyBot : IChessBot
 
                         // Open files, doubled pawns
                         if ((0x101010101010101UL << sq % 8 & ~(1UL << sq) & board.GetPieceBitboard(PieceType.Pawn, isWhite)) == 0)
-                            score += Extract(69534330849924352, pieceIndex);
+                            score += extracted[398 + pieceIndex];
 
                         // For bishop, rook, queen and king
                         if (pieceIndex > 2)
                         {
                             // Mobility
                             var mobility = BitboardHelper.GetPieceAttacks((PieceType)pieceIndex, new Square(sq), board, isWhite) & ~(isWhite ? board.WhitePiecesBitboard : board.BlackPiecesBitboard);
-                            score += Extract(70933906139906048, pieceIndex) * BitboardHelper.GetNumberOfSetBits(mobility)
+                            score += extracted[384 + pieceIndex] * BitboardHelper.GetNumberOfSetBits(mobility)
                             // King attacks
-                                  +  Extract(6502524769140736, pieceIndex) * BitboardHelper.GetNumberOfSetBits(mobility & BitboardHelper.GetKingAttacks(board.GetKingSquare(!isWhite)));
+                                   + extracted[391 + pieceIndex] * BitboardHelper.GetNumberOfSetBits(mobility & BitboardHelper.GetKingAttacks(board.GetKingSquare(!isWhite)));
                         }
 
                         // Flip square if black
                         if (!isWhite) sq ^= 56;
 
-                        // Material and PSTs
-                        score += (Extract(pstRanks[pieceIndex], sq / 8)
-                               +  Extract(pstFiles[pieceIndex], sq % 8)) * 8;
+                        // Material and PST using 12 quantization
+                        score += extracted[(pieceIndex - 1) * 64 + sq] * 12;
                     }
                 }
             }
