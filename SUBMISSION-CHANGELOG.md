@@ -2031,9 +2031,9 @@ Elo difference: 19.8 +/- 6.2, LOS: 100.0 %, DrawRatio: 32.7 %
 ### 1.57
 Tapered evaluation, remove bishop pair evaluation, revert to split PSTs quantized by 8
 
-1023 tokens (+30)
-
 Evaluation implemented by Gediminas Masaitis, size reduction by Goh CJ (cj5716)
+
+1023 tokens (+30)
 
 ```
 info depth 1 score cp 44 time 35 nodes 22 nps 628 pv b1c3
@@ -2061,3 +2061,10 @@ Score of ChessChallenge vs ChessChallengeDev: 2031 - 1652 - 1317  [0.538] 5000
 ...      White vs Black: 2293 - 1390 - 1317  [0.590] 5000
 Elo difference: 26.4 +/- 8.3, LOS: 100.0 %, DrawRatio: 26.3 %
 ```
+
+### 1.58
+Only increase reduction in LMR for zero-window nodes if we are not in check
+
+Implemented by Goh CJ (cj5716)
+
+1020 tokens (-3)
