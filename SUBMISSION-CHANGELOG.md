@@ -2031,9 +2031,9 @@ Elo difference: 19.8 +/- 6.2, LOS: 100.0 %, DrawRatio: 32.7 %
 ### 1.57
 Tapered evaluation, remove bishop pair evaluation, revert to split PSTs quantized by 8
 
-1023 tokens (+30)
-
 Evaluation implemented by Gediminas Masaitis, size reduction by Goh CJ (cj5716)
+
+1023 tokens (+30)
 
 ```
 info depth 1 score cp 44 time 35 nodes 22 nps 628 pv b1c3
@@ -2072,4 +2072,38 @@ Score of ChessChallenge vs ChessChallengeTier2: 1433 - 18 - 49  [0.972] 1500
 ...      ChessChallenge playing Black: 703 - 13 - 33  [0.961] 749
 ...      White vs Black: 743 - 708 - 49  [0.512] 1500
 Elo difference: 614.1 +/- 45.3, LOS: 100.0 %, DrawRatio: 3.3 %
+```
+
+### 1.58
+Only increase reduction in LMR for zero-window nodes if we are not in check
+
+Implemented by Goh CJ (cj5716)
+
+1020 tokens (-3)
+
+```
+info depth 1 score cp 44 time 36 nodes 22 nps 611 pv b1c3
+info depth 2 score cp 15 time 36 nodes 82 nps 2277 pv b1c3
+info depth 3 score cp 36 time 36 nodes 190 nps 5277 pv b1c3
+info depth 4 score cp 15 time 37 nodes 548 nps 14810 pv b1c3
+info depth 5 score cp 19 time 39 nodes 1198 nps 30717 pv b1c3
+info depth 6 score cp 15 time 42 nodes 2907 nps 69214 pv b1c3
+info depth 7 score cp 30 time 46 nodes 5722 nps 124391 pv b1c3
+info depth 8 score cp 15 time 54 nodes 10616 nps 196592 pv b1c3
+info depth 9 score cp 5 time 74 nodes 23980 nps 324054 pv b1c3
+info depth 10 score cp 12 time 113 nodes 51690 nps 457433 pv b1c3
+info depth 11 score cp 31 time 201 nodes 128609 nps 639845 pv g1f3
+info depth 12 score cp 26 time 396 nodes 309872 nps 782505 pv g1f3
+info depth 13 score cp 26 time 570 nodes 472481 nps 828914 pv g1f3
+info depth 14 score cp 24 time 1222 nodes 1114833 nps 912301 pv g1f3
+info depth 15 score cp 15 time 1869 nodes 1743535 nps 932870 pv g1f3
+bestmove g1f3
+```
+
+```
+Score of ChessChallenge vs ChessChallengeDev: 7765 - 7767 - 10468  [0.500] 26000
+...      ChessChallenge playing White: 5098 - 2675 - 5228  [0.593] 13001
+...      ChessChallenge playing Black: 2667 - 5092 - 5240  [0.407] 12999
+...      White vs Black: 10190 - 5342 - 10468  [0.593] 26000
+Elo difference: -0.0 +/- 3.3, LOS: 49.4 %, DrawRatio: 40.3 %
 ```
