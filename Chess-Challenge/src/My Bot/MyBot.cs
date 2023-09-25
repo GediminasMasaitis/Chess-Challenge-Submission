@@ -104,7 +104,7 @@ public class MyBot : IChessBot
                     return score;
 
                 // Null move pruning
-                if (nullAllowed && score >= beta && depth > 2)
+                if (nullAllowed && score >= beta && depth > 2 && phase != 0)
                 {
                     board.ForceSkipTurn();
                     defaultSearch(beta, 4 + depth / 6, false);
