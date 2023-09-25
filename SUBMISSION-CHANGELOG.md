@@ -2141,8 +2141,35 @@ Elo difference: 5.1 +/- 2.5, LOS: 100.0 %, DrawRatio: 40.2 %
 ```
 
 ### 1.60
-No NMP if we have only pawns
+No NMP if there are only pawns left
 
 Implemented by Goh CJ (cj5716)
 
 1022 tokens (+4)
+
+```
+info depth 1 score cp 44 time 47 nodes 22 nps 468 pv b1c3
+info depth 2 score cp 15 time 48 nodes 82 nps 1708 pv b1c3
+info depth 3 score cp 36 time 48 nodes 190 nps 3958 pv b1c3
+info depth 4 score cp 15 time 50 nodes 548 nps 10960 pv b1c3
+info depth 5 score cp 19 time 51 nodes 1192 nps 23372 pv b1c3
+info depth 6 score cp 15 time 53 nodes 2664 nps 50264 pv b1c3
+info depth 7 score cp 30 time 58 nodes 4750 nps 81896 pv b1c3
+info depth 8 score cp 15 time 68 nodes 10134 nps 149029 pv b1c3
+info depth 9 score cp 5 time 109 nodes 31894 nps 292605 pv b1c3
+info depth 10 score cp 19 time 139 nodes 49038 nps 352791 pv b1c3
+info depth 11 score cp 9 time 198 nodes 98750 nps 498737 pv b1c3
+info depth 12 score cp 19 time 269 nodes 162958 nps 605791 pv b1c3
+info depth 13 score cp 19 time 352 nodes 241770 nps 686846 pv b1c3
+info depth 14 score cp 14 time 713 nodes 609842 nps 855318 pv b1c3
+info depth 15 score cp 17 time 1605 nodes 1535966 nps 956988 pv b1c3
+bestmove b1c3
+```
+
+```
+Score of ChessChallenge vs ChessChallengeDev: 3647 - 3417 - 4936  [0.510] 12000
+...      ChessChallenge playing White: 2413 - 1174 - 2414  [0.603] 6001
+...      ChessChallenge playing Black: 1234 - 2243 - 2522  [0.416] 5999
+...      White vs Black: 4656 - 2408 - 4936  [0.594] 12000
+Elo difference: 6.7 +/- 4.8, LOS: 99.7 %, DrawRatio: 41.1 %
+```
