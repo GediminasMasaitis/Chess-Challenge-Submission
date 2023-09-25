@@ -67,8 +67,8 @@ public class MyBot : IChessBot
             // in most engines you will see a separate function for it.
             // -2000000 = -inf. It just indicates "no move has been found yet".
             // Tempo is the idea that each move is benefitial to us, so we adjust the static eval using a fixed value.
-            // We use 15 tempo for evaluation for mid-game, 0 for end-game.
-            var (key, inQsearch, bestScore, doPruning, score, phase) = (board.ZobristKey, depth <= 0, -2_000_000, alpha == beta - 1 && !inCheck, 15, 0);
+            // We use 15 tempo for evaluation for mid-game, 8 for end-game.
+            var (key, inQsearch, bestScore, doPruning, score, phase) = (board.ZobristKey, depth <= 0, -2_000_000, alpha == beta - 1 && !inCheck, 524303, 0);
 
             // Here we do a static evaluation to determine the current static score for the position.
             // A static evaluation is like a one-look determination of how good the position is, without looking into the future.
