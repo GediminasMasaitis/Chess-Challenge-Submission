@@ -217,8 +217,10 @@ public class MyBot : IChessBot
             var window = 40;
 
             research:
+            int alpha = score - window,
+                beta = score + window;
             // Search with the current window
-            var newScore = Search(0, depth, score - window, score + window, false);
+            score = Search(0, depth, alpha, beta, false);
 
             // Hard time limit
             // If we are out of time, we cannot trust the move that was found
@@ -227,14 +229,11 @@ public class MyBot : IChessBot
                 break;
 
             // If the score is outside of the current window, we must research with a wider window
-            if (newScore >= score + window || newScore <= score - window)
+            if (score >= beta || score <= alpha)
             {
                 window *= 2;
-                score = newScore;
                 goto research;
             }
-
-            score = newScore;
 
             var elapsed = timer.MillisecondsElapsedThisTurn > 0 ? timer.MillisecondsElapsedThisTurn : 1; // #DEBUG
             Console.WriteLine($"info depth {depth} " + // #DEBUG
