@@ -216,32 +216,34 @@ public class MyBot : IChessBot
             // Aspiration windows
             var window = 40;
 
-            research:
-            int alpha = score - window,
-                beta = score + window;
-            // Search with the current window
-            score = Search(0, depth, alpha, beta, false);
-
-            // Hard time limit
-            // If we are out of time, we cannot trust the move that was found
-            // during this iteration, so we break without setting bestMove
-            if (timer.MillisecondsElapsedThisTurn > allocatedTime)
-                break;
-
-            // If the score is outside of the current window, we must research with a wider window
-            if (score >= beta || score <= alpha)
+            for (;;)
             {
-                window *= 2;
-                goto research;
-            }
+                int alpha = score - window,
+                    beta = score + window;
+                // Search with the current window
+                score = Search(0, depth, alpha, beta, false);
 
-            var elapsed = timer.MillisecondsElapsedThisTurn > 0 ? timer.MillisecondsElapsedThisTurn : 1; // #DEBUG
-            Console.WriteLine($"info depth {depth} " + // #DEBUG
-                              $"score cp {score} " + // #DEBUG
-                              $"time {timer.MillisecondsElapsedThisTurn} " + // #DEBUG
-                              $"nodes {nodes} " + // #DEBUG
-                              $"nps {nodes * 1000 / elapsed} " + // #DEBUG
-                              $"pv {rootBestMove.ToString().Substring(7, rootBestMove.ToString().Length - 8)}"); // #DEBUG
+                // Hard time limit
+                // If we are out of time, we stop searching and break.
+                if (timer.MillisecondsElapsedThisTurn > allocatedTime)
+                    break;
+
+                // If the score is outside of the current window, we must research with a wider window.
+                // Otherwise if we are in the window we can proceed to the next depth.
+                if (alpha < score && score < beta)
+                { // #DEBUG
+                    var elapsed = timer.MillisecondsElapsedThisTurn > 0 ? timer.MillisecondsElapsedThisTurn : 1; // #DEBUG
+                    Console.WriteLine($"info depth {depth} " + // #DEBUG
+                                      $"score cp {score} " + // #DEBUG
+                                      $"time {timer.MillisecondsElapsedThisTurn} " + // #DEBUG
+                                      $"nodes {nodes} " + // #DEBUG
+                                      $"nps {nodes * 1000 / elapsed} " + // #DEBUG
+                                      $"pv {rootBestMove.ToString().Substring(7, rootBestMove.ToString().Length - 8)}"); // #DEBUG
+                    break;
+                } // #DEBUG
+
+                window *= 2;
+            }
         }
 
         return rootBestMove;
