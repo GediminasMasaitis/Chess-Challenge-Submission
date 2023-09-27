@@ -212,11 +212,8 @@ public class MyBot : IChessBot
 
         // Iterative deepening
         for (; timer.MillisecondsElapsedThisTurn <= allocatedTime / 5 /* Soft time limit */; ++depth)
-        {
             // Aspiration windows
-            var window = 40;
-
-            for (;;)
+            for (int window = 40;;)
             {
                 int alpha = score - window,
                     beta = score + window;
@@ -244,7 +241,6 @@ public class MyBot : IChessBot
 
                 window *= 2;
             }
-        }
 
         return rootBestMove;
     }
