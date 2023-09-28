@@ -2199,3 +2199,11 @@ info depth 14 score cp 14 time 744 nodes 609842 nps 819680 pv b1c3
 info depth 15 score cp 17 time 1662 nodes 1535966 nps 924167 pv b1c3
 bestmove b1c3
 ```
+
+### 1.61
+Use TT score to adjust evaluation, and only do TT cutoffs on non-PV nodes.
+Also moves TT back in front of pruning so that changes to eval can affect it.
+
+Implemented by Goh CJ (cj5716)
+
+1023 tokens (+7)
