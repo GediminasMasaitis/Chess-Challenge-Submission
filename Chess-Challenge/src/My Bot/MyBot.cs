@@ -129,6 +129,14 @@ public class MyBot : IChessBot
                         phase += evalValues[pieceIndex];
 
                         // Material and PSTs
+                        // PST mean "piece-square tables", it is naturally better for a piece to be on a specific square.
+                        // More: https://www.chessprogramming.org/Piece-Square_Tables
+                        // In this engine, in order to save tokens, the concept of "material" has been removed.
+                        // Instead, each square for each piece has a higher value adjusted to the type of piece that occupies it.
+                        // In order to fin tin 1 byte per row/column, the value of each row/column has been divided by 8,
+                        // and here multiplied by 8 (<< 3 is equivalent but ends up 1 token smaller).
+                        // Additionally, each column/row, or file/rank is evaluated, as opposed to every square individually,
+                        // which is only ~20 ELO weaker compared to full PSTs and saves a lot of tokens.
                         score += evalValues[pieceIndex * 8 + sq / 8]
                                + evalValues[56 + pieceIndex * 8 + sq % 8]
                                << 3;
@@ -136,9 +144,11 @@ public class MyBot : IChessBot
                 }
             }
             
+            // Here we interpolate the midgame/endgame scores from the single variable to a proper integer that can be used by search
             score = ((short)score * phase + (score + 0x8000 >> 16) * (24 - phase)) / 24;
 
-            // Local method for similar calls to Search, inspired by Tyrant7's approach.
+            // Local method for similar calls to Search, inspired by Tyrant7's approach here: https://github.com/Tyrant7/Chess-Challenge
+            // We keep known values, but we create a local method that will be used to implement 3-fold PVS. More on that later on
             int defaultSearch(int beta, int reduction = 1, bool nullAllowed = true) => score = -Search(ply + 1, depth - reduction, -beta, -alpha, nullAllowed);
 
             // Look up best move known so far if it is available
@@ -146,11 +156,19 @@ public class MyBot : IChessBot
 
             if (ttKey == key)
             {
-                // If conditions match, we can trust the table entry and return immediately
+                // If conditions match, we can trust the table entry and return immediately.
+                // This is a token optimized way to express that: we can trust the score stored in TT and return immediately if:
+                // 1. The depth remaining is higher or equal to our current
+                //   a. Either the flag is exact, or:
+                //   b. The stored score has an upper bound, but we scored below the stored score, or:
+                //   c. The stored score has a lower bound, but we scored above the scored score
                 if (alpha == beta - 1 && ttDepth >= depth && ttFlag != (ttScore >= beta ? 0 : 2))
                     return ttScore;
 
                 // ttScore can be used as a better positional evaluation
+                // If the score is outside what the current bounds are, but it did match flag and depth,
+                // then we can trust that this score is more accurate than the current static evaluation,
+                // and we can update our static evaluation for better accuracy in pruning
                 if (ttFlag != (ttScore > score ? 0 : 2))
                     score = ttScore;
             }
