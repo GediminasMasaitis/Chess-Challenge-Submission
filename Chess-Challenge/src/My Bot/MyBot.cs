@@ -85,6 +85,21 @@ public class MyBot : IChessBot
             // Local method for similar calls to Search, inspired by Tyrant7's approach.
             int defaultSearch(int beta, int reduction = 1, bool nullAllowed = true) => score = -Search(ply + 1, depth - reduction, -beta, -alpha, nullAllowed);
 
+            // Look up best move known so far if it is available
+            var (ttKey, ttMove, ttDepth, ttScore, ttFlag) = TT[key % 2097152];
+
+            if (ttKey == key)
+            {
+                // If conditions match, we can trust the table entry and return immediately
+                if (alpha == beta - 1 && ttDepth >= depth && ttFlag != (ttScore >= beta ? 0 : 2))
+                    return ttScore;
+
+                // ttScore can be used as a better positional evaluation
+                if (ttFlag != (ttScore > score ? 0 : 2))
+                    score = ttScore;
+            }
+            else if (depth > 3)
+                depth--;
 
             if (inQsearch)
             {
@@ -113,18 +128,6 @@ public class MyBot : IChessBot
                         return beta;
                 }
             }
-
-            // Look up best move known so far if it is available
-            var (ttKey, ttMove, ttDepth, ttScore, ttFlag) = TT[key % 2097152];
-
-            if (ttKey == key)
-            {
-                // If conditions match, we can trust the table entry and return immediately
-                if (ply > 0 && ttDepth >= depth && (ttFlag == 0 && ttScore <= alpha || ttFlag == 2 && ttScore >= beta || ttFlag == 1))
-                    return ttScore;
-            }
-            else if (depth > 3)
-                depth--;
 
             // Move generation, best-known move then MVV-LVA ordering then killers then quiet move history
             var (moves, quietsEvaluated, movesEvaluated) = (board.GetLegalMoves(inQsearch).OrderByDescending(move => move == ttMove ? 9_000_000_000_000_000_000

@@ -2199,3 +2199,38 @@ info depth 14 score cp 14 time 744 nodes 609842 nps 819680 pv b1c3
 info depth 15 score cp 17 time 1662 nodes 1535966 nps 924167 pv b1c3
 bestmove b1c3
 ```
+
+### 1.61
+Use TT score to adjust evaluation, and only do TT cutoffs on non-PV nodes.
+Also moves TT back in front of pruning so that changes to eval can affect it.
+
+Implemented by Goh CJ (cj5716)
+
+1023 tokens (+7)
+
+```
+info depth 1 score cp 44 time 35 nodes 22 nps 628 pv b1c3
+info depth 2 score cp 15 time 35 nodes 82 nps 2342 pv b1c3
+info depth 3 score cp 36 time 36 nodes 190 nps 5277 pv b1c3
+info depth 4 score cp 15 time 37 nodes 548 nps 14810 pv b1c3
+info depth 5 score cp 19 time 38 nodes 1191 nps 31342 pv b1c3
+info depth 6 score cp 15 time 41 nodes 2600 nps 63414 pv b1c3
+info depth 7 score cp 30 time 46 nodes 4616 nps 100347 pv b1c3
+info depth 8 score cp 15 time 55 nodes 9776 nps 177745 pv b1c3
+info depth 9 score cp 5 time 90 nodes 32701 nps 363344 pv b1c3
+info depth 10 score cp 31 time 131 nodes 64759 nps 494343 pv b1c3
+info depth 11 score cp 20 time 206 nodes 128383 nps 623218 pv g1f3
+info depth 12 score cp 18 time 370 nodes 280002 nps 756762 pv b1c3
+info depth 13 score cp 21 time 526 nodes 422077 nps 802427 pv b1c3
+info depth 14 score cp 16 time 952 nodes 816227 nps 857381 pv b1c3
+info depth 15 score cp 18 time 1795 nodes 1599172 nps 890903 pv e2e4
+bestmove e2e4
+```
+
+```
+Score of ChessChallenge vs ChessChallengeDev: 1953 - 1690 - 2357  [0.522] 6000
+...      ChessChallenge playing White: 1289 - 555 - 1157  [0.622] 3001
+...      ChessChallenge playing Black: 664 - 1135 - 1200  [0.421] 2999
+...      White vs Black: 2424 - 1219 - 2357  [0.600] 6000
+Elo difference: 15.2 +/- 6.8, LOS: 100.0 %, DrawRatio: 39.3 %
+```
