@@ -37,7 +37,10 @@ public class MyBot : IChessBot
 
     public Move Think(Board board, Timer timer)
     {
+        // The move that will eventually be reported as our best move
         Move rootBestMove = default;
+
+        // Intitialise parameters that exist only during one search
         var (killers, allocatedTime, i, score, depth) = (new Move[256], timer.MillisecondsRemaining / 8, 0, 0, 1);
 
         // Decay quiet history instead of clearing it. 
@@ -48,20 +51,30 @@ public class MyBot : IChessBot
         int Search(int ply, int depth, int alpha, int beta, bool nullAllowed)
         {
             // Repetition detection
+            // There is no need to check for 3-fold repetition, if a single repetition (0 = draw) ends up being the best,
+            // we can trust that repeating moves is the best course of action in this position.
             if (nullAllowed && board.IsRepeatedPosition())
                 return 0;
-            
-            bool inCheck = board.IsInCheck();
 
-            // If we are in check, we should search deeper
+            // Check extension: if we are in check, we should search deeper. More info: https://www.chessprogramming.org/Check_Extensions
+            bool inCheck = board.IsInCheck();
             if (inCheck)
                 depth++;
 
             // -2000000 = -inf
-            // Use 15 tempo for evaluation
+            // Tempo is the idea that each move is benefitial to us, so we adjust the static eval using a fixed value.
+            // We use 15 tempo for evaluation for mid-game, 0 for end-game.
             var (key, inQsearch, bestScore, doPruning, score, phase) = (board.ZobristKey, depth <= 0, -2_000_000, alpha == beta - 1 && !inCheck, 15, 0);
 
-            // Evaluation inlined into search
+            // Here we do a static evaluation to determine the current static score for the position.
+            // A static evaluation is like a one-look determination of how good the position is, without looking into the future.
+            // This is a tapered evaluation, meaning that each term has a midgame (or more accurately early-game) and end-game value.
+            // After the evaluation is done, scores are interpolated according to phase values. Read more: https://www.chessprogramming.org/Tapered_Eval
+            // This evaluation is similar to many other evaluations with some differences to save bytes.
+            // It is tuned with a method called Texel Tuning using my project at https://github.com/GediminasMasaitis/texel-tuner
+            // More info about Texel tuning at https://www.chessprogramming.org/Texel%27s_Tuning_Method,
+            // and specifically the implementation in my tuner: https://github.com/AndyGrant/Ethereal/blob/master/Tuning.pdf
+            // The evaluation is inlined into search to preserve bytes, and to keep some information (phase) around for later use.
             foreach (bool isWhite in new[] {!board.IsWhiteToMove, board.IsWhiteToMove})
             {
                 score = -score;
@@ -71,27 +84,48 @@ public class MyBot : IChessBot
                 {
                     var bitboard = board.GetPieceBitboard((PieceType)pieceIndex, isWhite);
 
+                    // This and the following line is an efficient way to loop over each piece of a certain type.
+                    // Instead of looping each square, we can skip empty squares by looking at a bitboard of each piece,
+                    // and incrementally removing squares from it. More information: https://www.chessprogramming.org/Bitboards
                     while (bitboard != 0)
                     {
                         var sq = BitboardHelper.ClearAndGetIndexOfLSB(ref bitboard);
 
                         // Open files, doubled pawns
+                        // We evaluate how much each piece wants to be in an open/semi-open file (both merged to save tokens).
+                        // We exclude the current piece's square from being considered, this enables a trick to save tokens:
+                        // for pawns, an open file means it is not a doubled pawn, so it acts as a doubled pawn detection for free.
                         if ((0x101010101010101UL << sq % 8 & ~(1UL << sq) & board.GetPieceBitboard(PieceType.Pawn, isWhite)) == 0)
                             score += evalValues[126 + pieceIndex];
 
-                        // For bishop, rook, queen and king
+                        // For bishop, rook, queen and king. ELO tests proved that mobility for other pieces are not worth considering.
                         if (pieceIndex > 2)
                         {
                             // Mobility
+                            // The more squares you are able to attack, the more flexible yourposition is.
                             var mobility = BitboardHelper.GetPieceAttacks((PieceType)pieceIndex, new Square(sq), board, isWhite) & ~(isWhite ? board.WhitePiecesBitboard : board.BlackPiecesBitboard);
                             score += evalValues[112 + pieceIndex] * BitboardHelper.GetNumberOfSetBits(mobility)
                                      // King attacks
+                                     // If your pieces' mobility intersects the opponent king's mobility, this means you are attacking
+                                     // the king, and this is worth evaluating separately.
                                    + evalValues[119 + pieceIndex] * BitboardHelper.GetNumberOfSetBits(mobility & BitboardHelper.GetKingAttacks(board.GetKingSquare(!isWhite)));
                         }
 
-                        // Flip square if black
+                        // Flip square if black.
+                        // This is needed for piece square tables (PSTs), because they are always written from the side that is playing.
                         if (!isWhite) sq ^= 56;
 
+                        // We count the phase of the current position.
+                        // The phase represents how much we are into the end-game in a gradual way. 24 = all pieces on the board, 0 = only pawns/kings left.
+                        // This is a core principle of tapered evaluation. We increment phase for each piece for both sides based on it's importance:
+                        // None: 0 (obviously)
+                        // Pawn: 0
+                        // Knight: 1
+                        // Bishop: 1
+                        // Rook: 2
+                        // Queen: 4
+                        // King: 0 (because checkmate and stalemate has it's own special rules late on)
+                        // These values are encoded in the decimals mentioned before and aren't explicit in the engine's code.
                         phase += evalValues[pieceIndex];
 
                         // Material and PSTs
