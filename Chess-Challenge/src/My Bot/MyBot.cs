@@ -61,7 +61,11 @@ public class MyBot : IChessBot
             if (inCheck)
                 depth++;
 
-            // -2000000 = -inf
+            // In-qsearch is a flag that determines whether not we should prune positions ans whether or not to search non-captures.
+            // Qsearch, also meaning quiescence search, is a mode that only looks at captures in order to give a more accurate
+            // estimate "if all the viable captures happen". In this engine it is interlaced with the main search to save tokens, although
+            // in most engines you will see a separate function for it.
+            // -2000000 = -inf. It just indicates "no move has been found yet".
             // Tempo is the idea that each move is benefitial to us, so we adjust the static eval using a fixed value.
             // We use 15 tempo for evaluation for mid-game, 0 for end-game.
             var (key, inQsearch, bestScore, doPruning, score, phase) = (board.ZobristKey, depth <= 0, -2_000_000, alpha == beta - 1 && !inCheck, 15, 0);
@@ -102,7 +106,7 @@ public class MyBot : IChessBot
                         if (pieceIndex > 2)
                         {
                             // Mobility
-                            // The more squares you are able to attack, the more flexible yourposition is.
+                            // The more squares you are able to attack, the more flexible your position is.
                             var mobility = BitboardHelper.GetPieceAttacks((PieceType)pieceIndex, new Square(sq), board, isWhite) & ~(isWhite ? board.WhitePiecesBitboard : board.BlackPiecesBitboard);
                             score += evalValues[112 + pieceIndex] * BitboardHelper.GetNumberOfSetBits(mobility)
                                      // King attacks
@@ -151,6 +155,7 @@ public class MyBot : IChessBot
             // We keep known values, but we create a local method that will be used to implement 3-fold PVS. More on that later on
             int defaultSearch(int beta, int reduction = 1, bool nullAllowed = true) => score = -Search(ply + 1, depth - reduction, -beta, -alpha, nullAllowed);
 
+            // Transposition table lookup
             // Look up best move known so far if it is available
             var (ttKey, ttMove, ttDepth, ttScore, ttFlag) = TT[key % 2097152];
 
@@ -172,6 +177,10 @@ public class MyBot : IChessBot
                 if (ttFlag != (ttScore > score ? 0 : 2))
                     score = ttScore;
             }
+
+            // Internal iterative reductions
+            // If this is the first time we visit this node, it might not be worth searching it fully
+            // because it might be a random non-promising node. If it gets visited a second time, it's worth fully looking into.
             else if (depth > 3)
                 depth--;
 
@@ -189,10 +198,18 @@ public class MyBot : IChessBot
             else if (doPruning)
             {
                 // Reverse futility pruning
+                // If our current score is way above beta, depending on the score, we can use this as a heuristic to not look
+                // at shallow-ish moves in the current position, because they are likely to be countered by the opponent.
+                // More info: https://www.chessprogramming.org/Reverse_Futility_Pruning
                 if (depth < 7 && score - depth * 75 > beta)
                     return score;
 
                 // Null move pruning
+                // The idea is that each move in a chess engine brings some advantage. If we skip our own move, do a search with reduced depth,
+                // and our position is still so winning that the opponent can't refute it, we claim that this is too good to be true,
+                // and we discard this move. An important observation is the `phase != 0` term, which checks if all remaining
+                // pieces are pawns/kings, this reduces the cases of mis-evaluations of zugzwang in the end-game.
+                // More info: https://www.chessprogramming.org/Null_Move_Pruning
                 if (nullAllowed && score >= beta && depth > 2 && phase != 0)
                 {
                     board.ForceSkipTurn();
