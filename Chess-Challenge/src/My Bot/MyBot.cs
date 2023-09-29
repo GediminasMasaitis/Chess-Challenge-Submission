@@ -1,16 +1,38 @@
-﻿using System;
+﻿// Project: smol.cs
+// License: MIT
+// Authors: Gediminas Masaitis, Goh CJ (cj5716)
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using ChessChallenge.API;
 
 public class MyBot : IChessBot
 {
+    // Keeping track of which quiet move move is most likely to cause a beta cutoff.
+    // The higher the score is, the more likely a beta cutoff is, so in move ordering we will put these moves first.
     long[] quietHistory = new long[4096];
 
-    // Key, move, depth, score, flag
+    // Transposition table
+    // We store the results of previous searches, keeping track of the score at that position,
+    // as well as specific things how it was searched:
+    // 1. Did it go through all the search and fail to find a better move? (Upper limit flag)
+    // 2. Did it cause a beta cutoff and stopped searching early (Lower limit flag)
+    // 3. Did it search through all moves and find a new best move for the currently searched position (Exact flag)
+    // Read more about it here: https://www.chessprogramming.org/Transposition_Table
+    // Format: Position key, move, depth, score, flag
     (ulong, Move, int, int, byte)[] TT = new (ulong, Move, int, int, byte)[2097152];
 
+
+    // Due to the rules of the challenge and how token counting works, evaluation constants are packed into C# decimals,
+    // as they allow the most efficient (12 usable bits per token).
+    // The ordering is as follows: Midgame term 1, endgame term 1, midgame, term 2, endgame term 2...
     static sbyte[] extracted = new [] { 4835740172228143389605888m, 1862983114964290202813595648m, 6529489037797228073584297991m, 6818450810788061916507740187m, 7154536855449028663353021722m, 14899014974757699833696556826m, 25468819436707891759039590695m, 29180306561342183501734565961m, 944189991765834239743752701m, 4194697739m, 4340114601700738076711583744m, 3410436627687897068963695623m, 11182743911298765866015857947m, 10873240011723255639678263585m, 17684436730682332602697851426m, 17374951722591802467805509926m, 31068658689795177567161113954m, 1534136309681498319279645285m, 18014679997410182140m, 1208741569195510172352512m, 13789093343132567021105512448m, 6502873946609222871099113472m, 1250m }.SelectMany(x => decimal.GetBits(x).Take(3).SelectMany(y => (sbyte[])(Array)BitConverter.GetBytes(y))).ToArray();
+
+    // After extracting the raw mindgame/endgame terms, we repack it into integers of midgame/endgame pairs.
+    // The scheme in bytes (assuming little endian) is: 00 EG 00 MG
+    // The idea of this is that we can do operations on both midgame and endgame values simultaneously, preventing the need
+    // for evaluation for separate mid-game / end-game terms.
     int[] evalValues = Enumerable.Range(0, 138).Select(i => extracted[i * 2] | extracted[i * 2 + 1] << 16).ToArray();
 
     public Move Think(Board board, Timer timer)
@@ -18,7 +40,7 @@ public class MyBot : IChessBot
         Move rootBestMove = default;
         var (killers, allocatedTime, i, score, depth) = (new Move[256], timer.MillisecondsRemaining / 8, 0, 0, 1);
 
-        // Decay quiet history instead of clearing it
+        // Decay quiet history instead of clearing it. 
         for (; i < 4096; quietHistory[i++] /= 8) ;
 
         long nodes = 0; // #DEBUG
