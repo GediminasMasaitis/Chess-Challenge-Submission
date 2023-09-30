@@ -137,7 +137,7 @@ public class MyBot : IChessBot
                         // More: https://www.chessprogramming.org/Piece-Square_Tables
                         // In this engine, in order to save tokens, the concept of "material" has been removed.
                         // Instead, each square for each piece has a higher value adjusted to the type of piece that occupies it.
-                        // In order to fin tin 1 byte per row/column, the value of each row/column has been divided by 8,
+                        // In order to fit in 1 byte per row/column, the value of each row/column has been divided by 8,
                         // and here multiplied by 8 (<< 3 is equivalent but ends up 1 token smaller).
                         // Additionally, each column/row, or file/rank is evaluated, as opposed to every square individually,
                         // which is only ~20 ELO weaker compared to full PSTs and saves a lot of tokens.
