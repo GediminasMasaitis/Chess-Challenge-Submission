@@ -253,12 +253,12 @@ public class MyBot : IChessBot
                 // Count the number of moves we have evaluated for detecting mates and stalemates
                 movesEvaluated++;
 
-                // If the move is better than our current best, update our best move
+                // If the move is better than our current best, update our best score
                 if (score > bestScore)
                 {
                     bestScore = score;
 
-                    // If the move is better than our current alpha, update alpha
+                    // If the move is better than our current alpha, update alpha and our best move
                     if (score > alpha)
                     {
                         ttMove = move;
