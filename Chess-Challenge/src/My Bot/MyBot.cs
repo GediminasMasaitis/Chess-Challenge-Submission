@@ -46,8 +46,6 @@ public class MyBot : IChessBot
         // Decay quiet history instead of clearing it. 
         for (; i < 4096; quietHistory[i++] /= 8) ;
 
-        long nodes = 0; // #DEBUG
-
         // Negamax search is embedded as a local function in order to reduce token count
         int Search(int ply, int depth, int alpha, int beta, bool nullAllowed)
         {
@@ -236,7 +234,6 @@ public class MyBot : IChessBot
             foreach (var move in moves)
             {
                 board.MakeMove(move);
-                nodes++; // #DEBUG
 
                 // A quiet move traditionally means a move that doesn't cause a capture to be the best move,
                 // is not a promotion, and doesn't give check. For token savings we only consider captures.
@@ -328,6 +325,7 @@ public class MyBot : IChessBot
         // Iterative deepening
         for (; timer.MillisecondsElapsedThisTurn <= allocatedTime / 5 /* Soft time limit */; ++depth)
             // Aspiration windows
+            // Read more: https://www.chessprogramming.org/Aspiration_Windows
             for (int window = 40;;)
             {
                 int alpha = score - window,
@@ -339,20 +337,6 @@ public class MyBot : IChessBot
                 // If we are out of time, we stop searching and break.
                 if (timer.MillisecondsElapsedThisTurn > allocatedTime)
                     break;
-
-                // If the score is outside of the current window, we must research with a wider window.
-                // Otherwise if we are in the window we can proceed to the next depth.
-                if (alpha < score && score < beta)
-                { // #DEBUG
-                    var elapsed = timer.MillisecondsElapsedThisTurn > 0 ? timer.MillisecondsElapsedThisTurn : 1; // #DEBUG
-                    Console.WriteLine($"info depth {depth} " + // #DEBUG
-                                      $"score cp {score} " + // #DEBUG
-                                      $"time {timer.MillisecondsElapsedThisTurn} " + // #DEBUG
-                                      $"nodes {nodes} " + // #DEBUG
-                                      $"nps {nodes * 1000 / elapsed} " + // #DEBUG
-                                      $"pv {rootBestMove.ToString().Substring(7, rootBestMove.ToString().Length - 8)}"); // #DEBUG
-                    break;
-                } // #DEBUG
 
                 window *= 2;
             }
