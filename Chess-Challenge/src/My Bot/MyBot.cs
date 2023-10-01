@@ -338,6 +338,11 @@ public class MyBot : IChessBot
                 if (timer.MillisecondsElapsedThisTurn > allocatedTime)
                     break;
 
+                // If the score is outside of the current window, we must research with a wider window.
+                // Otherwise if we are in the window we can proceed to the next depth.
+                if (alpha < score && score < beta)
+                    break;
+
                 window *= 2;
             }
 
