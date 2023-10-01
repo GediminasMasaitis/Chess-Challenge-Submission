@@ -48,6 +48,7 @@ public class MyBot : IChessBot
 
         long nodes = 0; // #DEBUG
 
+        // Negamax search is embedded as a local function in order to reduce token count
         int Search(int ply, int depth, int alpha, int beta, bool nullAllowed)
         {
             // Repetition detection
@@ -184,6 +185,7 @@ public class MyBot : IChessBot
             else if (depth > 3)
                 depth--;
 
+            // We look at if it's worth capturing further based on the static evaluation
             if (inQsearch)
             {
                 if (score >= beta)
@@ -236,7 +238,20 @@ public class MyBot : IChessBot
                 board.MakeMove(move);
                 nodes++; // #DEBUG
 
+                // A quiet move traditionally means a move that doesn't cause a capture to be the best move,
+                // is not a promotion, and doesn't give check. For token savings we only consider captures.
                 bool isQuiet = !move.IsCapture;
+
+                // Principal variation search
+                // We trust that our move ordering is good enough to ensure the first move searched to be the best move most of the time,
+                // so we only search the first move fully and all following moves with a zero width window (beta = alpha + 1).
+                // More info: https://en.wikipedia.org/wiki/Principal_variation_search
+
+                // Late move reduction
+                // As the search deepens, looking at each move costs more and more. Since we have some other heuristics,
+                // like the move score quiet moves, as well as some other facts like whether or not this move is a capture,
+                // we can search shallower for not promising moves, most of which came later at our move ordering.
+                // More info: https://www.chessprogramming.org/Late_Move_Reductions
 
                 if (inQsearch || movesEvaluated == 0 // No PVS for first move or qsearch
                 || (depth <= 2 || movesEvaluated <= 4 || !isQuiet // Conditions not to do LMR
@@ -269,10 +284,16 @@ public class MyBot : IChessBot
                         // If the move is better than our current beta, we can stop searching
                         if (score >= beta)
                         {
-                            // If the move is not a capture, add a bonus to the quiets table and save it as the current ply's killer move
                             if (isQuiet)
                             {
+                                // History heuristic bonus
+                                // We assume that good quiet moves will be good for most positions close to the root, so we track quiet moves
+                                // causing beta cutoffs, and will order them higher in the future.
+                                // More info: https://www.chessprogramming.org/History_Heuristic
                                 quietHistory[move.RawValue & 4095] += depth * depth;
+
+                                // History heuristic malus
+                                // Similarly to giving a bonus, we penalize all previous quiet moves that didn't give a beta cutoff
                                 foreach (var previousMove in quietsEvaluated)
                                     quietHistory[previousMove.RawValue & 4095] -= depth * depth;
                                 killers[ply] = move;
