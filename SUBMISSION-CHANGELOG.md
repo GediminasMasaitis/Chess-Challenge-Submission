@@ -1,8 +1,16 @@
- Engines tested against:
+ ### Other egines tested against:
 
-| Name | Version | ELO |
-| --- | --- | --- |
-| Vice | 1.1 | 2060 |
+| Name | Version | ELO (CCRL 4040) | URL
+| --- | --- | --- | --- |
+| JW's "Tier 2" | - | - | https://github.com/jw1912/Chess-Challenge/blob/example/Chess-Challenge/src/My%20Bot/MyBot.cs |
+| Vice | 1.1 | 2094 | https://ccrl.chessdom.com/ccrl/4040/cgi/engine_details.cgi?print=Details&each_game=0&eng=Vice%201.0%2064-bit#Vice_1_0_64-bit |
+| Kimbo | 1.0 | 2473 | https://github.com/jw1912/Kimbo/releases/tag/v1.0.0 |
+| 4ku | 1.1 | 2547 | https://github.com/kz04px/4ku/releases/tag/v1.1 |
+
+### Tools used:
+ * CuteChess: https://github.com/cutechess/cutechess/releases/tag/v1.3.1
+ * My own texel tuner: https://github.com/GediminasMasaitis/texel-tuner
+ * Chess tuning tools: https://chess-tuning-tools.readthedocs.io/en/latest/
 
 ### 1.0
 Initial release - random legal mover
