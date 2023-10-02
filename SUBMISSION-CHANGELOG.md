@@ -2200,7 +2200,16 @@ info depth 15 score cp 17 time 1662 nodes 1535966 nps 924167 pv b1c3
 bestmove b1c3
 ```
 
-### 1.61
+```
+Score of ChessChallengeDev vs ChessChallenge1.34: 6245 - 1834 - 1921  [0.721] 10000
+...      ChessChallengeDev playing White: 3560 - 613 - 827  [0.795] 5000
+...      ChessChallengeDev playing Black: 2685 - 1221 - 1094  [0.646] 5000
+...      White vs Black: 4781 - 3298 - 1921  [0.574] 10000
+Elo difference: 164.5 +/- 6.6, LOS: 100.0 %, DrawRatio: 19.2 %
+```
+
+### 1.61 - Version submitted to the challenge
+
 Use TT score to adjust evaluation, and only do TT cutoffs on non-PV nodes.
 Also moves TT back in front of pruning so that changes to eval can affect it.
 
@@ -2227,10 +2236,38 @@ info depth 15 score cp 18 time 1795 nodes 1599172 nps 890903 pv e2e4
 bestmove e2e4
 ```
 
+5+0.05 tests:
 ```
 Score of ChessChallenge vs ChessChallengeDev: 1953 - 1690 - 2357  [0.522] 6000
 ...      ChessChallenge playing White: 1289 - 555 - 1157  [0.622] 3001
 ...      ChessChallenge playing Black: 664 - 1135 - 1200  [0.421] 2999
 ...      White vs Black: 2424 - 1219 - 2357  [0.600] 6000
 Elo difference: 15.2 +/- 6.8, LOS: 100.0 %, DrawRatio: 39.3 %
+
+Score of ChessChallenge vs ChessChallengeTier2: 9625 - 60 - 315  [0.978] 10000
+...      ChessChallenge playing White: 4898 - 9 - 93  [0.989] 5000
+...      ChessChallenge playing Black: 4727 - 51 - 222  [0.968] 5000
+...      White vs Black: 4949 - 4736 - 315  [0.511] 10000
+Elo difference: 661.2 +/- 18.6, LOS: 100.0 %, DrawRatio: 3.1 %
+
+Score of ChessChallenge vs ChessChallenge1.34: 6328 - 1678 - 1994  [0.733] 10000
+...      ChessChallenge playing White: 3543 - 600 - 857  [0.794] 5000
+...      ChessChallenge playing Black: 2785 - 1078 - 1137  [0.671] 5000
+...      White vs Black: 4621 - 3385 - 1994  [0.562] 10000
+Elo difference: 175.0 +/- 6.6, LOS: 100.0 %, DrawRatio: 19.9 %
+
+Score of ChessChallenge vs 4ku1.0: 3623 - 4094 - 2283  [0.476] 10000
+...      ChessChallenge playing White: 2185 - 1601 - 1214  [0.558] 5000
+...      ChessChallenge playing Black: 1438 - 2493 - 1069  [0.395] 5000
+...      White vs Black: 4678 - 3039 - 2283  [0.582] 10000
+Elo difference: -16.4 +/- 6.0, LOS: 0.0 %, DrawRatio: 22.8 %
+```
+
+60+0.6 tests:
+```
+Score of ChessChallenge vs 4ku1.0: 1927 - 1061 - 1012  [0.608] 4000
+...      ChessChallenge playing White: 1143 - 343 - 514  [0.700] 2000
+...      ChessChallenge playing Black: 784 - 718 - 498  [0.516] 2000
+...      White vs Black: 1861 - 1127 - 1012  [0.592] 4000
+Elo difference: 76.4 +/- 9.4, LOS: 100.0 %, DrawRatio: 25.3 %
 ```
